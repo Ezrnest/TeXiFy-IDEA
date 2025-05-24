@@ -1,6 +1,7 @@
 package nl.hannahsten.texifyidea.psi
 
 import com.intellij.psi.PsiElement
+import nl.hannahsten.texifyidea.util.parser.getOptionalParameterMapFromParameters
 
 /**
  * This class allows the LatexCommandsImplMixin class to 'inject' methods into LatexCommands(Impl).
@@ -18,7 +19,16 @@ interface LatexCommandWithParams : PsiElement {
     /**
      * Generates a list of all names of all required parameters in the command.
      */
-    fun getRequiredParameters(): List<String>
+    fun getRequiredParameters(): List<String>{
+        return nl.hannahsten.texifyidea.util.parser.getRequiredParameters(this.parameterList)
+    }
 
-    fun getOptionalParameterMap(): Map<LatexOptionalKeyValKey, LatexKeyValValue?>
+    fun getOptionalParameterMap(): Map<LatexOptionalKeyValKey, LatexKeyValValue?>{
+        return getOptionalParameterMapFromParameters(this.parameterList)
+    }
+}
+
+interface LatexBeginEndCommand : LatexCommandWithParams{
+
+
 }
