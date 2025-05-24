@@ -2,6 +2,7 @@ package nl.hannahsten.texifyidea.psi
 
 import com.intellij.lang.PsiBuilder
 import com.intellij.lang.parser.GeneratedParserUtilBase
+import nl.hannahsten.texifyidea.parser.LatexParser
 import nl.hannahsten.texifyidea.util.magic.EnvironmentMagic
 
 @Suppress("FunctionName")
@@ -13,7 +14,8 @@ class LatexParserUtil : GeneratedParserUtilBase() {
          * Remap tokens inside verbatim environments to raw text.
          * Requires the lexer to be in a proper state before and after the environment.
          */
-        @JvmStatic fun injection_env_content(builder: PsiBuilder, level: Int, rawText: Parser): Boolean {
+        @JvmStatic
+        fun injection_env_content(builder: PsiBuilder, level: Int, rawText: Parser): Boolean {
             // This might be optimized by handling the tokens incrementally
             val beginText = builder.originalText.subSequence(
                 builder.latestDoneMarker?.startOffset ?: return true,
@@ -54,6 +56,53 @@ class LatexParserUtil : GeneratedParserUtilBase() {
 
             builder.setTokenTypeRemapper(null)
 
+            return true
+        }
+
+        private fun hasPrecedingLinebreak(builder: PsiBuilder, startingOffset: Int): Boolean {
+            // Get the raw text between the current position and the last consumed token
+            val currentOffset = builder.currentOffset
+            val precedingText = builder.originalText.subSequence(startingOffset, currentOffset)
+            return precedingText.contains("\n") || precedingText.contains("\r")
+        }
+
+        @JvmStatic
+        fun parseBeginCommand(builder: PsiBuilder, level: Int): Boolean {
+            /*
+            \begin{environment}[optional parameters]{}
+            \end{environment}
+             */
+            val marker = builder.mark()
+
+            // Expect BEGIN_TOKEN (\begin)
+            if (builder.tokenType != LatexTypes.BEGIN_TOKEN) {
+                marker.drop()
+                return false
+            }
+            builder.advanceLexer()
+            if (!LatexParser.parameter(builder, level + 1)) {
+                marker.drop()
+                return false // If the environment name is not present, drop the marker
+            }
+
+            val initialOffset = builder.currentOffset
+            // Parse parameters only if they immediately follow without whitespace
+            while (true) {
+                val startingOffset = builder.latestDoneMarker?.endOffset ?: initialOffset
+                val nextToken = builder.lookAhead(0)
+                if (nextToken != LatexTypes.OPEN_BRACKET && nextToken != LatexTypes.OPEN_BRACE && nextToken != LatexTypes.OPEN_PAREN && nextToken != LatexTypes.ANGLE_PARAM) {
+                    break // No more parameters
+                }
+                // Check for whitespace before the parameter
+                if (hasPrecedingLinebreak(builder, startingOffset)) {
+                    break // Stop parsing parameters if whitespace is found
+                }
+                if (!LatexParser.parameter(builder, level + 1)) {
+                    break // Stop parsing parameters if parsing fails, for example, unclosed braces
+                }
+            }
+
+            marker.done(LatexTypes.BEGIN_COMMAND)
             return true
         }
     }
