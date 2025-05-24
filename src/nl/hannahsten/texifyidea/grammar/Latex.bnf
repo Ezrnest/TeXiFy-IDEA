@@ -106,7 +106,7 @@ begin_command ::= <<parseBeginCommand>>{
     implements=["nl.hannahsten.texifyidea.psi.LatexCommandWithParams"]
 }
 
-end_command ::= END_TOKEN parameter {
+end_command ::= END_TOKEN parameter* {
     pin=1
     mixin="nl.hannahsten.texifyidea.psi.impl.LatexEndCommandImplMixin"
     implements=["nl.hannahsten.texifyidea.psi.LatexCommandWithParams"]

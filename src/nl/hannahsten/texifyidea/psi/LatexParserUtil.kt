@@ -68,20 +68,17 @@ class LatexParserUtil : GeneratedParserUtilBase() {
 
         @JvmStatic
         fun parseBeginCommand(builder: PsiBuilder, level: Int): Boolean {
+            // the marker is already set to the \begin token
             /*
             \begin{environment}[optional parameters]{}
             \end{environment}
              */
-            val marker = builder.mark()
-
             // Expect BEGIN_TOKEN (\begin)
             if (builder.tokenType != LatexTypes.BEGIN_TOKEN) {
-                marker.drop()
                 return false
             }
             builder.advanceLexer()
             if (!LatexParser.parameter(builder, level + 1)) {
-                marker.drop()
                 return false // If the environment name is not present, drop the marker
             }
 
@@ -101,8 +98,6 @@ class LatexParserUtil : GeneratedParserUtilBase() {
                     break // Stop parsing parameters if parsing fails, for example, unclosed braces
                 }
             }
-
-            marker.done(LatexTypes.BEGIN_COMMAND)
             return true
         }
     }
