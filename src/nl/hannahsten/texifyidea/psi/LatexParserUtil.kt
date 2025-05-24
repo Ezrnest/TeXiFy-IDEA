@@ -68,10 +68,20 @@ class LatexParserUtil : GeneratedParserUtilBase() {
 
         @JvmStatic
         fun parseBeginCommand(builder: PsiBuilder, level: Int): Boolean {
-            // the marker is already set to the \begin token
             /*
+            The `begin` command is something like:
             \begin{environment}[optional parameters]{}
-            \end{environment}
+            ---
+            Latex allows whitespace between the `\begin` command, the environment name and the parameters.
+            However, it would cause misinterpretation as we may have
+            \begin{equation}
+                [x+y]^2
+            \end{equation}
+            where `[]` are not parameters of the `begin` command, but rather part of the equation.
+
+            Therefore, we require the following:
+            - Whitespaces (including linebreaks) between `\begin` and the environment name
+            - No linebreaks between the environment name and the rest of the parameters
              */
             // Expect BEGIN_TOKEN (\begin)
             if (builder.tokenType != LatexTypes.BEGIN_TOKEN) {

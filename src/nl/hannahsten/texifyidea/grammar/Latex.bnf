@@ -101,6 +101,7 @@ left_right ::= LEFT (OPEN_PAREN | OPEN_ANGLE_BRACKET | OPEN_BRACE | OPEN_BRACKET
 //    mixin="nl.hannahsten.texifyidea.psi.impl.LatexBeginCommandImplMixin"
 //}
 begin_command ::= <<parseBeginCommand>>{
+// This is a workaround, see comment in the method
     pin=1
     mixin="nl.hannahsten.texifyidea.psi.impl.LatexBeginCommandImplMixin"
     implements=["nl.hannahsten.texifyidea.psi.LatexCommandWithParams"]
