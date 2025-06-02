@@ -218,6 +218,9 @@ interface LatexCommand : Described, Dependend {
      */
     val command: String
 
+    /**
+     * Gets the name of the command with the first backslash, e.g. `\command`.
+     */
     val commandWithSlash: String
         get() = "\\$command"
 
