@@ -2,10 +2,12 @@ package nl.hannahsten.texifyidea.inspections.grazie
 
 import com.intellij.grazie.grammar.strategy.StrategyUtils
 import com.intellij.grazie.text.TextContent
+import com.intellij.grazie.text.TextContentBuilder
 import com.intellij.grazie.text.TextExtractor
 import com.intellij.lang.tree.util.children
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.startOffset
 import nl.hannahsten.texifyidea.index.LatexDefinitionIndex
@@ -155,4 +157,23 @@ class LatexTextExtractor : TextExtractor() {
 
     private fun PsiElement.isNotInSquareBrackets() = parents().find { it is LatexGroup || it is LatexOptionalParam }
         ?.let { it is LatexGroup } ?: true
+}
+
+
+class LatexTextExtractor1 : TextExtractor(){
+    // Since Grazie works by first checking leaf elements, and if it gets null tries one level higher,
+    // we cannot return anything (e.g. literal for a command, comment for comments) other than LatexContent because then LatexContent itself will not be used as a root.
+    // However, we do need it as a root because we need to filter out certain things like inline math ourselves,
+    // so that we can make sure all the whitespace around ignored items is correct.
+
+
+    override fun buildTextContents(element: PsiElement, allowedDomains: Set<TextContent.TextDomain?>): List<TextContent> {
+        if (element is LatexNormalText) {
+            // If the element is a LatexNormalText, we can just return it as a TextContent
+            val content = TextContent.builder().build(element, TextContent.TextDomain.PLAIN_TEXT) ?: return emptyList()
+            return listOf(content)
+        }
+        // For other elements, we return an empty list
+        return emptyList()
+    }
 }
