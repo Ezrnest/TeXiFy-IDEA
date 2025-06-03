@@ -11,7 +11,7 @@ fun properties(key: String) = project.findProperty(key).toString()
 // Include the Gradle plugins which help building everything.
 // Supersedes the use of "buildscript" block and "apply plugin:"
 plugins {
-    id("org.jetbrains.intellij.platform") version "2.5.0"
+    id("org.jetbrains.intellij.platform") version "2.6.0"
     kotlin("jvm") version ("2.1.20")
     kotlin("plugin.serialization") version ("2.1.20")
 
