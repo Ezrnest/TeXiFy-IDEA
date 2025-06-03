@@ -39,9 +39,14 @@ import static nl.hannahsten.texifyidea.psi.LatexTypes.*;
 %state COMMENT
 
 NEWLINE = [^\r\n]
-BACK_SLASH = "\\"
+BACK_SLASH = \\
 WHITE_SPACE= [ \t\n\x0B\f\r]+
 SPECIAL_CHAR = [#$%&~_\^{}\\]
+
+INLINE_VERBATIM = \\verb
+VERBATIM_DELIMITER=[^ :*\s]
+
+VERBATIM_COMMANDS = verbatim|lstlisting|lstinputlisting|minted|mintedinput
 
 %%
 
