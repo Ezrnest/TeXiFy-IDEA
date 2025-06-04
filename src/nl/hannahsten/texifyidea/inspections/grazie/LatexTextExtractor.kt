@@ -34,24 +34,25 @@ class LatexTextExtractor : TextExtractor() {
     }
 
     fun buildTextContent(root: LatexContent): TextContent? {
-        // TODO: Performance
-        // Since Grazie works by first checking leaf elements, and if it gets null tries one level higher, we cannot return anything (e.g. literal for a command, comment for comments) other than LatexContent because then LatexContent itself will not be used as a root.
-        // However, we do need it as a root because we need to filter out certain things like inline math ourselves, so that we can make sure all the whitespace around ignored items is correct.
-        val domain = TextContent.TextDomain.PLAIN_TEXT
-
-        // #4044
-        if (root.textLength > root.containingFile.textLength) {
-            return null
-        }
-
-        val textContent = TextContent.builder().build(root, domain) ?: return null
-        val stealthyRanges = getStealthyRanges(root)
-            // Convert IntRange (inclusive end) to TextRange (exclusive end)
-            .map { TextContent.Exclusion.exclude(it.toTextRange()) }
-            .filter { it.start >= 0 && it.end <= textContent.length }
-
-        val textToSubmit = textContent.excludeRanges(stealthyRanges)
-        return textToSubmit
+        return null
+//        // TODO: Performance
+//        // Since Grazie works by first checking leaf elements, and if it gets null tries one level higher, we cannot return anything (e.g. literal for a command, comment for comments) other than LatexContent because then LatexContent itself will not be used as a root.
+//        // However, we do need it as a root because we need to filter out certain things like inline math ourselves, so that we can make sure all the whitespace around ignored items is correct.
+//        val domain = TextContent.TextDomain.PLAIN_TEXT
+//
+//        // #4044
+//        if (root.textLength > root.containingFile.textLength) {
+//            return null
+//        }
+//
+//        val textContent = TextContent.builder().build(root, domain) ?: return null
+//        val stealthyRanges = getStealthyRanges(root)
+//            // Convert IntRange (inclusive end) to TextRange (exclusive end)
+//            .map { TextContent.Exclusion.exclude(it.toTextRange()) }
+//            .filter { it.start >= 0 && it.end <= textContent.length }
+//
+//        val textToSubmit = textContent.excludeRanges(stealthyRanges)
+//        return textToSubmit
     }
 
     /**
