@@ -121,9 +121,9 @@ class TexSpacingBuilder(private val commonSettings: CommonCodeStyleSettings) {
             return null
         }
 
-        for (builder in builders) {
-            return builder.getSpacing(parent, child1, child2) ?: continue
-        }
+//        for (builder in builders) {
+//            return builder.getSpacing(parent, child1, child2) ?: continue
+//        }
 
         return null
     }

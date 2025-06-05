@@ -208,7 +208,8 @@ class LatexBlock(
     }
 
     override fun getSpacing(child1: Block?, child2: Block): Spacing? {
-        return spacingBuilder.getSpacing(this, child1, child2)
+        return null
+//        return spacingBuilder.getSpacing(this, child1, child2)
     }
 
     override fun isLeaf(): Boolean {

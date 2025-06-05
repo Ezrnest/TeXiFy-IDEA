@@ -46,7 +46,7 @@
         NORMAL_TEXT_WORD='regexp:[^\s\\{}%\[\]$()|!"=&]+'
         NORMAL_TEXT_CHAR='regexp:[|!"=&-]'
 
-        PLAIN_TEXT='regexp:[^\\{}#%&~_^]+'
+        PLAIN_TEXT='regexp:[^\\{}#%&]+'
         N_COMMAND_IDENTIFIER= 'regexp:\w'
         SPECIAL_CHAR= 'regexp:[\\{}#%&~_^]'
     ]
@@ -54,11 +54,24 @@
 
 
 
-latexFile ::= n_content+
-n_content ::= n_command | comment | PLAIN_TEXT | SPECIAL_CHAR
+latexFile ::= n_content*
+n_content ::= PLAIN_TEXT | n_command | n_env | brace_group | comment | SPECIAL_CHAR
 
-n_command ::= N_COMMAND_IDENTIFIER
+n_command ::= N_COMMAND_IDENTIFIER brace_group*
 comment ::= COMMAND_TOKEN
+
+brace_group ::= OPEN_BRACE n_content* CLOSE_BRACE {
+pin = 1
+}
+
+
+n_env ::= n_begin_end_env | n_inline_math
+n_begin_end_env ::= BEGIN_TOKEN brace_group n_content* END_TOKEN brace_group{
+pin = 2
+}
+n_inline_math ::= INLINE_MATH_START n_content+ INLINE_MATH_END{
+pin = 1
+}
 
 // Make sure that there is a root element with multiple children, for example for Grazie to allow ignoring certain types of no_math_content.
 // This means that 'content' should not be used in other elements

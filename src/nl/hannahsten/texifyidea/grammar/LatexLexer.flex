@@ -22,6 +22,15 @@ import java.util.Deque;
     yybegin(stack.pop());
   }
 
+  public boolean yypopState(int currentState){
+      if(yystate() == currentState){
+          yybegin(stack.pop());
+          return true;
+      }
+      return false;
+  }
+
+
 
   public LatexLexer() {
     this((java.io.Reader)null);
@@ -36,7 +45,9 @@ import java.util.Deque;
 %unicode
 
 %xstate VERBATIM_INLINE, VERBATIM_ENV
-%state COMMAND_WATING_ARGUMENT
+%state COMMAND_WAITING_ARGUMENT
+%state WAITING_ARGUMENT
+%state INLINE_MATH
 
 //%state
 
@@ -55,7 +66,12 @@ COMMAND_NAME = [a-zA-Z]+*?
 
 COMMAND = \\({COMMAND_NAME} | .)
 
-PLAIN_TEXT = [^\\{}#%&~_\^]+
+NORMAL_PLAIN_TEXT = [^\\{}#%&$]+
+
+
+
+INLINE_MATH_START = ("$" | "\\(")
+INLINE_MATH_END = ("$" | "\\)")
 
 %%
 
@@ -63,21 +79,57 @@ PLAIN_TEXT = [^\\{}#%&~_\^]+
 {COMMENT_LINE}    { return LatexTypes.COMMENT_TOKEN; }
 
 
-\\begin { return LatexTypes.BEGIN_TOKEN; }
-\\end   { return LatexTypes.END_TOKEN; }
+"\\begin" {
+//          yybegin(WAITING_ARGUMENT);
+          return LatexTypes.BEGIN_TOKEN;
+      }
+"\\end"   { return LatexTypes.END_TOKEN; }
 
 
 
 
-{COMMAND}    { return LatexTypes.N_COMMAND_IDENTIFIER; }
+<INLINE_MATH>{
+{INLINE_MATH_END} {
+          yypopState();
+          return LatexTypes.INLINE_MATH_END;
+      }
+}
+{INLINE_MATH_START} {
+      yypushState(INLINE_MATH);
+      return LatexTypes.INLINE_MATH_START;
+}
 
+"{"   {
+          yypushState(YYINITIAL);
+          return LatexTypes.OPEN_BRACE;
+      }
 
+"}"    {
+      yypopState();
+      return LatexTypes.CLOSE_BRACE;
+}
 
-//\{    { return LatexTypes.OPEN_BRACE; }
-//\}    { return LatexTypes.CLOSE_BRACE; }
+{COMMAND}    {
+//          yybegin(WAITING_ARGUMENT);
+          return LatexTypes.N_COMMAND_IDENTIFIER;
+      }
 
-{PLAIN_TEXT} { return LatexTypes.PLAIN_TEXT; }
+//<WAITING_ARGUMENT>{
+//"{" { return LatexTypes.OPEN_BRACE;}
+//.   { yybegin(YYINITIAL);}
+//}
+
+"&" { return LatexTypes.SPECIAL_CHAR;}
+"\\" { return LatexTypes.SPECIAL_CHAR;}
+"#" {return LatexTypes.SPECIAL_CHAR;}
+"&" {return LatexTypes.SPECIAL_CHAR;}
 
 {WHITE_SPACE}           { return TokenType.WHITE_SPACE; }
-{SPECIAL_CHAR}          { return LatexTypes.SPECIAL_CHAR; }
+
+{NORMAL_PLAIN_TEXT} { return LatexTypes.PLAIN_TEXT; }
+
+//{SPECIAL_CHAR}          { return LatexTypes.SPECIAL_CHAR; }
+
+
+
 [^]                     { return com.intellij.psi.TokenType.BAD_CHARACTER; }
