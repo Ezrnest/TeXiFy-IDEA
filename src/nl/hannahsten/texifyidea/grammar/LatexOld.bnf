@@ -2,6 +2,7 @@
  * IMPORTANT NOTE
  *
  * - When changing the parser, you probably need to increase the getStubVersion() in LatexParserDefinition
+ * - When adding elements, they need to be added to LatexPsiUtil#getChildren as well.
  */
 {
     parserClass="nl.hannahsten.texifyidea.parser.LatexParser"
@@ -45,20 +46,13 @@
         AMPERSAND='&'
         NORMAL_TEXT_WORD='regexp:[^\s\\{}%\[\]$()|!"=&]+'
         NORMAL_TEXT_CHAR='regexp:[|!"=&-]'
-
-        PLAIN_TEXT='regexp:[^\\{}#%&~_^]+'
-        N_COMMAND_IDENTIFIER= 'regexp:\w'
-        SPECIAL_CHAR= 'regexp:[\\{}#%&~_^]'
+        NORMAL_TEXT_NEW='regexp:[^\\{}%$]'
     ]
 }
 
 
 
-latexFile ::= n_content+
-n_content ::= n_command | comment | PLAIN_TEXT | SPECIAL_CHAR
-
-n_command ::= N_COMMAND_IDENTIFIER
-comment ::= COMMAND_TOKEN
+latexFile ::= content
 
 // Make sure that there is a root element with multiple children, for example for Grazie to allow ignoring certain types of no_math_content.
 // This means that 'content' should not be used in other elements
@@ -178,7 +172,7 @@ parameter_group ::= OPEN_BRACE parameter_group_text CLOSE_BRACE { pin=1 }
 // This element is needed instead of parameter_text in order to avoid parse errors for various other tokens that do not appear in parameter_text because they are not usually part of the reference
 parameter_group_text ::= (parameter_text | group | COMMA | EQUALS | OPEN_BRACKET | CLOSE_BRACKET | OPEN_PAREN | CLOSE_PAREN | OPEN_ANGLE_BRACKET | CLOSE_ANGLE_BRACKET)* { hooks = [wsBinders="GREEDY_LEFT_BINDER, GREEDY_RIGHT_BINDER"]  }
 
-old_comment ::= COMMENT_TOKEN
+comment ::= COMMENT_TOKEN
 
 magic_comment ::= MAGIC_COMMENT_TOKEN {
     elementTypeClass="nl.hannahsten.texifyidea.index.stub.LatexMagicCommentStubElementType"

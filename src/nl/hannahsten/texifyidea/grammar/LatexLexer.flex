@@ -1,13 +1,12 @@
 package nl.hannahsten.texifyidea.grammar;
 
 import com.intellij.lexer.FlexLexer;
-import java.util.*;
-
+import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
-import nl.hannahsten.texifyidea.util.magic.EnvironmentMagic;
+import nl.hannahsten.texifyidea.psi.LatexTypes;
 
-import static nl.hannahsten.texifyidea.psi.LatexTypes.*;
-
+import java.util.ArrayDeque;
+import java.util.Deque;
 %%
 
 %{
@@ -36,29 +35,49 @@ import static nl.hannahsten.texifyidea.psi.LatexTypes.*;
 %type IElementType
 %unicode
 
-%state COMMENT
+%xstate VERBATIM_INLINE, VERBATIM_ENV
+%state COMMAND_WATING_ARGUMENT
 
-NEWLINE = [^\r\n]
+//%state
+
 BACK_SLASH = \\
 WHITE_SPACE= [ \t\n\x0B\f\r]+
 SPECIAL_CHAR = [#$%&~_\^{}\\]
+
+COMMENT_LINE=%[^\r\n]*
 
 INLINE_VERBATIM = \\verb
 VERBATIM_DELIMITER=[^ :*\s]
 
 VERBATIM_COMMANDS = verbatim|lstlisting|lstinputlisting|minted|mintedinput
 
+COMMAND_NAME = [a-zA-Z]+*?
+
+COMMAND = \\({COMMAND_NAME} | .)
+
+PLAIN_TEXT = [^\\{}#%&~_\^]+
+
 %%
 
 
-"%"    { yybegin(COMMENT); return LatexTypes.COMMENT_START; }
-<COMMENT>{
-      {NEWLINE}        { yybegin(YYINITIAL); return LatexTypes.NEWLINE; }
-      .*               { return LatexTypes.COMMENT; }
-}
+{COMMENT_LINE}    { return LatexTypes.COMMENT_TOKEN; }
 
-{WHITE_SPACE}           { return com.intellij.psi.TokenType.WHITE_SPACE; }
+
+\\begin { return LatexTypes.BEGIN_TOKEN; }
+\\end   { return LatexTypes.END_TOKEN; }
+
+
+
+
+{COMMAND}    { return LatexTypes.N_COMMAND_IDENTIFIER; }
+
+
+
+//\{    { return LatexTypes.OPEN_BRACE; }
+//\}    { return LatexTypes.CLOSE_BRACE; }
+
+{PLAIN_TEXT} { return LatexTypes.PLAIN_TEXT; }
+
+{WHITE_SPACE}           { return TokenType.WHITE_SPACE; }
+{SPECIAL_CHAR}          { return LatexTypes.SPECIAL_CHAR; }
 [^]                     { return com.intellij.psi.TokenType.BAD_CHARACTER; }
-
-\{    { return LatexTypes.LBRACE; }
-\}    { return LatexTypes.RBRACE; }
