@@ -38,4 +38,4 @@ jobs:
         chmod +x gradlew
         ./gradlew ktlintCheck
     - name: Run tests
-      run: ./gradlew test --tests nl.hannahsten.texifyidea.reference.InputFileReferenceTest --info
+      run: ./gradlew test
