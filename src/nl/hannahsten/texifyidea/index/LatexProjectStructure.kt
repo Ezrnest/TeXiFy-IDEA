@@ -596,6 +596,9 @@ object LatexProjectStructure {
      * Gets the recently built filesets for the given project and schedule a recomputation if they are not available or expired.
      */
     fun getFilesets(project: Project, callRefresh: Boolean = false): LatexProjectFilesets? {
+        if(ApplicationManager.getApplication().isUnitTestMode) {
+            return buildFilesetsNow(project) // In unit tests, we always build the filesets immediately
+        }
         val expirationInMs = if (callRefresh) 0L else expirationTimeInMs
         return TexifyProjectCacheService.getInstance(project).getAndComputeLater(CACHE_KEY, expirationInMs, ::buildFilesetsSuspend)
     }
