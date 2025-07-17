@@ -32,8 +32,8 @@ class InputFileReferenceTest : BasePlatformTestCase() {
     fun testRenameSubfix() {
         myFixture.configureByFiles("subfix/main.tex", "subfix/subdir2/chapter2.tex", "subfix/subdir2/references.bib")
         myFixture.renameElementAtCaret("newreferences.bib")
+        myFixture.checkResultByFile("subfix/main-after.tex")
         System.err.println(myFixture.file.text)
         println(myFixture.file.text)
-        myFixture.checkResultByFile("subfix/main-after.tex")
     }
 }
