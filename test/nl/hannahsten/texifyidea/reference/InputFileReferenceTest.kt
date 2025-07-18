@@ -38,7 +38,5 @@ class InputFileReferenceTest : BasePlatformTestCase() {
         myFixture.renameElementAtCaret("newreferences.bib")
         LatexProjectStructure.testOnlyUpdateFilesets(project)
         myFixture.checkResultByFile("subfix/main-after.tex")
-//        System.err.println(myFixture.file.text)
-//        println(myFixture.file.text)
     }
 }
