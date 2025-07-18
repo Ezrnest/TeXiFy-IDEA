@@ -136,7 +136,7 @@ object LatexProjectStructure {
         val project: Project,
         val rootDirs: Set<VirtualFile>,
         val bibInputPaths: Set<VirtualFile>,
-        val timestamp: Long // a marker to identify the current build process
+        val timestamp: Long = System.currentTimeMillis()
     )
 
     /**
@@ -423,7 +423,7 @@ object LatexProjectStructure {
 
     private fun makePreparation(project: Project): ProjectInfo {
         // Get all bibtex input paths from the run configurations
-        val marker = countOfBuilding.incrementAndGet().toLong()
+        countOfBuilding.incrementAndGet()
         val bibInputPaths = project.getBibtexRunConfigurations().mapNotNull { config ->
             (config.environmentVariables.envs["BIBINPUTS"])?.let {
                 LocalFileSystem.getInstance().findFileByPath(it)
@@ -441,7 +441,7 @@ object LatexProjectStructure {
          */
 
         return ProjectInfo(
-            project, texInputPaths, bibInputPaths, marker // marker to identify the current build process, can be anything that is unique for the current build
+            project, texInputPaths, bibInputPaths
         )
     }
 

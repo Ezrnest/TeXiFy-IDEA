@@ -14,8 +14,8 @@ import nl.hannahsten.texifyidea.util.files.LatexPackageLocation
 class LatexProjectStructureCacheInitializer : ProjectActivity {
 
     override suspend fun execute(project: Project) {
-        // Not sure on which thread this is run, run in background to be sure
         if(ApplicationManager.getApplication().isUnitTestMode) return
+        // Not sure on which thread this is run, run in background to be sure
         withContext(Dispatchers.Default) {
             LatexPackageLocation.updateLocationWithKpsewhichSuspend(project)
             LatexProjectStructure.updateFilesetsSuspend(project)
