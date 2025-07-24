@@ -73,7 +73,7 @@ jobs:
         chmod +x gradlew
         ./gradlew ktlintCheck
     - name: Run tests
-      run: ./gradlew check koverXmlReport
+      run: ./gradlew check koverXmlReport --info
     - name: Upload coverage report
       if: success() && matrix.os == 'ubuntu-latest'
       run: |
