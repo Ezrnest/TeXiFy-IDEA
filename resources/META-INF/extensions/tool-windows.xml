@@ -9,21 +9,21 @@
     </extensions>
 
     <actions>
-        <group id="texify.remotelibraries" text="%group.texify.remotelibraries.text">
+        <group id="texify.remotelibraries">
             <action class="nl.hannahsten.texifyidea.action.library.SyncLibraryAction" id="texify.library.Sync"
-                    text="%action.texify.library.Sync.text" icon="AllIcons.Actions.Refresh"/>
+                    icon="AllIcons.Actions.Refresh"/>
             <action class="nl.hannahsten.texifyidea.action.library.RemoveLibraryAction" id="texify.library.Remove"
-                    text="%action.texify.library.Remove.text" icon="AllIcons.General.Remove"/>
+                    icon="AllIcons.General.Remove"/>
         </group>
 
-        <group id="texify.remotelibraries.add" icon="AllIcons.General.Add" text="%group.texify.remotelibraries.add.text" popup="true">
+        <group id="texify.remotelibraries.add" icon="AllIcons.General.Add" popup="true">
             <add-to-group group-id="texify.remotelibraries" anchor="first"/>
             <action class="nl.hannahsten.texifyidea.action.library.zotero.AddZoteroAction" id="texify.zotero.add"
-                    text="%action.texify.zotero.add.text"/>
+                   />
             <action class="nl.hannahsten.texifyidea.action.library.mendeley.AddMendeleyAction" id="texify.mendeley.add"
-                    text="%action.texify.mendeley.add.text"/>
+                   />
             <action class="nl.hannahsten.texifyidea.action.library.AddBibtexFileAction" id="texify.bibtexfile.add"
-                    text="%action.texify.bibtexfile.add.text"/>
+                   />
         </group>
 
     </actions>

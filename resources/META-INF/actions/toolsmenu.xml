@@ -1,53 +1,53 @@
 <idea-plugin>
     <actions>
-        <group id="texify.LatexMenuTools" text="%group.texify.LatexMenuTools.text" description="%group.texify.LatexMenuTools.description" popup="true">
+        <group id="texify.LatexMenuTools" popup="true">
             <add-to-group group-id="ToolsMenu" anchor="last"/>
-            <override-text place="GoToAction" text="%group.texify.LatexMenuTools.GoToAction.text"/>
+            <override-text place="GoToAction"/>
 
             <!-- Clear files -->
-            <action class="nl.hannahsten.texifyidea.action.DeleteAuxFiles" id="texify.ClearAuxFiles" text="%action.texify.ClearAuxFiles.text">
+            <action class="nl.hannahsten.texifyidea.action.DeleteAuxFiles" id="texify.ClearAuxFiles">
             </action>
             <action class="nl.hannahsten.texifyidea.action.DeleteGeneratedFiles" id="texify.ClearGeneratedFiles"
-                    text="%action.texify.ClearGeneratedFiles.text">
+                   >
             </action>
 
             <separator/>
             <!-- Show equation preview -->
             <action class="nl.hannahsten.texifyidea.action.preview.ShowEquationPreview" id="texify.ShowEquationPreview"
-                    text="%action.texify.ShowEquationPreview.text" icon="nl.hannahsten.texifyidea.TexifyIcons.EQUATION_PREVIEW">
+                    icon="nl.hannahsten.texifyidea.TexifyIcons.EQUATION_PREVIEW">
                 <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl X"/>
             </action>
 
             <!-- Show tikz preview -->
             <action class="nl.hannahsten.texifyidea.action.preview.ShowTikzPreview" id="texify.ShowTikzPreview"
-                    text="%action.texify.ShowTikzPreview.text" icon="nl.hannahsten.texifyidea.TexifyIcons.TIKZ_PREVIEW">
+                    icon="nl.hannahsten.texifyidea.TexifyIcons.TIKZ_PREVIEW">
                 <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl Y"/>
             </action>
 
             <separator/>
             <!-- Forward search -->
-            <action class="nl.hannahsten.texifyidea.action.ForwardSearchAction" id="texify.ForwardSearch" text="%action.texify.ForwardSearch.text" icon="nl.hannahsten.texifyidea.TexifyIcons.RIGHT">
+            <action class="nl.hannahsten.texifyidea.action.ForwardSearchAction" id="texify.ForwardSearch" icon="nl.hannahsten.texifyidea.TexifyIcons.RIGHT">
                 <keyboard-shortcut first-keystroke="ctrl shift alt PERIOD" keymap="$default"/>
             </action>
 
             <!-- Configure inverse search-->
             <action class="nl.hannahsten.texifyidea.action.sumatra.ConfigureInverseSearchAction" id="texify.sumatra.ConfigureInverseSearch"
-                    text="%action.texify.sumatra.ConfigureInverseSearch.text"
-                    description="%action.texify.sumatra.ConfigureInverseSearch.description"/>
+                   
+                   />
             <action class="nl.hannahsten.texifyidea.action.skim.ConfigureInverseSearchAction" id="texify.skim.ConfigureInverseSearch"
-                    text="%action.texify.skim.ConfigureInverseSearch.text" description="%action.texify.skim.ConfigureInverseSearch.description"/>
+                   />
 
             <separator/>
             <!-- Refresh actions -->
             <action class="nl.hannahsten.texifyidea.action.RefreshTexifyCachesAction" id="texify.RefreshFileset"
-                    text="%action.texify.RefreshFileset.text" description="%action.texify.RefreshFileset.description"/>
+                   />
             <!-- Performance diagnostic -->
             <action class="nl.hannahsten.texifyidea.action.debug.PerformanceDiagnosticAction" id="texify.PerformanceDiagnostic"
-                    text="%action.texify.PerformanceDiagnostic.text" description="%action.texify.PerformanceDiagnostic.description"/>
+                   />
             <!-- Debug actions -->
             <action class="nl.hannahsten.texifyidea.action.debug.ShowContextAction" id="texify.ShowContext"
-                    text="%action.texify.ShowContext.text"
-                    description="%action.texify.ShowContext.description"/>
+                   
+                   />
         </group>
     </actions>
 </idea-plugin>

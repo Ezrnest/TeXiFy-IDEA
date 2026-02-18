@@ -7,42 +7,42 @@
 
         <!-- LaTeX Code menu -->
         <!--suppress PluginXmlCapitalization -->
-        <action id="texify.ReformatLatexindent" class="nl.hannahsten.texifyidea.action.reformat.ReformatWithLatexindent" text="%action.texify.ReformatLatexindent.text" description="%action.texify.ReformatLatexindent.description" >
+        <action id="texify.ReformatLatexindent" class="nl.hannahsten.texifyidea.action.reformat.ReformatWithLatexindent" >
             <add-to-group group-id="CodeFormatGroup" anchor="after" relative-to-action="ShowReformatFileDialog" />
         </action>
         <!--suppress PluginXmlCapitalization -->
-        <action id="texify.ReformatBibtexTidy" class="nl.hannahsten.texifyidea.action.reformat.ReformatWithBibtexTidy" text="%action.texify.ReformatBibtexTidy.text" description="%action.texify.ReformatBibtexTidy.description" >
+        <action id="texify.ReformatBibtexTidy" class="nl.hannahsten.texifyidea.action.reformat.ReformatWithBibtexTidy" >
             <add-to-group group-id="CodeFormatGroup" anchor="after" relative-to-action="ShowReformatFileDialog" />
         </action>
 
         <!-- LaTeX Analyze menu -->
         <action class="nl.hannahsten.texifyidea.action.analysis.WordCountAction" id="texify.analysis.WordCount"
-                text="%action.texify.analysis.WordCount.text" description="%action.texify.analysis.WordCount.description" icon="nl.hannahsten.texifyidea.TexifyIcons.WORD_COUNT">
+                icon="nl.hannahsten.texifyidea.TexifyIcons.WORD_COUNT">
             <keyboard-shortcut first-keystroke="alt W" keymap="$default"/>
-            <override-text place="GoToAction" text="%action.texify.analysis.WordCount.GoToAction.text"/>
+            <override-text place="GoToAction"/>
             <!-- Prior to idea 213, the Code menu was called Analyze (but only in IntelliJ) -->
             <add-to-group group-id="CodeMenu" anchor="last"/>
         </action>
 
         <!-- Generate Latex -->
-        <group id="texify.LatexGenerate" text="%group.texify.LatexGenerate.text" description="%group.texify.LatexGenerate.description" popup="true">
+        <group id="texify.LatexGenerate" popup="true">
             <add-to-group group-id="GenerateGroup" anchor="last"/>
-            <override-text place="GoToAction" text="%group.texify.LatexGenerate.GoToAction.text"/>
+            <override-text place="GoToAction"/>
 
             <!-- Table wizard -->
             <action class="nl.hannahsten.texifyidea.action.wizard.table.LatexTableWizardAction" id="texify.TableWizardPopup"
-                    text="%action.texify.TableWizardPopup.text"
-                    description="%action.texify.TableWizardPopup.description"/>
+                   
+                   />
 
             <!-- Figure/graphic wizard -->
             <action class="nl.hannahsten.texifyidea.action.wizard.graphic.InsertGraphicWizardAction" id="texify.GraphicsWizardPopup"
-                    text="%action.texify.GraphicsWizardPopup.text"
-                    description="%action.texify.GraphicsWizardPopup.description"/>
+                   
+                   />
 
             <!-- Dummy text -->
             <action class="nl.hannahsten.texifyidea.action.wizard.ipsum.InsertDummyTextAction" id="texify.DummyTextWizardPopup"
-                    text="%action.texify.DummyTextWizardPopup.text"
-                    description="%action.texify.DummyTextWizardPopup.description"/>
+                   
+                   />
         </group>
     </actions>
 
