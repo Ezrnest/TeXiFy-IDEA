@@ -167,7 +167,7 @@ class LatexUnicodeInspection : AbstractTexifyContextAwareInspection(
     private class InsertUnicodePackageFix : LocalQuickFix {
 
         @Nls
-        override fun getFamilyName(): String = "Include Unicode support packages"
+        override fun getFamilyName(): String = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.include.unicode.support.packages")
 
         override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
             val file = descriptor.psiElement.containingFile
@@ -201,7 +201,7 @@ class LatexUnicodeInspection : AbstractTexifyContextAwareInspection(
     private class EscapeUnicodeFix(private val inMathMode: Boolean) : LocalQuickFix {
 
         @Nls
-        override fun getFamilyName(): String = "Escape Unicode character"
+        override fun getFamilyName(): String = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.escape.unicode.character")
 
         override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
             val element = descriptor.psiElement

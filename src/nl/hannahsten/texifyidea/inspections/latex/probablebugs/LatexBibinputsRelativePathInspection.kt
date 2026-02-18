@@ -60,7 +60,7 @@ class LatexBibinputsRelativePathInspection : TexifyInspectionBase() {
 
     object RelativePathFix : LocalQuickFix {
 
-        override fun getFamilyName() = "Remove relative part from argument and from BIBINPUTS"
+        override fun getFamilyName() = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.remove.relative.part.from.argument.and.bibinputs")
 
         override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
             val oldNode = descriptor.psiElement.node

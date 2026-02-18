@@ -79,7 +79,15 @@ class LatexPackageUpdateInspection : TexifyInspectionBase() {
 
     private class UpdatePackage(val filePointer: SmartPsiElementPointer<PsiFile>, val packageName: String, val old: String?, val new: String?) : LocalQuickFix {
 
-        override fun getFamilyName(): String = if (packageName == "--all") "Update all packages" else if (old != null && new != null) "Update $packageName from revision $old to revision $new" else "Update $packageName"
+        override fun getFamilyName(): String = if (packageName == "--all") {
+            nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.update.all.packages")
+        }
+        else if (old != null && new != null) {
+            nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.update.package.from.to.revision", packageName, old, new)
+        }
+        else {
+            nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.update.package", packageName)
+        }
 
         override fun generatePreview(project: Project, previewDescriptor: ProblemDescriptor): IntentionPreviewInfo {
             // Nothing is modified

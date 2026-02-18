@@ -58,7 +58,7 @@ open class LatexMissingDocumentclassInspection : TexifyInspectionBase() {
 
     private class InspectionFix : LocalQuickFix {
 
-        override fun getFamilyName() = "Add \\documentclass{article}"
+        override fun getFamilyName() = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.add.documentclass.article")
 
         override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
             val psiElement = descriptor.psiElement

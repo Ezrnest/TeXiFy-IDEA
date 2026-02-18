@@ -69,7 +69,7 @@ class LatexRequiredExtensionInspection : AbstractTexifyCommandBasedInspection(
     }
 
     object AddExtensionFix : LocalQuickFix {
-        override fun getFamilyName() = "Add file extension for parameters"
+        override fun getFamilyName() = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.add.file.extension.for.parameters")
 
         override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
             val command = descriptor.psiElement as LatexCommands

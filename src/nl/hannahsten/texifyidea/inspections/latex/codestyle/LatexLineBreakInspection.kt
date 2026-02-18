@@ -88,7 +88,7 @@ open class LatexLineBreakInspection : TexifyInspectionBase() {
      */
     private class InspectionFix : LocalQuickFix {
 
-        override fun getFamilyName() = "Insert line feed"
+        override fun getFamilyName() = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.insert.line.feed")
 
         override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
             val textElement = descriptor.psiElement

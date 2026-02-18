@@ -38,7 +38,7 @@ class LatexLabelBeforeCaptionInspection : AbstractTexifyCommandBasedInspection(
     }
 
     class SwapLabelAndCaptionQuickFix : LocalQuickFix {
-        override fun getFamilyName(): @IntentionFamilyName String = "Swap label and caption"
+        override fun getFamilyName(): @IntentionFamilyName String = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.swap.label.and.caption")
 
         override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
             val labelElement = descriptor.psiElement as? LatexCommands ?: return

@@ -53,7 +53,7 @@ open class LatexSuspiciousSectionFormattingInspection : TexifyInspectionBase() {
 
     class AddOptionalArgumentQuickFix(@SafeFieldForPreview val formatting: Set<String>) : LocalQuickFix {
 
-        override fun getFamilyName(): String = "Fix formatting in table of contents and running head"
+        override fun getFamilyName(): String = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.fix.toc.running.head.formatting")
 
         override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
             val command = descriptor.psiElement as LatexCommands

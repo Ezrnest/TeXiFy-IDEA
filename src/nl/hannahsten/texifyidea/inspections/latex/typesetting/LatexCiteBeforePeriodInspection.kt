@@ -59,7 +59,7 @@ class LatexCiteBeforePeriodInspection : AbstractTexifyCommandBasedInspection(
     }
 
     class LatexCiteBeforePeriodQuickFix(val interpunction: String) : LocalQuickFix {
-        override fun getFamilyName(): @IntentionFamilyName String = "Move interpunction to the back of \\cite"
+        override fun getFamilyName(): @IntentionFamilyName String = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.move.interpunction.after.cite")
 
         override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
             val cite = descriptor.psiElement as? LatexCommands ?: return

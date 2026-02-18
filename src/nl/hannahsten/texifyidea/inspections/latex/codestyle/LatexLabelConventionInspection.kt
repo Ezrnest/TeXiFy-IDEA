@@ -177,7 +177,7 @@ class LatexLabelConventionInspection : TexifyInspectionBase() {
             return false
         }
 
-        override fun getFamilyName() = "Fix label name"
+        override fun getFamilyName() = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.fix.label.name")
 
         override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
             val parameterText = descriptor.psiElement

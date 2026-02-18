@@ -79,7 +79,7 @@ open class LatexSpaceAfterAbbreviationInspection : TexifyInspectionBase() {
      */
     open class NormalSpaceFix(private val whitespaceRange: IntRange) : LocalQuickFix {
 
-        override fun getFamilyName() = "Insert normal space after abbreviation"
+        override fun getFamilyName() = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.insert.normal.space.after.abbreviation")
 
         override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
             val element = descriptor.psiElement as LatexNormalText

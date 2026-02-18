@@ -69,7 +69,7 @@ open class LatexTrimWhitespaceInspection : TexifyInspectionBase() {
      */
     private class TrimFix : LocalQuickFix {
 
-        override fun getFamilyName() = "Trim whitespace"
+        override fun getFamilyName() = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.trim.whitespace")
 
         override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
             val command = descriptor.psiElement as LatexCommands

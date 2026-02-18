@@ -155,7 +155,7 @@ open class LatexCollapseCiteInspection : TexifyInspectionBase() {
             citeBundle.mapNotNull { it.element }.sortedBy { it.textOffset }
         }
 
-        override fun getFamilyName(): String = "Collapse citations"
+        override fun getFamilyName(): String = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.collapse.citations")
 
         override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
             val (targetCite, _, replacement) = replacement(project) ?: return

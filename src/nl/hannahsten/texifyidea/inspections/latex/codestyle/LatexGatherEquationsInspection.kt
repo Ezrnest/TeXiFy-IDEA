@@ -56,7 +56,7 @@ open class LatexGatherEquationsInspection : TexifyInspectionBase() {
      */
     private class GatherEnvironments : LocalQuickFix {
 
-        override fun getFamilyName() = "Gather equations"
+        override fun getFamilyName() = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.gather.equations")
 
         override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
             val element = descriptor.psiElement as? LatexNoMathContent ?: return

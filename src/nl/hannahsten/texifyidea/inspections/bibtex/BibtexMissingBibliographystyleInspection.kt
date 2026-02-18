@@ -59,7 +59,7 @@ open class BibtexMissingBibliographystyleInspection : TexifyInspectionBase() {
      */
     object InsertStyleFix : LocalQuickFix {
 
-        override fun getFamilyName(): String = "Insert \\bibliographystyle"
+        override fun getFamilyName(): String = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.insert.bibliographystyle")
 
         override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
             val command = descriptor.psiElement as LatexCommands

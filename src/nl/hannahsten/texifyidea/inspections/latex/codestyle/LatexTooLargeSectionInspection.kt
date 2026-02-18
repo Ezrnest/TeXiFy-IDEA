@@ -171,7 +171,7 @@ open class LatexTooLargeSectionInspection : TexifyInspectionBase() {
 
         override fun startInWriteAction() = false
 
-        override fun getFamilyName() = "Move section to another file"
+        override fun getFamilyName() = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.move.section.to.another.file")
 
         override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
             val cmd = descriptor.psiElement as LatexCommands

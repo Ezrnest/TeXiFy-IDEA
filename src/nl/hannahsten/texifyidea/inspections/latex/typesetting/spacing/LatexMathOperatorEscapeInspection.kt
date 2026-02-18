@@ -53,7 +53,7 @@ class LatexMathOperatorEscapeInspection : AbstractTexifyContextAwareInspection(
     private class EscapeMathOperatorFix : LocalQuickFix {
 
         @Nls
-        override fun getFamilyName(): String = "Escape math operator"
+        override fun getFamilyName(): String = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.escape.math.operator")
 
         override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
             val element = descriptor.psiElement

@@ -81,7 +81,7 @@ open class LatexRedundantEscapeInspection : TexifyInspectionBase() {
      */
     private class RemoveEscapeFix : LocalQuickFix {
 
-        override fun getFamilyName() = "Replace escape with Unicode character"
+        override fun getFamilyName() = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.replace.escape.with.unicode")
 
         override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
             val command = descriptor.psiElement as LatexCommands

@@ -71,7 +71,7 @@ open class LatexNonMatchingEnvironmentInspection : TexifyInspectionBase() {
      */
     private open class MatchBeginFix(val environmentName: String) : LocalQuickFix {
 
-        override fun getFamilyName() = "Change \\end environment to '$environmentName'"
+        override fun getFamilyName() = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.change.end.environment", environmentName)
 
         override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
             val command = descriptor.psiElement as LatexBeginCommand
@@ -89,7 +89,7 @@ open class LatexNonMatchingEnvironmentInspection : TexifyInspectionBase() {
      */
     private open class MatchEndFix(val environmentName: String) : LocalQuickFix {
 
-        override fun getFamilyName() = "Change \\begin environment to '$environmentName'"
+        override fun getFamilyName() = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.change.begin.environment", environmentName)
 
         override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
             val command = descriptor.psiElement as LatexEndCommand

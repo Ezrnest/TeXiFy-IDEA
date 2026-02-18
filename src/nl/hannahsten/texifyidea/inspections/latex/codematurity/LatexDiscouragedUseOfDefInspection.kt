@@ -52,7 +52,7 @@ class LatexDiscouragedUseOfDefInspection : AbstractTexifyCommandBasedInspection(
 
         constructor() : this("\\newcommand")
 
-        override fun getFamilyName() = "Convert to $commandName"
+        override fun getFamilyName() = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.convert.to.command", commandName)
 
         override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
             val command = descriptor.psiElement as LatexCommands

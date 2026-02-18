@@ -83,7 +83,7 @@ class LatexCommandAlreadyDefinedInspection : TexifyInspectionBase() {
 
     object RenewCommandFix : LocalQuickFix {
 
-        override fun getFamilyName() = "Convert to \\renewcommand"
+        override fun getFamilyName() = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.convert.to.renewcommand")
 
         override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
             val element = descriptor.psiElement as? LatexCommands ?: return

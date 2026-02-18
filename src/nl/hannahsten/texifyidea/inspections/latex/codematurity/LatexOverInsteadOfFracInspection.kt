@@ -61,7 +61,7 @@ class LatexOverInsteadOfFracInspection : TexifyInspectionBase() {
     private class OverToFracFix : LocalQuickFix {
 
         @Nls
-        override fun getFamilyName(): String = "Convert to \\frac"
+        override fun getFamilyName(): String = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.convert.to.frac")
 
         override fun applyFix(
             project: Project,

@@ -204,7 +204,7 @@ open class LatexEncloseWithLeftRightInspection : TexifyLineOptionsInspection("Cu
          */
         private var applied = false
 
-        override fun getFamilyName() = "Convert (..) to \\left(..\\right)"
+        override fun getFamilyName() = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.convert.to.left.right")
 
         override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
             if (!applied) {

@@ -78,7 +78,7 @@ class LatexMissingGlossaryReferenceInspection : TexifyInspectionBase() {
     }
 
     private class AddGlsFix(private val command: String) : LocalQuickFix {
-        override fun getFamilyName() = "Add $command command"
+        override fun getFamilyName() = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.add.command.command", command)
 
         override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
             val range = descriptor.textRangeInElement

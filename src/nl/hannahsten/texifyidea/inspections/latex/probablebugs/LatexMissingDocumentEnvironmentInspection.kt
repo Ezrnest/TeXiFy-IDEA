@@ -70,7 +70,7 @@ open class LatexMissingDocumentEnvironmentInspection : TexifyInspectionBase() {
      */
     private class InspectionFix : LocalQuickFix {
 
-        override fun getFamilyName() = "Add a document environment"
+        override fun getFamilyName() = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.add.document.environment")
 
         override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
             val psiElement = descriptor.psiElement

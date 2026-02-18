@@ -75,7 +75,7 @@ class LatexNonBreakingSpaceInspection : AbstractTexifyCommandBasedInspection(
      */
     private class WhitespaceReplacementFix : LocalQuickFix {
 
-        override fun getFamilyName() = "Insert non-breaking space"
+        override fun getFamilyName() = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.insert.non.breaking.space")
 
         override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
             val whitespace = descriptor.psiElement as PsiWhiteSpace

@@ -74,7 +74,7 @@ open class BibtexDuplicateBibliographyInspection : TexifyInspectionBase() {
      */
     class RemoveOtherCommandsFix(private val bibName: String, private val commandsToFix: List<SmartPsiElementPointer<LatexCommands>>) : LocalQuickFix {
 
-        override fun getFamilyName(): String = "Remove other includes of $bibName"
+        override fun getFamilyName(): String = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.remove.other.includes", bibName)
 
         override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
             val currentCommand = descriptor.psiElement as LatexCommands

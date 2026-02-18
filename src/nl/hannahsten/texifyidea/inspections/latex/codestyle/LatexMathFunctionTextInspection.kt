@@ -56,7 +56,7 @@ class LatexMathFunctionTextInspection : AbstractTexifyCommandBasedInspection(
     }
 
     private class MathFunctionFix : LocalQuickFix {
-        override fun getFamilyName() = "Convert to math function"
+        override fun getFamilyName() = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.convert.to.math.function")
 
         override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
             val textCommand = descriptor.psiElement as? LatexCommands ?: return

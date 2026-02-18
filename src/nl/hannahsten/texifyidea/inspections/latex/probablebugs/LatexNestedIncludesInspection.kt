@@ -65,7 +65,7 @@ open class LatexNestedIncludesInspection : TexifyInspectionBase() {
      */
     object ConvertToInputFix : LocalQuickFix {
 
-        override fun getFamilyName() = "Convert to \\input"
+        override fun getFamilyName() = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.convert.to.input")
 
         override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
             val command = descriptor.psiElement as LatexCommands

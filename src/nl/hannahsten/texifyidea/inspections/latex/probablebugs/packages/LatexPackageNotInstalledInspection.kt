@@ -99,7 +99,7 @@ class LatexPackageNotInstalledInspection : TexifyInspectionBase() {
 
     private class InstallPackage(val filePointer: SmartPsiElementPointer<PsiFile>, val packageName: String, val knownNotInstalledPackages: MutableSet<String>) : LocalQuickFix {
 
-        override fun getFamilyName(): String = "Install $packageName"
+        override fun getFamilyName(): String = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.install.package", packageName)
 
         override fun generatePreview(project: Project, previewDescriptor: ProblemDescriptor): IntentionPreviewInfo {
             // Nothing is modified

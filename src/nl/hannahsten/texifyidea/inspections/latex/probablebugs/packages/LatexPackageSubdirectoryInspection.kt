@@ -57,7 +57,7 @@ class LatexPackageSubdirectoryInspection : TexifyInspectionBase() {
     class FixSubdirectoryQuickFix(private val oldDir: String, private val newDir: String) : LocalQuickFix {
 
         override fun getFamilyName(): String =
-            "Change LaTeX command to match directory structure"
+            nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.change.command.to.match.directory.structure")
 
         override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
             val providesCommand = descriptor.psiElement as LatexCommands

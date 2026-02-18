@@ -44,7 +44,7 @@ class LatexRedundantParInspection : AbstractTexifyCommandBasedInspection(
     }
 
     private class RemoveParQuickFix : LocalQuickFix {
-        override fun getFamilyName() = "Remove \\par"
+        override fun getFamilyName() = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.remove.par")
         override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
             val range = descriptor.psiElement.textRange
             val document = descriptor.psiElement.containingFile.document() ?: return

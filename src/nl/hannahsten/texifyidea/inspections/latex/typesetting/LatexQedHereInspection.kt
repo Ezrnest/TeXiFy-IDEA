@@ -64,7 +64,7 @@ open class LatexQedHereInspection : TexifyInspectionBase() {
      */
     private class InsertQedHereFix : LocalQuickFix {
 
-        override fun getFamilyName() = "Insert \\qedhere"
+        override fun getFamilyName() = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.insert.qedhere")
 
         override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
             val element = (descriptor.psiElement as? LatexDisplayMath)?.mathContent ?: return

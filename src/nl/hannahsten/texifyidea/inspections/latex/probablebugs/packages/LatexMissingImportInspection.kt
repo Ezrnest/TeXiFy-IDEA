@@ -79,7 +79,7 @@ class LatexMissingImportInspection : LatexMissingImportInspectionBase("MissingIm
      */
     private class ImportPackageFix(val packName: String) : LocalQuickFix {
 
-        override fun getFamilyName() = "Add import for package '$packName' which provides this environment"
+        override fun getFamilyName() = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.add.import.for.package.providing.environment", packName)
 
         override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
             if (!PackageUtils.insertUsepackage(descriptor.psiElement.containingFile, LatexLib.Package(packName))) {
