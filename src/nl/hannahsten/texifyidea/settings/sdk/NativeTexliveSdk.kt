@@ -3,6 +3,7 @@ package nl.hannahsten.texifyidea.settings.sdk
 import com.intellij.openapi.projectRoots.Sdk
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
+import nl.hannahsten.texifyidea.TexifyBundle
 import nl.hannahsten.texifyidea.util.TexifyCoroutine
 import nl.hannahsten.texifyidea.util.containsAny
 import nl.hannahsten.texifyidea.util.runCommand
@@ -18,7 +19,7 @@ import nl.hannahsten.texifyidea.util.runCommandNonBlocking
  * Source files may or may not be present (on Arch they are present for texlive-full, but not for texlive-core).
  * All in all, it's a lot of fun.
  */
-class NativeTexliveSdk : TexliveSdk("Native TeX Live SDK") {
+class NativeTexliveSdk : TexliveSdk(TexifyBundle.message("settings.sdk.native.texlive.name")) {
 
     object Cache {
         // Path to texmf-dist, e.g. /usr/share/texmf-dist/ for texlive-core on Arch or /opt/texlive/2020/texmf-dist/ for texlive-full
@@ -46,13 +47,13 @@ class NativeTexliveSdk : TexliveSdk("Native TeX Live SDK") {
         return LatexSdkUtil.isPdflatexPresent(path)
     }
 
-    override fun getInvalidHomeMessage(path: String) = "Could not find $path/pdflatex"
+    override fun getInvalidHomeMessage(path: String) = TexifyBundle.message("settings.sdk.error.could.not.find.pdflatex", path)
 
     override fun getVersionString(sdkHome: String): String {
         // Assume pdflatex --version contains output of the form
         // pdfTeX 3.14159265-2.6-1.40.21 (TeX Live 2020/mydistro)
         val output = LatexSdkUtil.parsePdflatexOutput(runCommand("$sdkHome/pdflatex", "--version") ?: "")
-        return """TeX Live (\d\d\d\d).*""".toRegex().find(output)?.value ?: "Unknown version"
+        return """TeX Live (\d\d\d\d).*""".toRegex().find(output)?.value ?: TexifyBundle.message("settings.sdk.version.unknown")
     }
 
     override fun getDefaultDocumentationUrl(sdk: Sdk): String = "${Cache.texmfDistPath}/doc"

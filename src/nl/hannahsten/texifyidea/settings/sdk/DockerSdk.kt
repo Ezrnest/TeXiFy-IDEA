@@ -17,7 +17,7 @@ import javax.swing.JComponent
 /**
  * Currently, we only support official MiKTeX/texlive Docker images, but it wouldn't be too difficult to extend for other images.
  */
-class DockerSdk : LatexSdk("LaTeX Docker SDK") {
+class DockerSdk : LatexSdk(TexifyBundle.message("settings.sdk.docker.name")) {
 
     object Availability {
         val isAvailable: Boolean by lazy {
