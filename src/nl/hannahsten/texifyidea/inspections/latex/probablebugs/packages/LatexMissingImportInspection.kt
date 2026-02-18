@@ -40,7 +40,7 @@ class LatexMissingImportInspection : LatexMissingImportInspectionBase("MissingIm
             manager.createProblemDescriptor(
                 command,
                 range,
-                "Command requires any of the packages: ${packageNames.joinToString(", ")}",
+                nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.command.requires.any.package", packageNames.joinToString(", ")),
                 ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
                 isOntheFly,
                 *fixes
@@ -60,7 +60,7 @@ class LatexMissingImportInspection : LatexMissingImportInspectionBase("MissingIm
             manager.createProblemDescriptor(
                 environment,
                 range,
-                "Environment requires any of the packages: ${packageNames.joinToString(", ")}",
+                nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.environment.requires.any.package", packageNames.joinToString(", ")),
                 ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
                 isOntheFly,
                 *fixes

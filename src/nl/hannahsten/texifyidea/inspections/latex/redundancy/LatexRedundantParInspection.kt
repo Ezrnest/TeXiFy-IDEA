@@ -30,7 +30,7 @@ class LatexRedundantParInspection : AbstractTexifyCommandBasedInspection(
             descriptors.add(
                 manager.createDescriptor(
                     command,
-                    "Use of \\par is redundant here",
+                    nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.use.of.par.redundant.here"),
                     isOnTheFly = isOnTheFly,
                     fix = RemoveParQuickFix(),
                 )

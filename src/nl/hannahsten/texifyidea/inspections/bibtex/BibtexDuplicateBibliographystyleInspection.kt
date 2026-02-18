@@ -49,7 +49,7 @@ open class BibtexDuplicateBibliographystyleInspection : TexifyInspectionBase() {
                         manager.createProblemDescriptor(
                             it,
                             TextRange(0, it.commandToken.textLength),
-                            "\\bibliographystyle is already used elsewhere",
+                            nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.bibtex.bibliographystyle.duplicate"),
                             ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
                             isOntheFly,
                             RemoveOtherCommandsFix

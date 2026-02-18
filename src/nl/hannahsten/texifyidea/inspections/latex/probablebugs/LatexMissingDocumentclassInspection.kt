@@ -45,7 +45,7 @@ open class LatexMissingDocumentclassInspection : TexifyInspectionBase() {
             descriptors.add(
                 manager.createProblemDescriptor(
                     file,
-                    "Document doesn't contain a \\documentclass command.",
+                    nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.missing.documentclass"),
                     InspectionFix(),
                     ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
                     isOntheFly

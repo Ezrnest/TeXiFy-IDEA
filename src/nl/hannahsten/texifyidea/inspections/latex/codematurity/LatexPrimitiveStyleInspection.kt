@@ -46,7 +46,7 @@ class LatexPrimitiveStyleInspection : TexifyInspectionBase() {
                 descriptors.add(
                     manager.createProblemDescriptor(
                         command,
-                        "Use of TeX primitive $name is discouraged",
+                        nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.use.of.tex.primitive.discouraged", name ?: ""),
                         InspectionFix(SmartPointerManager.createPointer(command)),
                         ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
                         isOntheFly

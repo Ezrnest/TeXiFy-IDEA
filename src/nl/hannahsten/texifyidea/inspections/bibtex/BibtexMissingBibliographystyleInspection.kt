@@ -43,7 +43,7 @@ open class BibtexMissingBibliographystyleInspection : TexifyInspectionBase() {
                 manager.createProblemDescriptor(
                     bibCmd,
                     TextRange(0, bibCmd.commandToken.textLength),
-                    "No \\bibliographystyle defined",
+                    nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.bibtex.no.bibliographystyle"),
                     ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
                     isOntheFly,
                     InsertStyleFix

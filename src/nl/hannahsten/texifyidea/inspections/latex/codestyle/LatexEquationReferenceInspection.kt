@@ -47,7 +47,7 @@ class LatexEquationReferenceInspection : AbstractTexifyCommandBasedInspection(
         ) return
         val descriptor = manager.createDescriptor(
             command,
-            "Use \\eqref for equation references",
+            nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.use.eqref.for.equation.references"),
             rangeInElement = TextRange.from(0, 4), // only highlight the command
             isOnTheFly = isOnTheFly,
             fix = ReplaceEquationReferenceQuickFix()

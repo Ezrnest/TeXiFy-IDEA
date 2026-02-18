@@ -39,7 +39,7 @@ class LatexMathOperatorEscapeInspection : AbstractTexifyContextAwareInspection(
         descriptors.add(
             manager.createProblemDescriptor(
                 element,
-                "Non-escaped math operator",
+                nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.non.escaped.math.operator"),
                 EscapeMathOperatorFix(),
                 ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
                 isOnTheFly

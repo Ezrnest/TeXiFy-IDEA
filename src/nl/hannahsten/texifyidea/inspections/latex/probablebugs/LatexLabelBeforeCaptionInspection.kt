@@ -29,7 +29,7 @@ class LatexLabelBeforeCaptionInspection : AbstractTexifyCommandBasedInspection(
         if (previousName != "label") return // locate the label command
         val problem = manager.createProblemDescriptor(
             previousSibling,
-            "A label should come after the caption",
+            nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.label.after.caption"),
             SwapLabelAndCaptionQuickFix(),
             ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
             isOnTheFly

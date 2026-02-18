@@ -43,7 +43,7 @@ open class LatexSuspiciousSectionFormattingInspection : TexifyInspectionBase() {
             manager.createProblemDescriptor(
                 psiElement,
                 TextRange(startOffset, endOffset),
-                "Suspicious formatting in ${psiElement.name}",
+                nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.suspicious.formatting.in", psiElement.name ?: ""),
                 ProblemHighlightType.WARNING,
                 isOntheFly,
                 AddOptionalArgumentQuickFix(formatting)

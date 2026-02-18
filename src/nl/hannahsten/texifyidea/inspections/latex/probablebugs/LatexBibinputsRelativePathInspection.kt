@@ -48,7 +48,7 @@ class LatexBibinputsRelativePathInspection : TexifyInspectionBase() {
                 manager.createProblemDescriptor(
                     command,
                     TextRange(0, command.textLength - 1),
-                    "You cannot use both BIBINPUTS and a path that starts with ../ in \\bibliography",
+                    nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.bibinputs.relative.path.not.allowed"),
                     ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
                     isOntheFly,
                     RelativePathFix

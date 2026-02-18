@@ -44,7 +44,7 @@ open class LatexNonMatchingEnvironmentInspection : TexifyInspectionBase() {
             descriptors.add(
                 manager.createProblemDescriptor(
                     begin,
-                    "DefaultEnvironment name does not match with the name in \\end.",
+                    nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.environment.name.not.matching.end"),
                     MatchBeginFix(beginEnvironment),
                     ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
                     isOntheFly
@@ -55,7 +55,7 @@ open class LatexNonMatchingEnvironmentInspection : TexifyInspectionBase() {
             descriptors.add(
                 manager.createProblemDescriptor(
                     end,
-                    "DefaultEnvironment name does not match with the name in \\begin.",
+                    nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.environment.name.not.matching.begin"),
                     MatchEndFix(endEnvironment),
                     ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
                     isOntheFly

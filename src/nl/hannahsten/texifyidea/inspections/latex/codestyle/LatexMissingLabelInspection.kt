@@ -108,7 +108,7 @@ class LatexMissingLabelInspection : AbstractTexifyContextAwareInspection(
         descriptors.add(
             manager.createProblemDescriptor(
                 command,
-                "Missing label",
+                nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.missing.label"),
                 fixes.toTypedArray(),
                 ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
                 isOnTheFly,
@@ -127,7 +127,7 @@ class LatexMissingLabelInspection : AbstractTexifyContextAwareInspection(
         descriptors.add(
             manager.createProblemDescriptor(
                 environment,
-                "Missing label",
+                nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.missing.label"),
                 arrayOf(InsertLabelInEnvironmentFix()),
                 ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
                 isOnTheFly,

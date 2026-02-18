@@ -36,7 +36,7 @@ class LatexDiscouragedUseOfDefInspection : AbstractTexifyCommandBasedInspection(
         if (name != "let" && name != "def") return
         val descriptor = manager.createDescriptor(
             command,
-            "The use of TeX primitive \\$name is discouraged",
+            nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.use.of.tex.primitive.with.backslash.discouraged", name),
             rangeInElement = TextRange(0, command.textLength),
             isOnTheFly = isOnTheFly,
             highlightType = ProblemHighlightType.GENERIC_ERROR_OR_WARNING,

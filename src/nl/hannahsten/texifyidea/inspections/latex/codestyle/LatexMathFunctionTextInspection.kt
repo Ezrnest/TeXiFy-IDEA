@@ -47,7 +47,7 @@ class LatexMathFunctionTextInspection : AbstractTexifyCommandBasedInspection(
         descriptors.add(
             manager.createProblemDescriptor(
                 command,
-                "Use math function instead of \\text",
+                nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.use.math.function.instead.of.text"),
                 MathFunctionFix(),
                 ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
                 isOnTheFly

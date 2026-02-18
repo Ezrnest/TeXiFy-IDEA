@@ -51,7 +51,7 @@ class LatexCommandAlreadyDefinedInspection : TexifyInspectionBase() {
                     descriptors.add(
                         manager.createProblemDescriptor(
                             command,
-                            "Command may already be defined in a LaTeX package",
+                            nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.command.already.defined.in.package"),
                             true,
                             // Warning because may not be true: command may be defined in a LaTeX package which is not actually imported
                             ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
@@ -68,7 +68,7 @@ class LatexCommandAlreadyDefinedInspection : TexifyInspectionBase() {
                     descriptors.add(
                         manager.createProblemDescriptor(
                             command,
-                            "Command may already be defined in a LaTeX package",
+                            nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.command.already.defined.in.package"),
                             true,
                             ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
                             isOntheFly

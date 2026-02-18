@@ -58,7 +58,7 @@ open class BibtexDuplicateBibliographyInspection : TexifyInspectionBase() {
                     descriptors.add(
                         manager.createProblemDescriptor(
                             command,
-                            "Bibliography file '${fileKey.second}' is included multiple times",
+                            nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.bibtex.bibliography.included.multiple.times", fileKey.second),
                             RemoveOtherCommandsFix(fileKey.second, commands.map { it.createSmartPointer() }),
                             ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
                             isOntheFly

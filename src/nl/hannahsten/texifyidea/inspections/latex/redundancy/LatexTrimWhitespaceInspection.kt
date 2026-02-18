@@ -53,7 +53,7 @@ open class LatexTrimWhitespaceInspection : TexifyInspectionBase() {
                 manager.createProblemDescriptor(
                     command,
                     TextRange.from(name.length + 1, sectionName.length),
-                    "Unnecessary whitespace",
+                    nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.unnecessary.whitespace"),
                     ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
                     isOntheFly,
                     TrimFix()

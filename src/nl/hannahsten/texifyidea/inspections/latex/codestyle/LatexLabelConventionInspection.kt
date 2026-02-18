@@ -155,7 +155,7 @@ class LatexLabelConventionInspection : TexifyInspectionBase() {
                 descriptors.add(
                     manager.createProblemDescriptor(
                         labelParameterText,
-                        "Unconventional label prefix",
+                        nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.label.unconventional.prefix"),
                         LabelPreFix(expectedPrefix, shouldBeBraced(element)),
                         ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
                         isOntheFly

@@ -55,7 +55,7 @@ open class LatexMissingDocumentEnvironmentInspection : TexifyInspectionBase() {
         descriptors.add(
             manager.createProblemDescriptor(
                 file,
-                "Document doesn't contain a document environment.",
+                nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.missing.document.environment"),
                 InspectionFix(),
                 ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
                 isOntheFly

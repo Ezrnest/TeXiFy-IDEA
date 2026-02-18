@@ -59,7 +59,7 @@ class LatexNonBreakingSpaceInspection : AbstractTexifyCommandBasedInspection(
             descriptors.add(
                 manager.createDescriptor(
                     sibling,
-                    "Reference without a non-breaking space",
+                    nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.reference.without.non.breaking.space"),
                     isOnTheFly = isOnTheFly,
                     highlightType = ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
                     fix = WhitespaceReplacementFix(),

@@ -65,7 +65,7 @@ class LatexPackageUpdateInspection : TexifyInspectionBase() {
             val packageVersions = Cache.availablePackageUpdates!![packageName] ?: return@mapNotNull null
             manager.createProblemDescriptor(
                 it,
-                "Update available for package $packageName",
+                nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.package.update.available", packageName),
                 arrayOf(
                     UpdatePackage(SmartPointerManager.getInstance(file.project).createSmartPsiElementPointer(file), packageName, packageVersions.first, packageVersions.second),
                     UpdatePackage(SmartPointerManager.getInstance(file.project).createSmartPsiElementPointer(file), "--all", null, null),

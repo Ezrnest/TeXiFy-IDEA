@@ -50,7 +50,7 @@ open class LatexNestedIncludesInspection : TexifyInspectionBase() {
                     manager.createProblemDescriptor(
                         it,
                         TextRange.allOf(it.text),
-                        "Includes cannot be nested",
+                        nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.includes.cannot.be.nested"),
                         ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
                         isOntheFly,
                         ConvertToInputFix

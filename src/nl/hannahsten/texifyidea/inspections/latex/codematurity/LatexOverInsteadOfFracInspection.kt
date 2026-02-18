@@ -47,7 +47,7 @@ class LatexOverInsteadOfFracInspection : TexifyInspectionBase() {
                 descriptors.add(
                     manager.createProblemDescriptor(
                         command,
-                        "Use of \\over is discouraged",
+                        nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.use.of.over.discouraged"),
                         OverToFracFix(),
                         ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
                         isOntheFly

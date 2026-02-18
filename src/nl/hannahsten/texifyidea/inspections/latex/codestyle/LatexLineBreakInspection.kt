@@ -71,7 +71,7 @@ open class LatexLineBreakInspection : TexifyInspectionBase() {
                     manager.createProblemDescriptor(
                         text,
                         TextRange(startOffset, min(text.textLength, endOffset)),
-                        "Sentence does not start on a new line",
+                        nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.sentence.not.on.new.line"),
                         ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
                         isOntheFly,
                         *fixes

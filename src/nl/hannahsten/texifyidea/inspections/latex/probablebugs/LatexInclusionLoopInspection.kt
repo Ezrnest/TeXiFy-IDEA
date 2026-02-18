@@ -40,7 +40,7 @@ open class LatexInclusionLoopInspection : TexifyInspectionBase() {
                         manager.createProblemDescriptor(
                             command,
                             TextRange(0, command.textLength - 1),
-                            "File inclusion loop found for files ${referenced.name} and ${declaredIn.name}.",
+                            nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.inclusion.loop.found", referenced.name, declaredIn.name),
                             ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
                             isOntheFly
                         )

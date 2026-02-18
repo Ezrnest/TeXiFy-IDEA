@@ -56,7 +56,7 @@ class LatexRequiredExtensionInspection : AbstractTexifyCommandBasedInspection(
                         manager.createProblemDescriptor(
                             command,
                             TextRange(offset, offset + parameter.length),
-                            "File argument should include the extension",
+                            nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.file.argument.should.include.extension"),
                             ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
                             isOnTheFly,
                             AddExtensionFix

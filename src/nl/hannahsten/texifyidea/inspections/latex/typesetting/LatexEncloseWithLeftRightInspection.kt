@@ -72,7 +72,7 @@ open class LatexEncloseWithLeftRightInspection : TexifyLineOptionsInspection("Cu
                     manager.createProblemDescriptor(
                         openElement,
                         TextRange.from(0, 1),
-                        "Parentheses pair could be replaced by \\left(..\\right)",
+                        nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.use.left.right"),
                         ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
                         isOntheFly,
                         fix
@@ -83,7 +83,7 @@ open class LatexEncloseWithLeftRightInspection : TexifyLineOptionsInspection("Cu
                     manager.createProblemDescriptor(
                         closeElement,
                         TextRange.from(0, 1),
-                        "Parentheses pair could be replaced by \\left(..\\right)",
+                        nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.use.left.right"),
                         ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
                         isOntheFly,
                         fix

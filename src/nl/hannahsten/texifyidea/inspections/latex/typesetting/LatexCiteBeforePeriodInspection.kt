@@ -50,7 +50,7 @@ class LatexCiteBeforePeriodInspection : AbstractTexifyCommandBasedInspection(
 
         val descriptor = manager.createDescriptor(
             command,
-            "\\cite is placed after interpunction",
+            nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.cite.after.interpunction"),
             isOnTheFly = isOnTheFly,
             fix = LatexCiteBeforePeriodQuickFix(interpunction),
             rangeInElement = TextRange(0, 5),

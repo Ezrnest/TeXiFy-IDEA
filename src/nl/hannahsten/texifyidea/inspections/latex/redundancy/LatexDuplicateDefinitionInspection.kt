@@ -50,7 +50,7 @@ open class LatexDuplicateDefinitionInspection : TexifyInspectionBase() {
                 descriptors.add(
                     manager.createProblemDescriptor(
                         it,
-                        "Command '$definedCmd' is defined multiple times",
+                        nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.command.defined.multiple.times", definedCmd),
                         true,
                         ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
                         isOntheFly

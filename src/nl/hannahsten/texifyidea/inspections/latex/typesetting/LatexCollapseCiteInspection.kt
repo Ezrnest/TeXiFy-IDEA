@@ -63,7 +63,7 @@ open class LatexCollapseCiteInspection : TexifyInspectionBase() {
             descriptors.add(
                 manager.createProblemDescriptor(
                     cmd,
-                    "Citations can be collapsed",
+                    nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.citations.can.be.collapsed"),
                     InspectionFix(bundle.map { SmartPointerManager.createPointer(it) }),
                     ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
                     isOntheFly

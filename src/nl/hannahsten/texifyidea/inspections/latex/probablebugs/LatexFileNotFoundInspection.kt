@@ -82,7 +82,7 @@ class LatexFileNotFoundInspection : AbstractTexifyCommandBasedInspection(
             manager.createProblemDescriptor(
                 reference.element,
                 reference.rangeInElement,
-                "File '${fileName.appendExtension(extension)}' not found",
+                nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.file.not.found", fileName.appendExtension(extension)),
                 ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
                 isOntheFly,
                 *(fixes.toTypedArray())

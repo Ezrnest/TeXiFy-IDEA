@@ -35,7 +35,7 @@ class LatexMultipleGraphicsPathInspection : TexifyInspectionBase() {
                     manager.createProblemDescriptor(
                         i,
                         TextRange(0, i.text.length),
-                        "\\graphicspath is already used elsewhere",
+                        nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.graphicspath.already.used"),
                         ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
                         isOntheFly,
                         RemoveFix()

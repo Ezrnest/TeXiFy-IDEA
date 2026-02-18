@@ -34,7 +34,7 @@ open class LatexIncorrectSectionNestingInspection : TexifyInspectionBase() {
 
     override val inspectionId = "IncorrectSectionNesting"
 
-    override fun getDisplayName(): String = "Incorrect nesting"
+    override fun getDisplayName(): String = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.incorrect.nesting")
 
     override fun inspectFile(file: PsiFile, manager: InspectionManager, isOntheFly: Boolean): List<ProblemDescriptor> = file.traverseCommands()
         .filter {
@@ -50,7 +50,7 @@ open class LatexIncorrectSectionNestingInspection : TexifyInspectionBase() {
         .map {
             manager.createProblemDescriptor(
                 it.second,
-                "Incorrect nesting",
+                nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.incorrect.nesting"),
                 arrayOf(InsertParentCommandFix(), ChangeToParentCommandFix()),
                 ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
                 isOntheFly,

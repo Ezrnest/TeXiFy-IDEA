@@ -52,7 +52,7 @@ open class LatexMultipleIncludesInspection : TexifyInspectionBase() {
                 manager.createProblemDescriptor(
                     it,
                     null,
-                    "Package has already been included",
+                    nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.package.already.included"),
                     ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
                     isOntheFly
                 )

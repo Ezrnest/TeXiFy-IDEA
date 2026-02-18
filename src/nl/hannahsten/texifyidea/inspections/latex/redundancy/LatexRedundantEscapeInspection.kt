@@ -64,7 +64,7 @@ open class LatexRedundantEscapeInspection : TexifyInspectionBase() {
                 descriptors.add(
                     manager.createProblemDescriptor(
                         command,
-                        "Redundant diacritic escape",
+                        nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.redundant.diacritic.escape"),
                         RemoveEscapeFix(),
                         ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
                         isOntheFly

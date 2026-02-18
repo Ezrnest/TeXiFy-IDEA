@@ -40,7 +40,7 @@ open class LatexGatherEquationsInspection : TexifyInspectionBase() {
                 descriptors.add(
                     manager.createProblemDescriptor(
                         it ?: return@forEach,
-                        "Equations can be gathered",
+                        nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.equations.can.be.gathered"),
                         GatherEnvironments(),
                         ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
                         isOntheFly

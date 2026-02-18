@@ -48,7 +48,7 @@ open class LatexQedHereInspection : TexifyInspectionBase() {
                 manager.createProblemDescriptor(
                     displayMath,
                     TextRange(offset, offset + 1),
-                    "Missing \\qedhere in trailing displaymath environment",
+                    nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.missing.qedhere.in.trailing.displaymath"),
                     ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
                     isOntheFly,
                     InsertQedHereFix()
