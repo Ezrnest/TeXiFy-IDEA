@@ -108,8 +108,6 @@ abstract class AbstractTexifyContextAwareInspection(
         return excludedContexts.isEmpty() || !contexts.any { it in excludedContexts }
     }
 
-    protected fun localizedDisplayName(defaultText: String): String = defaultText
-
     protected fun localizedFamilyName(keySuffix: String, defaultText: String, vararg params: Any): String =
         when (keySuffix) {
             "suppress.file" -> TexifyBundle.message("quickfix.suppress.file", *params)
