@@ -1,83 +1,83 @@
 <idea-plugin xmlns:xi="http://www.w3.org/2001/XInclude">
     <extensions defaultExtensionNs="com.intellij">
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.probablebugs.LatexUnicodeInspection"
-                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.probable.bugs" displayName="%inspection.display.unsupported.unicode.character"
+                         groupPath="LaTeX" groupBundle="messages.TexifyBundle" groupKey="inspection.group.probable.bugs" bundle="messages.TexifyBundle" key="inspection.display.unsupported.unicode.character"
                          enabledByDefault="true"
                          level="ERROR" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.probablebugs.LatexNoExtensionInspection"
-                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.probable.bugs" displayName="%inspection.display.file.argument.should.not.include.the.extension"
+                         groupPath="LaTeX" groupBundle="messages.TexifyBundle" groupKey="inspection.group.probable.bugs" bundle="messages.TexifyBundle" key="inspection.display.file.argument.should.not.include.the.extension"
                          enabledByDefault="true"
                          level="WARNING" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.probablebugs.LatexRequiredExtensionInspection"
-                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.probable.bugs" displayName="%inspection.display.file.argument.should.include.the.extension"
+                         groupPath="LaTeX" groupBundle="messages.TexifyBundle" groupKey="inspection.group.probable.bugs" bundle="messages.TexifyBundle" key="inspection.display.file.argument.should.include.the.extension"
                          enabledByDefault="true"
                          level="ERROR" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.probablebugs.LatexMissingDocumentclassInspection"
-                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.probable.bugs" displayName="%inspection.display.missing.documentclass"
+                         groupPath="LaTeX" groupBundle="messages.TexifyBundle" groupKey="inspection.group.probable.bugs" bundle="messages.TexifyBundle" key="inspection.display.missing.documentclass"
                          enabledByDefault="false"
                          level="ERROR" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.probablebugs.LatexMissingDocumentEnvironmentInspection"
-                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.probable.bugs" displayName="%inspection.display.missing.document.environment"
+                         groupPath="LaTeX" groupBundle="messages.TexifyBundle" groupKey="inspection.group.probable.bugs" bundle="messages.TexifyBundle" key="inspection.display.missing.document.environment"
                          enabledByDefault="false"
                          level="ERROR" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.probablebugs.LatexUnresolvedReferenceInspection"
-                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.probable.bugs" displayName="%inspection.display.unresolved.references"
+                         groupPath="LaTeX" groupBundle="messages.TexifyBundle" groupKey="inspection.group.probable.bugs" bundle="messages.TexifyBundle" key="inspection.display.unresolved.references"
                          enabledByDefault="true"
                          level="WARNING" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.probablebugs.LatexSuspiciousSectionFormattingInspection"
-                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.probable.bugs" displayName="%inspection.display.suspicious.formatting.in.section.like.command"
+                         groupPath="LaTeX" groupBundle="messages.TexifyBundle" groupKey="inspection.group.probable.bugs" bundle="messages.TexifyBundle" key="inspection.display.suspicious.formatting.in.section.like.command"
                          enabledByDefault="true"
                          level="WARNING" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.probablebugs.LatexNonMatchingEnvironmentInspection"
-                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.probable.bugs" displayName="%inspection.display.non.matching.environment.commands"
+                         groupPath="LaTeX" groupBundle="messages.TexifyBundle" groupKey="inspection.group.probable.bugs" bundle="messages.TexifyBundle" key="inspection.display.non.matching.environment.commands"
                          enabledByDefault="true"
                          level="ERROR" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.probablebugs.LatexNonMatchingIfInspection"
-                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.probable.bugs" displayName="%inspection.display.open.if.then.else.control.sequence"
+                         groupPath="LaTeX" groupBundle="messages.TexifyBundle" groupKey="inspection.group.probable.bugs" bundle="messages.TexifyBundle" key="inspection.display.open.if.then.else.control.sequence"
                          enabledByDefault="true"
                          level="WARNING" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.probablebugs.LatexFileNotFoundInspection"
-                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.probable.bugs" displayName="%inspection.display.file.not.found"
+                         groupPath="LaTeX" groupBundle="messages.TexifyBundle" groupKey="inspection.group.probable.bugs" bundle="messages.TexifyBundle" key="inspection.display.file.not.found"
                          enabledByDefault="true"
                          level="ERROR" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.probablebugs.LatexAbsolutePathInspection"
-                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.probable.bugs" displayName="%inspection.display.no.absolute.path.allowed.here"
+                         groupPath="LaTeX" groupBundle="messages.TexifyBundle" groupKey="inspection.group.probable.bugs" bundle="messages.TexifyBundle" key="inspection.display.no.absolute.path.allowed.here"
                          enabledByDefault="true"
                          level="ERROR" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.probablebugs.LatexInclusionLoopInspection"
-                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.probable.bugs" displayName="%inspection.display.inclusion.loops"
+                         groupPath="LaTeX" groupBundle="messages.TexifyBundle" groupKey="inspection.group.probable.bugs" bundle="messages.TexifyBundle" key="inspection.display.inclusion.loops"
                          enabledByDefault="true"
                          level="ERROR" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.probablebugs.LatexNestedIncludesInspection"
-                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.probable.bugs" displayName="%inspection.display.nested.includes"
+                         groupPath="LaTeX" groupBundle="messages.TexifyBundle" groupKey="inspection.group.probable.bugs" bundle="messages.TexifyBundle" key="inspection.display.nested.includes"
                          enabledByDefault="true"
                          level="ERROR" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.probablebugs.LatexLabelBeforeCaptionInspection"
-                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.probable.bugs" displayName="%inspection.display.label.before.caption"
+                         groupPath="LaTeX" groupBundle="messages.TexifyBundle" groupKey="inspection.group.probable.bugs" bundle="messages.TexifyBundle" key="inspection.display.label.before.caption"
                          enabledByDefault="true"
                          level="WEAK WARNING" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.probablebugs.LatexEscapeUnderscoreInspection"
-                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.probable.bugs" displayName="%inspection.display.unescaped.character"
+                         groupPath="LaTeX" groupBundle="messages.TexifyBundle" groupKey="inspection.group.probable.bugs" bundle="messages.TexifyBundle" key="inspection.display.unescaped.character"
                          enabledByDefault="true"
                          level="WARNING"/>
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.probablebugs.LatexEscapeAmpersandInspection"
-                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.probable.bugs" displayName="%inspection.display.unescaped.amp.character"
+                         groupPath="LaTeX" groupBundle="messages.TexifyBundle" groupKey="inspection.group.probable.bugs" bundle="messages.TexifyBundle" key="inspection.display.unescaped.amp.character"
                          enabledByDefault="true"
                          level="WARNING"/>
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.probablebugs.LatexEscapeHashOutsideCommandInspection"
-                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.probable.bugs" displayName="%inspection.display.unescaped.outside.of.command.definition"
+                         groupPath="LaTeX" groupBundle="messages.TexifyBundle" groupKey="inspection.group.probable.bugs" bundle="messages.TexifyBundle" key="inspection.display.unescaped.outside.of.command.definition"
                          enabledByDefault="true"
                          level="WEAK WARNING" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.probablebugs.LatexMultipleGraphicsPathInspection"
-                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.probable.bugs" displayName="%inspection.display.multiple.graphicspath.definitions"
+                         groupPath="LaTeX" groupBundle="messages.TexifyBundle" groupKey="inspection.group.probable.bugs" bundle="messages.TexifyBundle" key="inspection.display.multiple.graphicspath.definitions"
                          enabledByDefault="true"
                          level="ERROR" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.probablebugs.LatexBibinputsRelativePathInspection"
-                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.probable.bugs" displayName="%inspection.display.relative.path.to.parent.is.not.allowed.when.using.bibinputs"
+                         groupPath="LaTeX" groupBundle="messages.TexifyBundle" groupKey="inspection.group.probable.bugs" bundle="messages.TexifyBundle" key="inspection.display.relative.path.to.parent.is.not.allowed.when.using.bibinputs"
                          enabledByDefault="false"
                          level="ERROR" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.probablebugs.packages.LatexUndefinedCommandInspection"
-                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.probable.bugs" displayName="%inspection.display.command.is.not.defined"
+                         groupPath="LaTeX" groupBundle="messages.TexifyBundle" groupKey="inspection.group.probable.bugs" bundle="messages.TexifyBundle" key="inspection.display.command.is.not.defined"
                          enabledByDefault="false"
                          level="ERROR" />
     </extensions>

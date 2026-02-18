@@ -81,7 +81,7 @@
         <applicationService serviceImplementation="nl.hannahsten.texifyidea.remotelibraries.RemoteLibraryManager"/>
 
         <registryKey key="texify.delete.generated.files" defaultValue="false"
-                     description="%registry.texify.delete.generated.files.description"/>
+                     description="Enable action to delete generated files"/>
     </extensions>
 
     <extensionPoints>

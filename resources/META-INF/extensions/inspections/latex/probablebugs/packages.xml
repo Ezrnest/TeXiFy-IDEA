@@ -1,27 +1,27 @@
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.probablebugs.packages.LatexPackageCouldNotBeFound"
-                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.probable.bugs" displayName="%inspection.display.package.could.not.be.found"
+                         groupPath="LaTeX" groupBundle="messages.TexifyBundle" groupKey="inspection.group.probable.bugs" bundle="messages.TexifyBundle" key="inspection.display.package.could.not.be.found"
                          enabledByDefault="false"
                          level="WARNING" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.probablebugs.packages.LatexPackageNotInstalledInspection"
-                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.probable.bugs" displayName="%inspection.display.package.is.not.installed"
+                         groupPath="LaTeX" groupBundle="messages.TexifyBundle" groupKey="inspection.group.probable.bugs" bundle="messages.TexifyBundle" key="inspection.display.package.is.not.installed"
                          enabledByDefault="true"
                          level="WARNING" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.probablebugs.packages.LatexPackageUpdateInspection"
-                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.probable.bugs" displayName="%inspection.display.package.has.an.update.available"
+                         groupPath="LaTeX" groupBundle="messages.TexifyBundle" groupKey="inspection.group.probable.bugs" bundle="messages.TexifyBundle" key="inspection.display.package.has.an.update.available"
                          enabledByDefault="false"
                          level="WARNING" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.probablebugs.packages.LatexPackageNameDoesNotMatchFileNameInspection"
-                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.probable.bugs" displayName="%inspection.display.package.name.does.not.match.file.name"
+                         groupPath="LaTeX" groupBundle="messages.TexifyBundle" groupKey="inspection.group.probable.bugs" bundle="messages.TexifyBundle" key="inspection.display.package.name.does.not.match.file.name"
                          enabledByDefault="true"
                          level="WARNING" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.probablebugs.packages.LatexPackageSubdirectoryInspection"
-                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.probable.bugs" displayName="%inspection.display.package.name.does.not.have.the.correct.directory"
+                         groupPath="LaTeX" groupBundle="messages.TexifyBundle" groupKey="inspection.group.probable.bugs" bundle="messages.TexifyBundle" key="inspection.display.package.name.does.not.have.the.correct.directory"
                          enabledByDefault="true"
                          level="WARNING" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.probablebugs.packages.LatexMissingImportInspection"
-                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.probable.bugs" displayName="%inspection.display.missing.imports"
+                         groupPath="LaTeX" groupBundle="messages.TexifyBundle" groupKey="inspection.group.probable.bugs" bundle="messages.TexifyBundle" key="inspection.display.missing.imports"
                          enabledByDefault="true"
                          level="ERROR" />
     </extensions>

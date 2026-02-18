@@ -1,51 +1,51 @@
 <idea-plugin xmlns:xi="http://www.w3.org/2001/XInclude">
     <extensions defaultExtensionNs="com.intellij">
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.codestyle.LatexMathFunctionTextInspection"
-                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.style.issues" displayName="%inspection.display.use.math.function.instead.of.text"
+                         groupPath="LaTeX" groupBundle="messages.TexifyBundle" groupKey="inspection.group.style.issues" bundle="messages.TexifyBundle" key="inspection.display.use.math.function.instead.of.text"
                          enabledByDefault="true"
                          level="WARNING" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.codestyle.LatexGroupedSubSupScriptInspection"
-                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.style.issues" displayName="%inspection.display.grouped.superscript.and.subscript"
+                         groupPath="LaTeX" groupBundle="messages.TexifyBundle" groupKey="inspection.group.style.issues" bundle="messages.TexifyBundle" key="inspection.display.grouped.superscript.and.subscript"
                          enabledByDefault="true"
                          level="WEAK WARNING" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.codestyle.LatexGatherEquationsInspection"
-                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.style.issues" displayName="%inspection.display.gather.equations"
+                         groupPath="LaTeX" groupBundle="messages.TexifyBundle" groupKey="inspection.group.style.issues" bundle="messages.TexifyBundle" key="inspection.display.gather.equations"
                          enabledByDefault="true"
                          level="WEAK WARNING" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.codestyle.LatexFigureNotReferencedInspection"
-                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.style.issues" displayName="%inspection.display.figure.not.referenced"
+                         groupPath="LaTeX" groupBundle="messages.TexifyBundle" groupKey="inspection.group.style.issues" bundle="messages.TexifyBundle" key="inspection.display.figure.not.referenced"
                          enabledByDefault="true"
                          level="WEAK WARNING"/>
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.codestyle.LatexMissingLabelInspection"
-                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.style.issues" displayName="%inspection.display.missing.labels"
+                         groupPath="LaTeX" groupBundle="messages.TexifyBundle" groupKey="inspection.group.style.issues" bundle="messages.TexifyBundle" key="inspection.display.missing.labels"
                          enabledByDefault="true"
                          level="WEAK WARNING" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.codestyle.LatexLabelConventionInspection"
-                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.style.issues" displayName="%inspection.display.label.conventions"
+                         groupPath="LaTeX" groupBundle="messages.TexifyBundle" groupKey="inspection.group.style.issues" bundle="messages.TexifyBundle" key="inspection.display.label.conventions"
                          enabledByDefault="true"
                          level="WEAK WARNING" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.codestyle.LatexLineBreakInspection"
-                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.style.issues" displayName="%inspection.display.start.sentences.on.a.new.line"
+                         groupPath="LaTeX" groupBundle="messages.TexifyBundle" groupKey="inspection.group.style.issues" bundle="messages.TexifyBundle" key="inspection.display.start.sentences.on.a.new.line"
                          enabledByDefault="true"
                          level="WEAK WARNING" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.codestyle.LatexEquationReferenceInspection"
-                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.style.issues" displayName="%inspection.display.use.eqref.instead.of.ref"
+                         groupPath="LaTeX" groupBundle="messages.TexifyBundle" groupKey="inspection.group.style.issues" bundle="messages.TexifyBundle" key="inspection.display.use.eqref.instead.of.ref"
                          enabledByDefault="true"
                          level="WEAK WARNING" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.codestyle.LatexDocumentclassNotInRootInspection"
-                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.style.issues" displayName="%inspection.display.file.that.contains.a.document.environment.should.contain.a.documentclass.command"
+                         groupPath="LaTeX" groupBundle="messages.TexifyBundle" groupKey="inspection.group.style.issues" bundle="messages.TexifyBundle" key="inspection.display.file.that.contains.a.document.environment.should.contain.a.documentclass.command"
                          enabledByDefault="true"
                          level="WARNING"/>
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.codestyle.LatexMightBreakTexifyInspection"
-                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.style.issues" displayName="%inspection.display.might.break.texify.functionality"
+                         groupPath="LaTeX" groupBundle="messages.TexifyBundle" groupKey="inspection.group.style.issues" bundle="messages.TexifyBundle" key="inspection.display.might.break.texify.functionality"
                          enabledByDefault="true"
                          level="ERROR" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.codestyle.LatexTooLargeSectionInspection"
-                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.style.issues" displayName="%inspection.display.too.large.sections"
+                         groupPath="LaTeX" groupBundle="messages.TexifyBundle" groupKey="inspection.group.style.issues" bundle="messages.TexifyBundle" key="inspection.display.too.large.sections"
                          enabledByDefault="true"
                          level="WEAK WARNING" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.codestyle.LatexUsePackageInPackageInspection"
-                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.style.issues" displayName="%inspection.display.use.requirepackage.instead.of.usepackage.inside.class.and.sty.files"
+                         groupPath="LaTeX" groupBundle="messages.TexifyBundle" groupKey="inspection.group.style.issues" bundle="messages.TexifyBundle" key="inspection.display.use.requirepackage.instead.of.usepackage.inside.class.and.sty.files"
                          enabledByDefault="true"
                          level="WEAK WARNING"/>
     </extensions>
