@@ -19,13 +19,13 @@ object LatexmkCleanUtil {
     fun run(project: Project, runConfig: LatexmkRunConfiguration, mode: Mode) {
         val mainFile = runConfig.resolveMainFileIfNeeded()
         if (mainFile == null) {
-            Notification("LaTeX", "Latexmk clean failed", "No main file is configured.", NotificationType.ERROR).notify(project)
+            Notification(nl.hannahsten.texifyidea.TexifyBundle.message("notification.group.latex"), "Latexmk clean failed", "No main file is configured.", NotificationType.ERROR).notify(project)
             return
         }
 
         val command = LatexmkCommandBuilder.buildCleanCommand(runConfig, mode == Mode.CLEAN_ALL)
         if (command == null) {
-            Notification("LaTeX", "Latexmk clean failed", "Could not build latexmk clean command.", NotificationType.ERROR).notify(project)
+            Notification(nl.hannahsten.texifyidea.TexifyBundle.message("notification.group.latex"), "Latexmk clean failed", "Could not build latexmk clean command.", NotificationType.ERROR).notify(project)
             return
         }
 
@@ -53,10 +53,10 @@ object LatexmkCleanUtil {
                 val exitCode = process.awaitExit()
 
                 if (exitCode == 0) {
-                    Notification("LaTeX", "Latexmk clean completed", "Finished ${mode.label.lowercase()} for ${mainFile.name}.", NotificationType.INFORMATION).notify(project)
+                    Notification(nl.hannahsten.texifyidea.TexifyBundle.message("notification.group.latex"), "Latexmk clean completed", "Finished ${mode.label.lowercase()} for ${mainFile.name}.", NotificationType.INFORMATION).notify(project)
                 }
                 else {
-                    Notification("LaTeX", "Latexmk clean failed", "latexmk exited with code $exitCode.", NotificationType.ERROR).notify(project)
+                    Notification(nl.hannahsten.texifyidea.TexifyBundle.message("notification.group.latex"), "Latexmk clean failed", "latexmk exited with code $exitCode.", NotificationType.ERROR).notify(project)
                 }
             }.onFailure {
                 Notification(

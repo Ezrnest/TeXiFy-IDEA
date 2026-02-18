@@ -78,7 +78,7 @@ class TextidoteAnnotator : DumbAware, ExternalAnnotator<TextidoteAnnotatorInitia
 
         // Since the user has explicitly enabled this inspection, we should raise an error if we cannot actually run textidote
         if (output == null) {
-            Notification("LaTeX", "Could not run textidote", NotificationType.ERROR).notify(collectedInfo.project)
+            Notification(nl.hannahsten.texifyidea.TexifyBundle.message("notification.group.latex"), "Could not run textidote", NotificationType.ERROR).notify(collectedInfo.project)
             return TextidoteAnnotationResult(emptyList(), collectedInfo.document)
         }
 

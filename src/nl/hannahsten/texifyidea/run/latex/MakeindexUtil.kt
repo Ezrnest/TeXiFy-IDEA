@@ -81,7 +81,7 @@ private fun getIndexPackageOptions(mainFile: VirtualFile?, project: Project): Li
 fun getMakeindexOptions(mainFile: VirtualFile?, project: Project): Map<String, String> {
     val mainPsiFile = runReadAction { mainFile?.psiFile(project) }
     if (mainPsiFile == null) {
-        Notification("LaTeX", "Could not find main file ${mainFile?.path}", "Please make sure the main file exists.", NotificationType.ERROR).notify(project)
+        Notification(nl.hannahsten.texifyidea.TexifyBundle.message("notification.group.latex"), "Could not find main file ${mainFile?.path}", "Please make sure the main file exists.", NotificationType.ERROR).notify(project)
         return mapOf()
     }
 

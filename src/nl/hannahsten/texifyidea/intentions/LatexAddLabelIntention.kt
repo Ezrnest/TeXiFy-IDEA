@@ -88,7 +88,7 @@ abstract class LatexAddLabelIntention(name: String) : TexifyIntentionBase(name) 
         val parameter = helper.setOptionalParameter(command, "label", "{${label.labelText}}")
 
         if (parameter == null) {
-            Notification("LaTeX", "Could not add label", "Something went wrong while trying to add the label ${label.labelText} to command ${command.getName()}. Please try again", NotificationType.WARNING).notify(project)
+            Notification(nl.hannahsten.texifyidea.TexifyBundle.message("notification.group.latex"), "Could not add label", "Something went wrong while trying to add the label ${label.labelText} to command ${command.getName()}. Please try again", NotificationType.WARNING).notify(project)
             return
         }
 

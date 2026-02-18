@@ -20,6 +20,7 @@ import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.components.fields.ExtendableTextComponent
 import com.intellij.ui.components.fields.ExtendableTextField
+import nl.hannahsten.texifyidea.TexifyBundle
 import nl.hannahsten.texifyidea.run.bibtex.BibtexRunConfigurationType
 import nl.hannahsten.texifyidea.run.compiler.LatexCompiler
 import nl.hannahsten.texifyidea.run.compiler.LatexCompiler.Format
@@ -64,7 +65,7 @@ class LatexSettingsEditor(private var project: Project) : SettingsEditor<LatexRu
     private var compileTwice: JBCheckBox? = null
     private lateinit var outputFormat: LabeledComponent<ComboBox<Format>>
     private lateinit var latexDistribution: LabeledComponent<ComboBox<LatexDistributionSelection>>
-    private val extensionSeparator = TitledSeparator("Extensions")
+    private val extensionSeparator = TitledSeparator(TexifyBundle.message("run.latex.settings.extensions"))
     private lateinit var externalToolsPanel: RunConfigurationPanel
 
     private lateinit var pdfViewer: LabeledComponent<ComboBox<PdfViewer?>>
@@ -284,7 +285,7 @@ class LatexSettingsEditor(private var project: Project) : SettingsEditor<LatexRu
         addPdfViewerCommandField(panel)
 
         // Optional custom compiler arguments
-        val argumentsLabel = JLabel("Custom compiler arguments")
+        val argumentsLabel = JLabel(TexifyBundle.message("run.latex.settings.custom.compiler.arguments"))
         val argumentsEditor = EditorTextField("", project, PlainTextFileType.INSTANCE)
         argumentsLabel.labelFor = argumentsEditor
         val selectedCompiler = compiler.component.selectedItem as LatexCompiler
@@ -293,13 +294,13 @@ class LatexSettingsEditor(private var project: Project) : SettingsEditor<LatexRu
             LatexArgumentsCompletionProvider(options).apply(argumentsEditor)
         }
 
-        compilerArguments = LabeledComponent.create(argumentsEditor, "Custom compiler arguments")
+        compilerArguments = LabeledComponent.create(argumentsEditor, TexifyBundle.message("run.latex.settings.custom.compiler.arguments"))
         panel.add(compilerArguments)
 
         environmentVariables = EnvironmentVariablesComponent()
         panel.add(environmentVariables)
 
-        expandMacrosEnvVariables = JBCheckBox("Expand macros in environment variables")
+        expandMacrosEnvVariables = JBCheckBox(TexifyBundle.message("run.latex.settings.expand.macros.in.env"))
         expandMacrosEnvVariables!!.isSelected = false
 
         val environmentVariableTextField = environmentVariables.component.textField as ExtendableTextField
@@ -323,7 +324,7 @@ class LatexSettingsEditor(private var project: Project) : SettingsEditor<LatexRu
         }
         panel.add(expandMacrosEnvVariables)
 
-        beforeRunCommand = LabeledComponent.create(RawCommandLineEditor(), "LaTeX code to run before compiling the main file")
+        beforeRunCommand = LabeledComponent.create(RawCommandLineEditor(), TexifyBundle.message("run.latex.settings.before.run.command"))
         panel.add(beforeRunCommand)
 
         panel.add(SeparatorComponent())
@@ -333,12 +334,12 @@ class LatexSettingsEditor(private var project: Project) : SettingsEditor<LatexRu
         mainFileField.addBrowseFolderListener(
             TextBrowseFolderListener(
                 FileChooserDescriptorFactory.createSingleFileDescriptor()
-                    .withTitle("Choose a File to Compile")
+                    .withTitle(TexifyBundle.message("run.latex.settings.choose.file.to.compile"))
                     .withExtensionFilter("tex")
                     .withRoots(*ProjectRootManager.getInstance(project).contentRootsFromAllModules.toSet().toTypedArray())
             )
         )
-        mainFile = LabeledComponent.create(mainFileField, "Main file to compile")
+        mainFile = LabeledComponent.create(mainFileField, TexifyBundle.message("run.latex.settings.main.file.to.compile"))
         panel.add(mainFile)
 
         addOutputPathField(panel)
@@ -347,23 +348,23 @@ class LatexSettingsEditor(private var project: Project) : SettingsEditor<LatexRu
         workingDirectoryField.addBrowseFolderListener(
             TextBrowseFolderListener(
                 FileChooserDescriptor(false, true, false, false, false, false)
-                    .withTitle("Working Directory")
+                    .withTitle(TexifyBundle.message("run.latex.settings.working.directory.title"))
                     .withRoots(
                         *ProjectRootManager.getInstance(project)
                             .contentRootsFromAllModules
                     )
             )
         )
-        workingDirectory = LabeledComponent.create(workingDirectoryField, "Working directory")
+        workingDirectory = LabeledComponent.create(workingDirectoryField, TexifyBundle.message("run.latex.settings.working.directory"))
         panel.add(workingDirectory)
 
-        compileTwice = JBCheckBox("Always compile at least twice")
+        compileTwice = JBCheckBox(TexifyBundle.message("run.latex.settings.compile.twice"))
         compileTwice!!.isSelected = false
         panel.add(compileTwice)
 
         // Output format.
         val cboxFormat = ComboBox(selectedCompiler.outputFormats)
-        outputFormat = LabeledComponent.create(cboxFormat, "Output format")
+        outputFormat = LabeledComponent.create(cboxFormat, TexifyBundle.message("run.latex.settings.output.format"))
         outputFormat.setSize(128, outputFormat.height)
         panel.add(outputFormat)
 
@@ -382,13 +383,13 @@ class LatexSettingsEditor(private var project: Project) : SettingsEditor<LatexRu
             }
         }
         @Suppress("DialogTitleCapitalization") // "LaTeX Distribution" is correctly capitalized (LaTeX is a proper noun)
-        latexDistribution = LabeledComponent.create(distributionComboBox, "LaTeX Distribution")
+        latexDistribution = LabeledComponent.create(distributionComboBox, TexifyBundle.message("run.latex.settings.latex.distribution"))
         panel.add(latexDistribution)
 
         panel.add(extensionSeparator)
 
         // Extension panel
-        externalToolsPanel = RunConfigurationPanel(project, "External LaTeX programs: ")
+        externalToolsPanel = RunConfigurationPanel(project, TexifyBundle.message("run.latex.settings.external.programs"))
         panel.add(externalToolsPanel)
     }
 
@@ -399,14 +400,14 @@ class LatexSettingsEditor(private var project: Project) : SettingsEditor<LatexRu
             auxilPathField.addBrowseFolderListener(
                 TextBrowseFolderListener(
                     FileChooserDescriptor(false, true, false, false, false, false)
-                        .withTitle("Auxiliary Files Directory")
+                        .withTitle(TexifyBundle.message("run.latex.settings.aux.files.directory.title"))
                         .withRoots(
                             *ProjectRootManager.getInstance(project)
                                 .contentRootsFromAllModules
                         )
                 )
             )
-            auxilPath = LabeledComponent.create(auxilPathField, "Directory for auxiliary files")
+            auxilPath = LabeledComponent.create(auxilPathField, TexifyBundle.message("run.latex.settings.aux.files.directory"))
             panel.add(auxilPath)
         }
 
@@ -414,14 +415,21 @@ class LatexSettingsEditor(private var project: Project) : SettingsEditor<LatexRu
         outputPathField.addBrowseFolderListener(
             TextBrowseFolderListener(
                 FileChooserDescriptor(false, true, false, false, false, false)
-                    .withTitle("Output Files Directory")
+                    .withTitle(TexifyBundle.message("run.latex.settings.output.files.directory.title"))
                     .withRoots(
                         *ProjectRootManager.getInstance(project)
                             .contentRootsFromAllModules
                     )
             )
         )
-        outputPath = LabeledComponent.create(outputPathField, "Directory for output files, you can use ${LatexOutputPath.MAIN_FILE_STRING} or ${LatexOutputPath.PROJECT_DIR_STRING} as placeholders:")
+        outputPath = LabeledComponent.create(
+            outputPathField,
+            TexifyBundle.message(
+                "run.latex.settings.output.files.directory",
+                LatexOutputPath.MAIN_FILE_STRING,
+                LatexOutputPath.PROJECT_DIR_STRING
+            )
+        )
         panel.add(outputPath)
     }
 
@@ -431,10 +439,10 @@ class LatexSettingsEditor(private var project: Project) : SettingsEditor<LatexRu
     private fun addCompilerPathField(panel: JPanel) {
         // Compiler
         val compilerField = ComboBox(LatexCompiler.entries.toTypedArray())
-        compiler = LabeledComponent.create(compilerField, "Compiler")
+        compiler = LabeledComponent.create(compilerField, TexifyBundle.message("run.latex.settings.compiler"))
         panel.add(compiler)
 
-        enableCompilerPath = JBCheckBox("Select custom compiler executable path (required on Mac OS X)")
+        enableCompilerPath = JBCheckBox(TexifyBundle.message("run.latex.settings.custom.compiler.path"))
         panel.add(enableCompilerPath)
 
         compilerPath = TextFieldWithBrowseButton()
@@ -442,7 +450,7 @@ class LatexSettingsEditor(private var project: Project) : SettingsEditor<LatexRu
             TextBrowseFolderListener(
                 FileChooserDescriptor(true, false, false, false, false, false)
                     .withFileFilter { virtualFile -> virtualFile.nameWithoutExtension == (compilerField.selectedItem as LatexCompiler).executableName }
-                    .withTitle("Choose " + compilerField.selectedItem + " executable")
+                    .withTitle(TexifyBundle.message("run.latex.settings.choose.executable", compilerField.selectedItem.toString()))
             )
         )
         compilerPath.isEnabled = false
@@ -461,7 +469,7 @@ class LatexSettingsEditor(private var project: Project) : SettingsEditor<LatexRu
      */
     private fun addPdfViewerCommandField(panel: JPanel) {
         val viewerField = ComboBox(PdfViewer.availableViewers.toTypedArray())
-        pdfViewer = LabeledComponent.create(viewerField, "PDF viewer")
+        pdfViewer = LabeledComponent.create(viewerField, TexifyBundle.message("run.latex.settings.pdf.viewer"))
         pdfViewer.component.addActionListener {
             requireFocus.isVisible = (pdfViewer.component.selectedItem as? PdfViewer)?.let {
                 it.isForwardSearchSupported && it.isFocusSupported
@@ -469,14 +477,13 @@ class LatexSettingsEditor(private var project: Project) : SettingsEditor<LatexRu
         }
         panel.add(pdfViewer)
 
-        requireFocus = JBCheckBox("Allow PDF viewer to focus after compilation")
+        requireFocus = JBCheckBox(TexifyBundle.message("run.latex.settings.allow.viewer.focus"))
         requireFocus.isSelected = true
         panel.add(requireFocus)
 
         if (SystemInfo.isWindows && !SumatraViewer.isAvailable()) {
             val label = JLabel(
-                "<html>Failed to detect SumatraPDF. If you have SumatraPDF installed, you can add it manually in " +
-                    "<a href=''>TeXiFy Settings</a>.</html>"
+                TexifyBundle.message("run.settings.sumatra.not.detected.html")
             ).apply {
                 cursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)
             }
@@ -488,7 +495,7 @@ class LatexSettingsEditor(private var project: Project) : SettingsEditor<LatexRu
             panel.add(label)
         }
 
-        enableViewerCommand = JBCheckBox("Select custom PDF viewer command, using {pdf} for the pdf file if not the last argument")
+        enableViewerCommand = JBCheckBox(TexifyBundle.message("run.latex.settings.custom.pdf.viewer.command"))
         panel.add(enableViewerCommand)
 
         viewerCommand = JBTextField().apply {

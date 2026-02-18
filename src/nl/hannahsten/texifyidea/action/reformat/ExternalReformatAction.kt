@@ -12,6 +12,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiFileFactory
+import nl.hannahsten.texifyidea.TexifyBundle
 import nl.hannahsten.texifyidea.grammar.BibtexLanguage
 import nl.hannahsten.texifyidea.psi.LatexPsiHelper
 import nl.hannahsten.texifyidea.util.runWriteCommandAction
@@ -71,7 +72,12 @@ abstract class ExternalReformatAction(val isValidFile: (file: PsiFile) -> Boolea
                 .createProcess()
         }
         catch (e: ProcessNotCreatedException) {
-            Notification("LaTeX", "Could not run ${command.first()}", "Please double check if ${command.first()} is installed correctly: ${e.message}", NotificationType.ERROR).notify(project)
+            Notification(
+                TexifyBundle.message("notification.group.latex"),
+                TexifyBundle.message("notification.reformat.could.not.run.title", command.first()),
+                TexifyBundle.message("notification.reformat.could.not.run.message", command.first(), e.message ?: ""),
+                NotificationType.ERROR
+            ).notify(project)
             return
         }
         val output = if (process.waitFor(3, TimeUnit.SECONDS)) {
@@ -84,9 +90,9 @@ abstract class ExternalReformatAction(val isValidFile: (file: PsiFile) -> Boolea
         }
         if (process.exitValue() != 0) {
             Notification(
-                "LaTeX",
-                "${command.first()} failed",
-                output ?: "Exit value ${process.exitValue()}",
+                TexifyBundle.message("notification.group.latex"),
+                TexifyBundle.message("notification.reformat.failed.title", command.first()),
+                output ?: TexifyBundle.message("notification.reformat.failed.exit.value", process.exitValue()),
                 NotificationType.ERROR
             ).notify(project)
         }

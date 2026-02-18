@@ -92,18 +92,18 @@ object EvinceViewer : SystemPdfViewer("Evince", "evince") {
                     }
                     catch (ignored: NoReply) {}
                     catch (e: ServiceUnknown) {
-                        Notification("LaTeX", "Cannot sync position to Evince", "Please update Evince and then try again.", NotificationType.ERROR).notify(project)
+                        Notification(nl.hannahsten.texifyidea.TexifyBundle.message("notification.group.latex"), "Cannot sync position to Evince", "Please update Evince and then try again.", NotificationType.ERROR).notify(project)
                     }
                 }
             }
             catch (e: DBusException) {
-                Notification("LaTeX", "Cannot sync position to Evince", "The Connection could not be established.", NotificationType.ERROR).notify(project)
+                Notification(nl.hannahsten.texifyidea.TexifyBundle.message("notification.group.latex"), "Cannot sync position to Evince", "The Connection could not be established.", NotificationType.ERROR).notify(project)
             }
         }
         else {
             // If the user used the forward search menu action
             if (outputPath == null) {
-                Notification("LaTeX", "Could not execute forward search", "Please make sure you have compiled the document first, and that your path does not contain spaces.", NotificationType.ERROR).notify(project)
+                Notification(nl.hannahsten.texifyidea.TexifyBundle.message("notification.group.latex"), "Could not execute forward search", "Please make sure you have compiled the document first, and that your path does not contain spaces.", NotificationType.ERROR).notify(project)
             }
             else {
                 throw TeXception("Could not execute forward search with Evince because something went wrong when finding the pdf file at $outputPath")
@@ -132,12 +132,12 @@ object EvinceViewer : SystemPdfViewer("Evince", "evince") {
                 }
                 catch (ignored: NoReply) {}
                 catch (e: ServiceUnknown) {
-                    Notification("LaTeX", "Cannot communicate to Evince", "Please update Evince and then try again.", NotificationType.ERROR).notify(project)
+                    Notification(nl.hannahsten.texifyidea.TexifyBundle.message("notification.group.latex"), "Cannot communicate to Evince", "Please update Evince and then try again.", NotificationType.ERROR).notify(project)
                 }
             }
         }
         catch (e: DBusException) {
-            Notification("LaTeX", "Cannot communicate to Evince", "The connection could not be established.", NotificationType.ERROR).notify(project)
+            Notification(nl.hannahsten.texifyidea.TexifyBundle.message("notification.group.latex"), "Cannot communicate to Evince", "The connection could not be established.", NotificationType.ERROR).notify(project)
         }
     }
 }

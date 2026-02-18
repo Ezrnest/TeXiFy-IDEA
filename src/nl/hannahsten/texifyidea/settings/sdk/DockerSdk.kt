@@ -7,6 +7,7 @@ import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogBuilder
 import com.intellij.openapi.util.SystemInfo
 import com.intellij.util.Consumer
+import nl.hannahsten.texifyidea.TexifyBundle
 import nl.hannahsten.texifyidea.run.latex.LatexDistributionType
 import nl.hannahsten.texifyidea.util.containsAny
 import nl.hannahsten.texifyidea.util.runCommand
@@ -72,13 +73,13 @@ class DockerSdk : LatexSdk("LaTeX Docker SDK") {
 
     override fun getHomeChooserDescriptor(): FileChooserDescriptor {
         val descriptor = super.getHomeChooserDescriptor()
-        descriptor.title = "Select the Directory Containing the Docker Executable"
+        descriptor.title = TexifyBundle.message("settings.docker.home.chooser.title")
         return descriptor
     }
 
-    override fun getHomeFieldLabel() = "Path to directory containing Docker executable:"
+    override fun getHomeFieldLabel() = TexifyBundle.message("settings.docker.home.field.label")
 
-    override fun getInvalidHomeMessage(path: String): String = "Could not find docker executable $path/docker"
+    override fun getInvalidHomeMessage(path: String): String = TexifyBundle.message("settings.docker.invalid.home.message", path)
 
     override fun createAdditionalDataConfigurable(sdkModel: SdkModel, sdkModificator: SdkModificator): AdditionalDataConfigurable = DockerSdkConfigurable()
 
@@ -101,7 +102,7 @@ class DockerSdk : LatexSdk("LaTeX Docker SDK") {
         val chooseImageComponent = DockerSdkConfigurable().createComponent()
         val imagesComboBox = chooseImageComponent.components.filterIsInstance<ComboBox<String>>().firstOrNull()
         val dialog = DialogBuilder().apply {
-            setTitle("Choose Docker Image")
+            setTitle(TexifyBundle.message("settings.docker.choose.image.title"))
             setCenterPanel(chooseImageComponent)
         }
         dialog.show()

@@ -65,7 +65,7 @@ object AutoCompileState {
     private fun scheduleCompilation() {
         val proj = this.project
         if (proj == null) {
-            Notification("LaTeX", "Could not auto-compile", "Please make sure you have compiled the document first.", NotificationType.WARNING).notify(null)
+            Notification(nl.hannahsten.texifyidea.TexifyBundle.message("notification.group.latex"), "Could not auto-compile", "Please make sure you have compiled the document first.", NotificationType.WARNING).notify(null)
             return
         }
         if (!TexifySettings.getInstance().isAutoCompileEnabled()) {
@@ -78,7 +78,7 @@ object AutoCompileState {
 
         val runConfig = runConfigSettings?.configuration
         if (runConfig !is LatexCompilationRunConfiguration) {
-            Notification("LaTeX", "Could not auto-compile", "Please make sure you have a valid LaTeX run configuration selected.", NotificationType.WARNING).notify(null)
+            Notification(nl.hannahsten.texifyidea.TexifyBundle.message("notification.group.latex"), "Could not auto-compile", "Please make sure you have a valid LaTeX run configuration selected.", NotificationType.WARNING).notify(null)
             return
         }
 

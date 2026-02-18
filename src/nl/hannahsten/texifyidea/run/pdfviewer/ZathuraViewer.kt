@@ -35,7 +35,7 @@ object ZathuraViewer : SystemPdfViewer("Zathura", "zathura") {
             Runtime.getRuntime().exec(arrayOf("bash", "-c", command))
         }
         else {
-            Notification("LaTeX", "Could not execute forward search", "Please make sure you have compiled the document first.", NotificationType.ERROR).notify(project)
+            Notification(nl.hannahsten.texifyidea.TexifyBundle.message("notification.group.latex"), "Could not execute forward search", "Please make sure you have compiled the document first.", NotificationType.ERROR).notify(project)
         }
     }
 

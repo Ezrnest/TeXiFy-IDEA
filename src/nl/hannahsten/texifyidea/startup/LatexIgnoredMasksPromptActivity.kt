@@ -6,6 +6,7 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
+import nl.hannahsten.texifyidea.TexifyBundle
 import nl.hannahsten.texifyidea.settings.TexifySettings
 import nl.hannahsten.texifyidea.util.files.LatexIgnoredFileMasks
 import nl.hannahsten.texifyidea.util.isLatexProject
@@ -16,22 +17,22 @@ class LatexIgnoredMasksPromptActivity : ProjectActivity, DumbAware {
         if (!shouldPrompt(project)) return
 
         Notification(
-            "LaTeX",
-            "TeXiFy: Ignore LaTeX intermediate files?",
-            "TeXiFy can add ignored file masks for LaTeX intermediate files. Existing ignored rules will be kept.",
+            TexifyBundle.message("notification.group.latex"),
+            TexifyBundle.message("notification.ignored.masks.prompt.title"),
+            TexifyBundle.message("notification.ignored.masks.prompt.content"),
             NotificationType.INFORMATION,
         )
             .addAction(
-                NotificationAction.createSimpleExpiring("Apply now") {
+                NotificationAction.createSimpleExpiring(TexifyBundle.message("notification.ignored.masks.prompt.action.apply")) {
                     val mergedMasks = LatexIgnoredFileMasks.mergeWithPreset(LatexIgnoredFileMasks.getCurrentMasks())
                     LatexIgnoredFileMasks.applyMasks(mergedMasks)
                 }
             )
             .addAction(
-                NotificationAction.createSimpleExpiring("Not now") {}
+                NotificationAction.createSimpleExpiring(TexifyBundle.message("notification.ignored.masks.prompt.action.not.now")) {}
             )
             .addAction(
-                NotificationAction.createSimpleExpiring("Don't ask again") {
+                NotificationAction.createSimpleExpiring(TexifyBundle.message("notification.ignored.masks.prompt.action.dont.ask.again")) {
                     TexifySettings.getState().suppressIgnoredMasksPrompt = true
                 }
             )

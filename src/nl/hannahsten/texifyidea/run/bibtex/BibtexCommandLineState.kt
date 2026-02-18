@@ -62,7 +62,7 @@ open class BibtexCommandLineState(
             throw ExecutionException("No working directory specified for BibTeX run configuration.")
         }
         if (workingDirectory.exists().not()) {
-            Notification("LaTeX", "Could not find working directory", "The directory containing the main file could not be found: $workingDirectory", NotificationType.ERROR).notify(environment.project)
+            Notification(nl.hannahsten.texifyidea.TexifyBundle.message("notification.group.latex"), "Could not find working directory", "The directory containing the main file could not be found: $workingDirectory", NotificationType.ERROR).notify(environment.project)
             throw ExecutionException("Could not find working directory $workingDirectory for file $mainPath with given path $bibPath")
         }
 

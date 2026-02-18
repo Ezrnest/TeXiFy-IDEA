@@ -308,7 +308,7 @@ object SumatraViewer : SystemPdfViewer("SumatraPDF", "SumatraPDF") {
     fun configureInverseSearch(project: Project?) {
         val sumatraRunnable = this.sumatraPath
         if (sumatraRunnable == null) {
-            Notification("LaTeX", "SumatraPDF not found", "Please install SumatraPDF to use inverse search.", NotificationType.WARNING)
+            Notification(nl.hannahsten.texifyidea.TexifyBundle.message("notification.group.latex"), "SumatraPDF not found", "Please install SumatraPDF to use inverse search.", NotificationType.WARNING)
                 .notify(project)
             return
         }

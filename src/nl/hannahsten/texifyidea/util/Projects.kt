@@ -150,7 +150,7 @@ fun Project.selectedTextEditor(): TextEditor? = FileEditorManager.getInstance(th
 
 fun Project.selectedTextEditorOrWarning(): TextEditor? {
     selectedTextEditor()?.let { return it }
-    Notification("LaTeX", "Could not find an open editor to insert text", "Put your caret in a LaTeX file first. Please report an issue on GitHub if you believe this is incorrect", NotificationType.ERROR).notify(this)
+    Notification(nl.hannahsten.texifyidea.TexifyBundle.message("notification.group.latex"), "Could not find an open editor to insert text", "Put your caret in a LaTeX file first. Please report an issue on GitHub if you believe this is incorrect", NotificationType.ERROR).notify(this)
     return null
 }
 

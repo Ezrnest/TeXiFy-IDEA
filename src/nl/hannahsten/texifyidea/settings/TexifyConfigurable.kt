@@ -105,26 +105,53 @@ class TexifyConfigurable : SearchableConfigurable {
         add(
             JPanel().apply {
                 layout = BoxLayout(this, BoxLayout.Y_AXIS)
-                automaticSecondInlineMathSymbol = addCheckbox("Automatically insert second '$'")
-                automaticUpDownBracket = addCheckbox("Automatically insert braces around text in subscript and superscript")
-                automaticItemInItemize = addCheckbox("Automatically insert '\\item' in itemize-like environments on pressing enter")
-                completionMode = addComboBox("Autocompletion mode", "Smart", "Included only", "All packages")
-                automaticDependencyCheck = addCheckbox("Automatically check for required package dependencies and insert them")
-                automaticBibtexImport = addCheckbox("Automatically copy BibTeX entries from remote libraries to the local library")
-                continuousPreview = addCheckbox("Automatically refresh preview of math and TikZ pictures")
-                includeBackslashInSelection = addCheckbox("Include the backslash in the selection when selecting a LaTeX command")
-                showPackagesInStructureView = addCheckbox("Show LaTeX package files in structure view (warning: structure view will take more time to load)")
-                enableExternalIndex = addCheckbox("Enable indexing of MiKTeX/TeX Live package files (requires restart)")
-                enableSpellcheckEverywhere = addCheckbox("Enable spellcheck inspection in all scopes")
-                enableTextidote = addCheckbox("Enable the Textidote linter")
-                textidoteOptions = addCommandLineEditor("Textidote", TexifySettings.DEFAULT_TEXTIDOTE_OPTIONS)
-                latexIndentOptions = addCommandLineEditor("Latexindent", "")
-                bibtexTidyOptions = addCommandLineEditor("bibtex-tidy", "")
+                automaticSecondInlineMathSymbol = addCheckbox(TexifyBundle.message("settings.automatic.second.inline.math.symbol"))
+                automaticUpDownBracket = addCheckbox(TexifyBundle.message("settings.automatic.up.down.bracket"))
+                automaticItemInItemize = addCheckbox(TexifyBundle.message("settings.automatic.item.in.itemize"))
+                completionMode = addComboBox(
+                    TexifyBundle.message("settings.autocompletion.mode"),
+                    TexifyBundle.message("settings.autocompletion.mode.smart"),
+                    TexifyBundle.message("settings.autocompletion.mode.included.only"),
+                    TexifyBundle.message("settings.autocompletion.mode.all.packages")
+                )
+                automaticDependencyCheck = addCheckbox(TexifyBundle.message("settings.automatic.dependency.check"))
+                automaticBibtexImport = addCheckbox(TexifyBundle.message("settings.automatic.bibtex.import"))
+                continuousPreview = addCheckbox(TexifyBundle.message("settings.continuous.preview"))
+                includeBackslashInSelection = addCheckbox(TexifyBundle.message("settings.include.backslash.in.selection"))
+                showPackagesInStructureView = addCheckbox(TexifyBundle.message("settings.show.packages.in.structure.view"))
+                enableExternalIndex = addCheckbox(TexifyBundle.message("settings.enable.external.index"))
+                enableSpellcheckEverywhere = addCheckbox(TexifyBundle.message("settings.enable.spellcheck.everywhere"))
+                enableTextidote = addCheckbox(TexifyBundle.message("settings.enable.textidote"))
+                textidoteOptions = addCommandLineEditor(TexifyBundle.message("settings.command.textidote"), TexifySettings.DEFAULT_TEXTIDOTE_OPTIONS)
+                latexIndentOptions = addCommandLineEditor(TexifyBundle.message("settings.command.latexindent"), "")
+                bibtexTidyOptions = addCommandLineEditor(TexifyBundle.message("settings.command.bibtex.tidy"), "")
                 addSumatraPathField(this)
-                automaticQuoteReplacement = addComboBox("Smart quote substitution: ", "Off", "TeX ligatures", "TeX commands", "csquotes")
-                htmlPasteTranslator = addComboBox("HTML paste translator", "Built-in", "Pandoc", "Disabled")
-                autoCompileOption = addComboBox("Automatic compilation", "Off", "Always", "After document save", "Disable in power save mode")
-                runConfigLatexmkMode = addComboBox("Run configuration mode", "Run/LaTeX + Bib only", "Latexmk only", "Both")
+                automaticQuoteReplacement = addComboBox(
+                    TexifyBundle.message("settings.smart.quote.substitution"),
+                    TexifyBundle.message("settings.option.off"),
+                    TexifyBundle.message("settings.smart.quote.substitution.tex.ligatures"),
+                    TexifyBundle.message("settings.smart.quote.substitution.tex.commands"),
+                    TexifyBundle.message("settings.smart.quote.substitution.csquotes")
+                )
+                htmlPasteTranslator = addComboBox(
+                    TexifyBundle.message("settings.html.paste.translator"),
+                    TexifyBundle.message("settings.html.paste.translator.builtin"),
+                    TexifyBundle.message("settings.html.paste.translator.pandoc"),
+                    TexifyBundle.message("settings.html.paste.translator.disabled")
+                )
+                autoCompileOption = addComboBox(
+                    TexifyBundle.message("settings.automatic.compilation"),
+                    TexifyBundle.message("settings.option.off"),
+                    TexifyBundle.message("settings.automatic.compilation.always"),
+                    TexifyBundle.message("settings.automatic.compilation.after.save"),
+                    TexifyBundle.message("settings.automatic.compilation.disable.power.save")
+                )
+                runConfigLatexmkMode = addComboBox(
+                    TexifyBundle.message("settings.run.config.mode"),
+                    TexifyBundle.message("settings.run.config.mode.run.latex.bib.only"),
+                    TexifyBundle.message("settings.run.config.mode.latexmk.only"),
+                    TexifyBundle.message("settings.run.config.mode.both")
+                )
                 addFilesetExpirationTimeMs(this)
             }
         )
@@ -161,7 +188,7 @@ class TexifyConfigurable : SearchableConfigurable {
 
         add(
             JPanel(FlowLayout(FlowLayout.LEFT)).apply {
-                add(JBLabel("$label command line options: "))
+                add(JBLabel(TexifyBundle.message("settings.command.line.options", label)))
                 add(cmdEditor)
             }
         )
@@ -184,7 +211,7 @@ class TexifyConfigurable : SearchableConfigurable {
         }
         val subPanel = JPanel(FlowLayout(FlowLayout.LEFT))
 
-        val enableSumatraPath = JBLabel("Path to SumatraPDF (optional):")
+        val enableSumatraPath = JBLabel(TexifyBundle.message("settings.path.to.sumatra.optional"))
         subPanel.add(enableSumatraPath)
 
         val sumatraPath = TextFieldWithBrowseButton()
@@ -195,8 +222,8 @@ class TexifyConfigurable : SearchableConfigurable {
          */
         sumatraPath.addBrowseFolderListener(
             TextBrowseFolderListener(
-                FileChooserDescriptorFactory.createSingleFileNoJarsDescriptor().withTitle("SumatraPDF Location")
-                    .withDescription("Select the location of the SumatraPDF executable file.")
+                FileChooserDescriptorFactory.createSingleFileNoJarsDescriptor().withTitle(TexifyBundle.message("settings.sumatra.location.title"))
+                    .withDescription(TexifyBundle.message("settings.sumatra.location.description"))
                     .withFileFilter { it.name == "SumatraPDF.exe" || it.name == "SumatraPDF" } // Allow both .exe and no extension on Windows
             )
         )
@@ -214,13 +241,12 @@ class TexifyConfigurable : SearchableConfigurable {
 
     private fun addFilesetExpirationTimeMs(panel: JPanel) {
         val subPanel = JPanel(FlowLayout(FlowLayout.LEFT))
-        val label = JBLabel("Fileset refresh period (ms):")
+        val label = JBLabel(TexifyBundle.message("settings.fileset.refresh.period.ms"))
         subPanel.add(label)
-        val tips = "The time after which the fileset (formed by \\input, \\usepackage, etc.) is considered expired and will be rebuilt. \n " +
-            "A lower value means quicker response for input files, but also a bit more CPU usage. "
+        val tips = TexifyBundle.message("settings.fileset.refresh.period.tooltip")
 
         label.toolTipText = tips
-        filesetExpirationTimeMs = IntegerField("Fileset expiration time (ms)", 0, Int.MAX_VALUE).apply {
+        filesetExpirationTimeMs = IntegerField(TexifyBundle.message("settings.fileset.expiration.time.ms"), 0, Int.MAX_VALUE).apply {
             defaultValue = TexifySettings.DEFAULT_FILESET_EXPIRATION_TIME_MS
             value = settings.filesetExpirationTimeMs
             preferredSize = Dimension(150, preferredSize.height)
@@ -252,7 +278,7 @@ class TexifyConfigurable : SearchableConfigurable {
         val path = getUISumatraPath()
         if (path != null) {
             if (!SumatraViewer.trySumatraPath(path)) {
-                throw RuntimeConfigurationError("Path to SumatraPDF is not valid: $path")
+                throw RuntimeConfigurationError(TexifyBundle.message("settings.sumatra.path.invalid", path))
             }
         }
         ss.pathToSumatra = path

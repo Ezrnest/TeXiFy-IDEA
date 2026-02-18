@@ -10,6 +10,7 @@ import com.intellij.openapi.ui.showOkCancelDialog
 import com.intellij.openapi.util.registry.Registry
 import com.intellij.openapi.vfs.InvalidVirtualFileAccessException
 import com.intellij.openapi.vfs.LocalFileSystem
+import nl.hannahsten.texifyidea.TexifyBundle
 import nl.hannahsten.texifyidea.run.latexmk.LatexmkCleanUtil
 import nl.hannahsten.texifyidea.run.latexmk.LatexmkRunConfiguration
 import nl.hannahsten.texifyidea.util.Log
@@ -39,8 +40,8 @@ class DeleteGeneratedFiles : AnAction() {
         }
         catch (e: PrivilegedActionException) {
             Notification(
-                "LaTeX",
-                "Could not delete some files",
+                TexifyBundle.message("notification.group.latex"),
+                TexifyBundle.message("notification.delete.generated.files.failed.title"),
                 e.message ?: "",
                 NotificationType.ERROR
             ).notify(event.project)
@@ -65,14 +66,9 @@ class DeleteGeneratedFiles : AnAction() {
             .filterNotNull()
 
         val result = showOkCancelDialog(
-            "Delete Auxiliary and Output Files",
-            "Do you really want to delete all files in LaTeX output directories, " +
-                "and all auxiliary and generated files? \n" +
-                "All files in the following output directories will be deleted: \n" +
-                customOutput.map { it.path }.joinToString { "  $it\n" } +
-                "plus auxiliary and generated files in src/, auxil/ and out/.\n" +
-                "Be careful when doing this, you might not be able to fully undo this operation!",
-            "Delete"
+            TexifyBundle.message("ui.dialog.delete.generated.files.title"),
+            TexifyBundle.message("ui.dialog.delete.generated.files.message", customOutput.map { it.path }.joinToString { "  $it\n" }),
+            TexifyBundle.message("ui.dialog.delete.generated.files.ok")
         )
 
         if (result != Messages.OK) return
@@ -118,7 +114,12 @@ class DeleteGeneratedFiles : AnAction() {
         }
 
         if (notDeleted.isNotEmpty()) {
-            Notification("LaTeX", "Could not delete some files", "The following files need to be deleted manually: $notDeleted", NotificationType.WARNING).notify(project)
+            Notification(
+                TexifyBundle.message("notification.group.latex"),
+                TexifyBundle.message("notification.delete.generated.files.failed.title"),
+                TexifyBundle.message("notification.delete.generated.files.manual.delete.required", notDeleted),
+                NotificationType.WARNING
+            ).notify(project)
         }
 
         // Generated minted files

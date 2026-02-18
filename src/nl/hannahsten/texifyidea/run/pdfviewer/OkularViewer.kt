@@ -33,7 +33,7 @@ object OkularViewer : SystemPdfViewer("Okular", "okular") {
         }
 
         if (pdfFilePath == null) {
-            Notification("LaTeX", "Could not execute forward search", "Please make sure you have compiled the document first.", NotificationType.ERROR).notify(project)
+            Notification(nl.hannahsten.texifyidea.TexifyBundle.message("notification.group.latex"), "Could not execute forward search", "Please make sure you have compiled the document first.", NotificationType.ERROR).notify(project)
             return
         }
         // This okular command opens the pdf file using the destination coming from the line in the tex file.

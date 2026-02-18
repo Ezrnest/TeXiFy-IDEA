@@ -19,6 +19,7 @@ import com.intellij.ui.RawCommandLineEditor
 import com.intellij.ui.SeparatorComponent
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBTextField
+import nl.hannahsten.texifyidea.TexifyBundle
 import nl.hannahsten.texifyidea.index.projectstructure.pathOrNull
 import nl.hannahsten.texifyidea.run.latex.LatexDistributionType
 import nl.hannahsten.texifyidea.run.latex.ui.LatexDistributionComboBoxRenderer
@@ -139,7 +140,7 @@ class LatexmkSettingsEditor(private var project: Project) : SettingsEditor<Latex
     }
 
     private fun addCompilerSection() {
-        enableCompilerPath = JBCheckBox("Select custom latexmk executable path")
+        enableCompilerPath = JBCheckBox(TexifyBundle.message("run.latexmk.settings.custom.executable.path"))
         panel.add(enableCompilerPath)
 
         compilerPathField = TextFieldWithBrowseButton().apply {
@@ -147,7 +148,7 @@ class LatexmkSettingsEditor(private var project: Project) : SettingsEditor<Latex
                 TextBrowseFolderListener(
                     FileChooserDescriptor(true, false, false, false, false, false)
                         .withFileFilter { it.nameWithoutExtension == "latexmk" }
-                        .withTitle("Choose Latexmk Executable")
+                        .withTitle(TexifyBundle.message("run.latexmk.settings.choose.executable"))
                 )
             )
             isEnabled = false
@@ -167,18 +168,18 @@ class LatexmkSettingsEditor(private var project: Project) : SettingsEditor<Latex
             addBrowseFolderListener(
                 TextBrowseFolderListener(
                     FileChooserDescriptorFactory.createSingleFileDescriptor()
-                        .withTitle("Choose a File to Compile")
+                        .withTitle(TexifyBundle.message("run.latexmk.settings.choose.file.to.compile"))
                         .withExtensionFilter("tex")
                         .withRoots(*ProjectRootManager.getInstance(project).contentRootsFromAllModules.toSet().toTypedArray())
                 )
             )
         }
-        panel.add(LabeledComponent.create(mainFileField, "Main file to compile"))
+        panel.add(LabeledComponent.create(mainFileField, TexifyBundle.message("run.latexmk.settings.main.file.to.compile")))
     }
 
     private fun addLatexmkCompileSection() {
         compileModeCombo = ComboBox(LatexmkCompileMode.entries.toTypedArray())
-        panel.add(LabeledComponent.create(compileModeCombo, "Compile mode"))
+        panel.add(LabeledComponent.create(compileModeCombo, TexifyBundle.message("run.latexmk.settings.compile.mode")))
 
         customEngineCommandField = JBTextField().apply { isEnabled = false }
         compileModeCombo.addItemListener {
@@ -189,10 +190,10 @@ class LatexmkSettingsEditor(private var project: Project) : SettingsEditor<Latex
                 customEngineCommandField.text = ""
             }
         }
-        panel.add(LabeledComponent.create(customEngineCommandField, "Custom engine command"))
+        panel.add(LabeledComponent.create(customEngineCommandField, TexifyBundle.message("run.latexmk.settings.custom.engine.command")))
 
         citationToolCombo = ComboBox(LatexmkCitationTool.entries.toTypedArray())
-        panel.add(LabeledComponent.create(citationToolCombo, "Citation tool"))
+        panel.add(LabeledComponent.create(citationToolCombo, TexifyBundle.message("run.latexmk.settings.citation.tool")))
     }
 
     private fun addDistributionSection() {
@@ -203,7 +204,7 @@ class LatexmkSettingsEditor(private var project: Project) : SettingsEditor<Latex
             if (path.isNotBlank()) LocalFileSystem.getInstance().findFileByPath(path) else null
         }
         @Suppress("DialogTitleCapitalization")
-        panel.add(LabeledComponent.create(latexDistributionCombo, "LaTeX Distribution"))
+        panel.add(LabeledComponent.create(latexDistributionCombo, TexifyBundle.message("run.latexmk.settings.latex.distribution")))
     }
 
     private fun addDirectorySection() {
@@ -211,7 +212,7 @@ class LatexmkSettingsEditor(private var project: Project) : SettingsEditor<Latex
             addBrowseFolderListener(
                 TextBrowseFolderListener(
                     FileChooserDescriptor(false, true, false, false, false, false)
-                        .withTitle("Output Files Directory")
+                        .withTitle(TexifyBundle.message("run.latexmk.settings.output.files.directory.title"))
                         .withRoots(*ProjectRootManager.getInstance(project).contentRootsFromAllModules)
                 )
             )
@@ -219,7 +220,11 @@ class LatexmkSettingsEditor(private var project: Project) : SettingsEditor<Latex
         panel.add(
             LabeledComponent.create(
                 outputPathField,
-                "Output directory (final files like pdf), placeholders: ${LatexmkPathResolver.MAIN_FILE_PARENT_PLACEHOLDER}, ${LatexmkPathResolver.PROJECT_DIR_PLACEHOLDER}",
+                TexifyBundle.message(
+                    "run.latexmk.settings.output.directory",
+                    LatexmkPathResolver.MAIN_FILE_PARENT_PLACEHOLDER,
+                    LatexmkPathResolver.PROJECT_DIR_PLACEHOLDER
+                ),
             ),
         )
 
@@ -227,7 +232,7 @@ class LatexmkSettingsEditor(private var project: Project) : SettingsEditor<Latex
             addBrowseFolderListener(
                 TextBrowseFolderListener(
                     FileChooserDescriptor(false, true, false, false, false, false)
-                        .withTitle("Auxiliary Files Directory")
+                        .withTitle(TexifyBundle.message("run.latexmk.settings.aux.files.directory.title"))
                         .withRoots(*ProjectRootManager.getInstance(project).contentRootsFromAllModules)
                 )
             )
@@ -235,7 +240,7 @@ class LatexmkSettingsEditor(private var project: Project) : SettingsEditor<Latex
         panel.add(
             LabeledComponent.create(
                 auxilPathField,
-                "Auxiliary files directory (intermediate files; omit or set equal to output directory to skip separate -auxdir)",
+                TexifyBundle.message("run.latexmk.settings.aux.directory"),
             ),
         )
 
@@ -243,12 +248,12 @@ class LatexmkSettingsEditor(private var project: Project) : SettingsEditor<Latex
             addBrowseFolderListener(
                 TextBrowseFolderListener(
                     FileChooserDescriptor(false, true, false, false, false, false)
-                        .withTitle("Working Directory")
+                        .withTitle(TexifyBundle.message("run.latexmk.settings.working.directory.title"))
                         .withRoots(*ProjectRootManager.getInstance(project).contentRootsFromAllModules)
                 )
             )
         }
-        panel.add(LabeledComponent.create(workingDirectoryField, "Working directory (process cwd, used for relative paths)"))
+        panel.add(LabeledComponent.create(workingDirectoryField, TexifyBundle.message("run.latexmk.settings.working.directory")))
     }
 
     private fun addAdvancedSection() {
@@ -257,13 +262,13 @@ class LatexmkSettingsEditor(private var project: Project) : SettingsEditor<Latex
         addCompilerSection()
 
         extraArgumentsField = RawCommandLineEditor()
-        panel.add(LabeledComponent.create(extraArgumentsField, "Additional latexmk arguments"))
+        panel.add(LabeledComponent.create(extraArgumentsField, TexifyBundle.message("run.latexmk.settings.additional.arguments")))
 
         environmentVariables = EnvironmentVariablesComponent()
         panel.add(environmentVariables)
 
         beforeRunCommandField = RawCommandLineEditor()
-        panel.add(LabeledComponent.create(beforeRunCommandField, "LaTeX code to run before compiling the main file"))
+        panel.add(LabeledComponent.create(beforeRunCommandField, TexifyBundle.message("run.latexmk.settings.before.run.command")))
     }
 
     private fun addViewerSection() {
@@ -272,16 +277,16 @@ class LatexmkSettingsEditor(private var project: Project) : SettingsEditor<Latex
             requireFocus.isVisible =
                 (pdfViewerCombo.selectedItem as? PdfViewer)?.let { it.isForwardSearchSupported && it.isFocusSupported } ?: false
         }
-        panel.add(LabeledComponent.create(pdfViewerCombo, "PDF viewer"))
+        panel.add(LabeledComponent.create(pdfViewerCombo, TexifyBundle.message("run.latexmk.settings.pdf.viewer")))
 
-        requireFocus = JBCheckBox("Allow PDF viewer to focus after compilation").apply {
+        requireFocus = JBCheckBox(TexifyBundle.message("run.latexmk.settings.allow.viewer.focus")).apply {
             isSelected = true
         }
         panel.add(requireFocus)
 
         if (SystemInfo.isWindows && !SumatraViewer.isAvailable()) {
             val label = JLabel(
-                "<html>Failed to detect SumatraPDF. If installed, add it manually in <a href=''>TeXiFy Settings</a>.</html>",
+                TexifyBundle.message("run.settings.sumatra.not.detected.html"),
             ).apply { cursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR) }
 
             label.addMouseListener(object : MouseAdapter() {
@@ -292,7 +297,7 @@ class LatexmkSettingsEditor(private var project: Project) : SettingsEditor<Latex
             panel.add(label)
         }
 
-        enableViewerCommand = JBCheckBox("Select custom PDF viewer command, using {pdf} if not the last argument")
+        enableViewerCommand = JBCheckBox(TexifyBundle.message("run.latexmk.settings.custom.viewer.command"))
         panel.add(enableViewerCommand)
 
         viewerCommandField = JBTextField().apply {
