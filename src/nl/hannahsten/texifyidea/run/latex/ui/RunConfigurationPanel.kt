@@ -11,6 +11,7 @@ import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.CollapsibleRow
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBUI
+import nl.hannahsten.texifyidea.TexifyBundle
 import nl.hannahsten.texifyidea.run.bibtex.BibtexRunConfigurationType
 import nl.hannahsten.texifyidea.run.latex.externaltool.ExternalToolRunConfigurationType
 import nl.hannahsten.texifyidea.run.makeindex.MakeindexRunConfigurationType
@@ -56,7 +57,7 @@ class RunConfigurationPanel(
 
     private fun createPanel() {
         list = JBList<RunnerAndConfigurationSettings>().apply {
-            emptyText.text = "No run configurations selected."
+            emptyText.text = TexifyBundle.message("run.ui.no.run.configurations.selected")
             cellRenderer = RunConfigCellRenderer(project)
 
             // Cell height
@@ -109,7 +110,7 @@ class RunConfigurationPanel(
 
             // Mock value change to commit changes (otherwise the apply button is not activated)
             list.setSelectionInterval(0, 0)
-            changeTitle("Enabled")
+            changeTitle(TexifyBundle.message("run.ui.status.enabled"))
             return
         }
 
@@ -119,6 +120,6 @@ class RunConfigurationPanel(
         // Mock value change to commit changes (otherwise the apply button is not activated)
         list.setSelectionInterval(-1, -1)
 
-        changeTitle("Disabled")
+        changeTitle(TexifyBundle.message("run.ui.status.disabled"))
     }
 }

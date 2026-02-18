@@ -5,6 +5,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.components.JBList
 import com.intellij.ui.components.JBScrollPane
+import nl.hannahsten.texifyidea.TexifyBundle
 import java.awt.Dimension
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
@@ -29,7 +30,7 @@ class RunConfigurationSelectionDialog(
         get() = if (isOK) field else emptyList()
 
     init {
-        title = "Choose Run Configuration"
+        title = TexifyBundle.message("run.ui.choose.run.configuration")
         init()
 
         list.apply {
