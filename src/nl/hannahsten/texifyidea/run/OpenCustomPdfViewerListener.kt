@@ -5,6 +5,7 @@ import com.intellij.execution.process.ProcessListener
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.util.Key
+import nl.hannahsten.texifyidea.TexifyBundle
 import nl.hannahsten.texifyidea.run.latex.LatexCompilationRunConfiguration
 import java.io.IOException
 
@@ -22,9 +23,9 @@ class OpenCustomPdfViewerListener(val command: Array<String>, val failSilently: 
                 if (!failSilently) {
                     // Probably user error
                     Notification(
-                        "LaTeX",
-                        "Could not open pdf file",
-                        "An error occured when trying to open the pdf using ${command.joinToString(" ")} with message ${e.message}",
+                        TexifyBundle.message("notification.group.latex"),
+                        TexifyBundle.message("run.notification.open.pdf.failed.title"),
+                        TexifyBundle.message("run.notification.open.pdf.failed.message", command.joinToString(" "), e.message ?: ""),
                         NotificationType.ERROR
                     ).notify(runConfig.project)
                 }

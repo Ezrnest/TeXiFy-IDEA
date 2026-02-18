@@ -29,7 +29,7 @@ class LatexDiscouragedUseOfDefInspection : AbstractTexifyCommandBasedInspection(
     inspectionId = "DiscouragedUseOfDef",
 ) {
 
-    override fun getDisplayName(): String = "Use \\(re)newcommand instead of \\let and \\def"
+    override fun getDisplayName(): String = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.display.use.re.newcommand.instead.of.let.and.def")
 
     override fun inspectCommand(command: LatexCommands, contexts: LContextSet, defBundle: DefinitionBundle, file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean, descriptors: MutableList<ProblemDescriptor>) {
         val name = command.nameWithoutSlash ?: return

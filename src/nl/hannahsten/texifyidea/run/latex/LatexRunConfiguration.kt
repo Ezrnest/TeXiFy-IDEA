@@ -23,6 +23,7 @@ import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
 import com.intellij.psi.SmartPsiElementPointer
+import nl.hannahsten.texifyidea.TexifyBundle
 import nl.hannahsten.texifyidea.index.NewCommandsIndex
 import nl.hannahsten.texifyidea.lang.LatexLib
 import nl.hannahsten.texifyidea.lang.magic.DefaultMagicKeys
@@ -213,19 +214,22 @@ class LatexRunConfiguration(
         super.createAdditionalTabComponents(manager, startedProcess)
 
         if (manager is LogConsoleManagerBase && startedProcess != null) {
-            manager.addAdditionalTabComponent(LatexLogTabComponent(project, mainFile, startedProcess), "LaTeX-Log", AllIcons.Vcs.Changelist, false)
+            manager.addAdditionalTabComponent(
+                LatexLogTabComponent(project, mainFile, startedProcess),
+                TexifyBundle.message("run.logtab.title.latex"),
+                AllIcons.Vcs.Changelist,
+                false
+            )
         }
     }
 
     @Throws(RuntimeConfigurationException::class)
     override fun checkConfiguration() {
         if (compiler == null) {
-            throw RuntimeConfigurationError(
-                "Run configuration is invalid: no compiler selected"
-            )
+            throw RuntimeConfigurationError(TexifyBundle.message("run.error.run.config.invalid.no.compiler.selected"))
         }
         if (mainFile == null) {
-            throw RuntimeConfigurationError("Run configuration is invalid: no valid main LaTeX file selected")
+            throw RuntimeConfigurationError(TexifyBundle.message("run.error.run.config.invalid.no.main.latex.file"))
         }
     }
 

@@ -11,6 +11,7 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.vfs.VirtualFile
+import nl.hannahsten.texifyidea.TexifyBundle
 import nl.hannahsten.texifyidea.editor.autocompile.AutoCompileDoneListener
 import nl.hannahsten.texifyidea.run.common.createCompilationHandler
 import nl.hannahsten.texifyidea.run.OpenCustomPdfViewerListener
@@ -29,7 +30,7 @@ class LatexmkCommandLineState(
 
     @Throws(ExecutionException::class)
     override fun startProcess(): ProcessHandler {
-        val mainFile = runConfig.resolveMainFileIfNeeded() ?: throw ExecutionException("Main file is not specified.")
+        val mainFile = runConfig.resolveMainFileIfNeeded() ?: throw ExecutionException(TexifyBundle.message("run.error.main.file.not.specified"))
 
         prepare()
         val command = buildCommand()
@@ -52,7 +53,7 @@ class LatexmkCommandLineState(
             {
                 LatexmkPathResolver.ensureDirectories(runConfig)
             },
-            "Creating Output Directories...",
+            TexifyBundle.message("run.progress.creating.output.directories"),
             false,
             runConfig.project,
         )
@@ -61,7 +62,7 @@ class LatexmkCommandLineState(
     @Throws(ExecutionException::class)
     private fun buildCommand(): List<String> =
         LatexmkCommandBuilder.buildCommand(runConfig, environment.project)
-            ?: throw ExecutionException("Compile command could not be created.")
+            ?: throw ExecutionException(TexifyBundle.message("run.error.compile.command.not.created"))
 
     private fun finalize(handler: KillableProcessHandler) {
         if (runConfig.isAutoCompiling) return

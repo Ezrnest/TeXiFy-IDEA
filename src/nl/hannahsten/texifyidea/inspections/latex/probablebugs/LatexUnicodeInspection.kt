@@ -94,7 +94,7 @@ class LatexUnicodeInspection : AbstractTexifyContextAwareInspection(
     }
 
     @Nls
-    override fun getDisplayName(): String = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.unsupported.non.ascii.character")
+    override fun getDisplayName(): String = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.display.unsupported.non.ascii.character")
 
     override fun prepareInspectionForFile(file: PsiFile, bundle: DefinitionBundle): Boolean {
         unicodeEnabledLocal = Util.unicodeEnabled(file)

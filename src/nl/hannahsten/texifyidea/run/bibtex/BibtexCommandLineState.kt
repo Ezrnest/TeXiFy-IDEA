@@ -11,6 +11,7 @@ import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.util.execution.ParametersListUtil
+import nl.hannahsten.texifyidea.TexifyBundle
 import nl.hannahsten.texifyidea.run.compiler.LatexCompiler.Companion.toWslPathIfNeeded
 import nl.hannahsten.texifyidea.run.latex.LatexDistributionType
 import nl.hannahsten.texifyidea.util.SystemEnvironment
@@ -27,8 +28,9 @@ open class BibtexCommandLineState(
 
     @Throws(ExecutionException::class)
     override fun startProcess(): ProcessHandler {
-        val compiler = runConfig.compiler ?: throw ExecutionException("No valid compiler specified.")
-        val compilerCommand = compiler.getCommand(runConfig, environment.project)?.toMutableList() ?: throw ExecutionException("Compile command could not be created.")
+        val compiler = runConfig.compiler ?: throw ExecutionException(TexifyBundle.message("run.error.no.valid.compiler.specified"))
+        val compilerCommand = compiler.getCommand(runConfig, environment.project)?.toMutableList()
+            ?: throw ExecutionException(TexifyBundle.message("run.error.compile.command.not.created"))
 
         // See LatexCompiler#getCommand
         val command = if (runConfig.getLatexDistributionType() == LatexDistributionType.WSL_TEXLIVE) {
@@ -59,16 +61,21 @@ open class BibtexCommandLineState(
             Path(mainPath)
         }
         else {
-            throw ExecutionException("No working directory specified for BibTeX run configuration.")
+            throw ExecutionException(TexifyBundle.message("run.bibtex.error.no.working.directory.specified"))
         }
         if (workingDirectory.exists().not()) {
-            Notification(nl.hannahsten.texifyidea.TexifyBundle.message("notification.group.latex"), "Could not find working directory", "The directory containing the main file could not be found: $workingDirectory", NotificationType.ERROR).notify(environment.project)
-            throw ExecutionException("Could not find working directory $workingDirectory for file $mainPath with given path $bibPath")
+            Notification(
+                TexifyBundle.message("notification.group.latex"),
+                TexifyBundle.message("run.error.working.directory.not.found.title"),
+                TexifyBundle.message("run.error.working.directory.not.found.message", workingDirectory.toString()),
+                NotificationType.ERROR
+            ).notify(environment.project)
+            throw ExecutionException(TexifyBundle.message("run.bibtex.error.working.directory.not.found.detail", workingDirectory.toString(), mainPath ?: "", bibPath ?: ""))
         }
 
         val commandLine = GeneralCommandLine(command).withWorkingDirectory(workingDirectory)
 
-        val handler = runWithModalProgressBlocking(environment.project, "Creating command line process...") {
+        val handler = runWithModalProgressBlocking(environment.project, TexifyBundle.message("run.progress.creating.command.line.process")) {
             KillableProcessHandler(commandLine.withEnvironment(runConfig.environmentVariables.envs))
         }
 

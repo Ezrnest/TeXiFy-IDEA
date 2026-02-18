@@ -6,6 +6,7 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
+import nl.hannahsten.texifyidea.TexifyBundle
 import nl.hannahsten.texifyidea.index.NewCommandsIndex
 import nl.hannahsten.texifyidea.lang.LatexLib
 import nl.hannahsten.texifyidea.run.compiler.MakeindexProgram
@@ -62,7 +63,7 @@ fun getDefaultMakeindexPrograms(mainFile: VirtualFile?, project: Project, usedPa
  */
 private fun getIndexPackageOptions(mainFile: VirtualFile?, project: Project): List<String> {
     // Find index package options
-    val mainPsiFile = runReadAction { mainFile?.psiFile(project) } ?: throw ExecutionException("Main file not found")
+    val mainPsiFile = runReadAction { mainFile?.psiFile(project) } ?: throw ExecutionException(TexifyBundle.message("run.error.main.file.not.found"))
 //    return LatexCommandsIndex.Util.getItemsInFileSet(mainPsiFile)
 //        .filter { it.commandToken.text in CommandMagic.packageInclusionCommands }
 //        .filter { command -> command.getRequiredParameters().any { it in PackageMagic.index.map { pkg -> pkg.name } || it in PackageMagic.glossary.map { pkg -> pkg.name } } }
@@ -81,7 +82,12 @@ private fun getIndexPackageOptions(mainFile: VirtualFile?, project: Project): Li
 fun getMakeindexOptions(mainFile: VirtualFile?, project: Project): Map<String, String> {
     val mainPsiFile = runReadAction { mainFile?.psiFile(project) }
     if (mainPsiFile == null) {
-        Notification(nl.hannahsten.texifyidea.TexifyBundle.message("notification.group.latex"), "Could not find main file ${mainFile?.path}", "Please make sure the main file exists.", NotificationType.ERROR).notify(project)
+        Notification(
+            TexifyBundle.message("notification.group.latex"),
+            TexifyBundle.message("run.notification.main.file.not.found.title", mainFile?.path ?: ""),
+            TexifyBundle.message("run.notification.main.file.not.found.message"),
+            NotificationType.ERROR
+        ).notify(project)
         return mapOf()
     }
 

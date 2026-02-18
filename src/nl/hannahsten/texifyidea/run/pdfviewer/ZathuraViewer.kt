@@ -10,6 +10,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.psi.PsiManager
+import nl.hannahsten.texifyidea.TexifyBundle
 import nl.hannahsten.texifyidea.run.latex.LatexCompilationRunConfiguration
 import nl.hannahsten.texifyidea.util.files.psiFile
 import nl.hannahsten.texifyidea.util.files.referencedFileSet
@@ -35,7 +36,12 @@ object ZathuraViewer : SystemPdfViewer("Zathura", "zathura") {
             Runtime.getRuntime().exec(arrayOf("bash", "-c", command))
         }
         else {
-            Notification(nl.hannahsten.texifyidea.TexifyBundle.message("notification.group.latex"), "Could not execute forward search", "Please make sure you have compiled the document first.", NotificationType.ERROR).notify(project)
+            Notification(
+                TexifyBundle.message("notification.group.latex"),
+                TexifyBundle.message("run.notification.forward.search.failed.title"),
+                TexifyBundle.message("run.notification.forward.search.failed.compile.first"),
+                NotificationType.ERROR
+            ).notify(project)
         }
     }
 

@@ -8,6 +8,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
+import nl.hannahsten.texifyidea.TexifyBundle
 import nl.hannahsten.texifyidea.settings.sdk.LatexSdkUtil
 import nl.hannahsten.texifyidea.util.files.FileUtil
 import nl.hannahsten.texifyidea.util.files.allChildDirectories
@@ -89,9 +90,9 @@ class LatexOutputPath(private val variant: String, var mainFile: VirtualFile?, p
             }
             // Path is invalid (perhaps the user provided an invalid path)
             Notification(
-                "LaTeX",
-                "Invalid output path",
-                "Output path $pathString of the run configuration could not be created, trying default path ${contentRoot?.path + "/" + variant}",
+                TexifyBundle.message("notification.group.latex"),
+                TexifyBundle.message("run.notification.invalid.output.path.title"),
+                TexifyBundle.message("run.notification.invalid.output.path.message", pathString, contentRoot?.path + "/" + variant),
                 NotificationType.WARNING
             ).notify(project)
 

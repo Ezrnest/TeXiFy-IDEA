@@ -24,6 +24,7 @@ import com.intellij.openapi.util.InvalidDataException
 import com.intellij.openapi.util.WriteExternalException
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
+import nl.hannahsten.texifyidea.TexifyBundle
 import nl.hannahsten.texifyidea.index.projectstructure.pathOrNull
 import nl.hannahsten.texifyidea.run.latex.LatexCompilationRunConfiguration
 import nl.hannahsten.texifyidea.run.latex.LatexDistributionType
@@ -119,17 +120,22 @@ class LatexmkRunConfiguration(
     override fun createAdditionalTabComponents(manager: AdditionalTabComponentManager, startedProcess: ProcessHandler?) {
         super.createAdditionalTabComponents(manager, startedProcess)
         if (manager is LogConsoleManagerBase && startedProcess != null) {
-            manager.addAdditionalTabComponent(LatexLogTabComponent(project, mainFile, startedProcess), "LaTeX-Log", AllIcons.Vcs.Changelist, false)
+            manager.addAdditionalTabComponent(
+                LatexLogTabComponent(project, mainFile, startedProcess),
+                TexifyBundle.message("run.logtab.title.latex"),
+                AllIcons.Vcs.Changelist,
+                false
+            )
         }
     }
 
     @Throws(RuntimeConfigurationException::class)
     override fun checkConfiguration() {
         if (mainFile == null && mainFilePath.isBlank()) {
-            throw RuntimeConfigurationError("Run configuration is invalid: no valid main LaTeX file selected")
+            throw RuntimeConfigurationError(TexifyBundle.message("run.error.run.config.invalid.no.main.latex.file"))
         }
         if (mainFile == null && !mainFilePath.endsWith(".tex", ignoreCase = true)) {
-            throw RuntimeConfigurationError("Run configuration is invalid: no valid main LaTeX file selected")
+            throw RuntimeConfigurationError(TexifyBundle.message("run.error.run.config.invalid.no.main.latex.file"))
         }
     }
 

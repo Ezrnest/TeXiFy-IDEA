@@ -10,6 +10,7 @@ import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.vfs.VirtualFile
+import nl.hannahsten.texifyidea.TexifyBundle
 import nl.hannahsten.texifyidea.editor.autocompile.AutoCompileDoneListener
 import nl.hannahsten.texifyidea.index.NewCommandsIndex
 import nl.hannahsten.texifyidea.index.projectstructure.LatexProjectStructure
@@ -40,8 +41,8 @@ open class LatexCommandLineState(environment: ExecutionEnvironment, private val 
 
     @Throws(ExecutionException::class)
     override fun startProcess(): ProcessHandler {
-        val compiler = runConfig.compiler ?: throw ExecutionException("No valid compiler specified.")
-        val mainFile = runConfig.mainFile ?: throw ExecutionException("Main file is not specified.")
+        val compiler = runConfig.compiler ?: throw ExecutionException(TexifyBundle.message("run.error.no.valid.compiler.specified"))
+        val mainFile = runConfig.mainFile ?: throw ExecutionException(TexifyBundle.message("run.error.main.file.not.specified"))
 
         ProgressManager.getInstance().runProcessWithProgressSynchronously(
             {
@@ -49,7 +50,7 @@ open class LatexCommandLineState(environment: ExecutionEnvironment, private val 
                     runConfig.outputPath.getAndCreatePath()
                 }
             },
-            "Creating Output Directories...",
+            TexifyBundle.message("run.progress.creating.output.directories"),
             false,
             runConfig.project
         )
@@ -59,7 +60,7 @@ open class LatexCommandLineState(environment: ExecutionEnvironment, private val 
             // Unfortunately, this will block the UI (so you can't cancel it either), and I don't know how to run it in the background (e.g. Backgroundable) while still returning a ProcessHandler at the end of this method. Maybe it should be its own process.
             ProgressManager.getInstance().runProcessWithProgressSynchronously(
                 { firstRunSetup(compiler) },
-                "Generating Run Configuration...",
+                TexifyBundle.message("run.progress.generating.run.configuration"),
                 false,
                 runConfig.project
             )
@@ -95,7 +96,7 @@ open class LatexCommandLineState(environment: ExecutionEnvironment, private val 
     private fun createHandler(mainFile: VirtualFile, compiler: LatexCompiler): KillableProcessHandler {
         // Make sure to create the command after generating the bib run config (which might change the output path)
         val command: List<String> = compiler.getCommand(runConfig, environment.project)
-            ?: throw ExecutionException("Compile command could not be created.")
+            ?: throw ExecutionException(TexifyBundle.message("run.error.compile.command.not.created"))
 
         return createCompilationHandler(
             environment = environment,
