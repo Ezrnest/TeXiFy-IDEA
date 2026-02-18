@@ -23,7 +23,7 @@ open class LatexGatherEquationsInspection : TexifyInspectionBase() {
 
     override val inspectionGroup = InsightGroup.LATEX
 
-    override fun getDisplayName() = "Gather equations"
+    override fun getDisplayName(): String = "Gather equations"
 
     override val inspectionId = "GatherEquations"
 

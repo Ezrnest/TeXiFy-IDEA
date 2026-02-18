@@ -42,7 +42,7 @@ open class LatexCollapseCiteInspection : TexifyInspectionBase() {
 
     override val outerSuppressionScopes = EnumSet.of(MagicCommentScope.COMMAND)!!
 
-    override fun getDisplayName() = "Collapse cite commands"
+    override fun getDisplayName(): String = "Collapse cite commands"
 
     override fun inspectFile(
         file: PsiFile,

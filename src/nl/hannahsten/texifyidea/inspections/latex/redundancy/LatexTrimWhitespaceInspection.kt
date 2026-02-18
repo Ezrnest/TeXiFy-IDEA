@@ -32,7 +32,7 @@ open class LatexTrimWhitespaceInspection : TexifyInspectionBase() {
 
     override val ignoredSuppressionScopes = EnumSet.of(MagicCommentScope.GROUP)!!
 
-    override fun getDisplayName() = "Unnecessary whitespace in section commands"
+    override fun getDisplayName(): String = "Unnecessary whitespace in section commands"
 
     override fun inspectFile(file: PsiFile, manager: InspectionManager, isOntheFly: Boolean): MutableList<ProblemDescriptor> {
         val descriptors = descriptorList()

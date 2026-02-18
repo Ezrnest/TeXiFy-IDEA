@@ -35,7 +35,7 @@ class LatexCommandAlreadyDefinedInspection : TexifyInspectionBase() {
         MagicCommentScope.GROUP
     )!!
 
-    override fun getDisplayName() = "Command is already defined"
+    override fun getDisplayName(): String = "Command is already defined"
 
     override fun inspectFile(file: PsiFile, manager: InspectionManager, isOntheFly: Boolean): List<ProblemDescriptor> {
         val descriptors = descriptorList()

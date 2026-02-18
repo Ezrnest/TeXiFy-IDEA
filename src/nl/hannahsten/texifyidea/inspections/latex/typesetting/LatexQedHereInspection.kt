@@ -25,7 +25,7 @@ open class LatexQedHereInspection : TexifyInspectionBase() {
 
     override val inspectionGroup = InsightGroup.LATEX
 
-    override fun getDisplayName() = "Insert \\qedhere in trailing displaymath environment"
+    override fun getDisplayName(): String = "Insert \\qedhere in trailing displaymath environment"
 
     override val inspectionId = "QedHere"
 

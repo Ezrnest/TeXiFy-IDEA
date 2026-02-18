@@ -20,7 +20,7 @@ open class BibtexDuplicateIdInspection : TexifyInspectionBase() {
 
     override val inspectionGroup = InsightGroup.BIBTEX
 
-    override fun getDisplayName() = "Duplicate ID"
+    override fun getDisplayName(): String = "Duplicate ID"
 
     override val inspectionId = "DuplicateId"
 

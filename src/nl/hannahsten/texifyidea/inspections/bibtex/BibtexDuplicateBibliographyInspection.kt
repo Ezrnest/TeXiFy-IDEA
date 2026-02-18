@@ -29,7 +29,7 @@ open class BibtexDuplicateBibliographyInspection : TexifyInspectionBase() {
 
     override val inspectionId = "DuplicateBibliography"
 
-    override fun getDisplayName() = "Same bibliography is included multiple times"
+    override fun getDisplayName(): String = "Same bibliography is included multiple times"
 
     override fun inspectFile(file: PsiFile, manager: InspectionManager, isOntheFly: Boolean): List<ProblemDescriptor> {
         // Chapterbib allows multiple bibliographies

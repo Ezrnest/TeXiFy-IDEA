@@ -1,51 +1,51 @@
 <idea-plugin xmlns:xi="http://www.w3.org/2001/XInclude">
     <extensions defaultExtensionNs="com.intellij">
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.codestyle.LatexMathFunctionTextInspection"
-                         groupPath="LaTeX" groupName="Style issues" displayName="Use math function instead of \text"
+                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.style.issues" displayName="%inspection.display.use.math.function.instead.of.text"
                          enabledByDefault="true"
                          level="WARNING" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.codestyle.LatexGroupedSubSupScriptInspection"
-                         groupPath="LaTeX" groupName="Style issues" displayName="Grouped superscript and subscript"
+                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.style.issues" displayName="%inspection.display.grouped.superscript.and.subscript"
                          enabledByDefault="true"
                          level="WEAK WARNING" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.codestyle.LatexGatherEquationsInspection"
-                         groupPath="LaTeX" groupName="Style issues" displayName="Gather equations"
+                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.style.issues" displayName="%inspection.display.gather.equations"
                          enabledByDefault="true"
                          level="WEAK WARNING" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.codestyle.LatexFigureNotReferencedInspection"
-                         groupPath="LaTeX" groupName="Style issues" displayName="Figure not referenced"
+                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.style.issues" displayName="%inspection.display.figure.not.referenced"
                          enabledByDefault="true"
                          level="WEAK WARNING"/>
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.codestyle.LatexMissingLabelInspection"
-                         groupPath="LaTeX" groupName="Style issues" displayName="Missing labels"
+                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.style.issues" displayName="%inspection.display.missing.labels"
                          enabledByDefault="true"
                          level="WEAK WARNING" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.codestyle.LatexLabelConventionInspection"
-                         groupPath="LaTeX" groupName="Style issues" displayName="Label conventions"
+                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.style.issues" displayName="%inspection.display.label.conventions"
                          enabledByDefault="true"
                          level="WEAK WARNING" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.codestyle.LatexLineBreakInspection"
-                         groupPath="LaTeX" groupName="Style issues" displayName="Start sentences on a new line"
+                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.style.issues" displayName="%inspection.display.start.sentences.on.a.new.line"
                          enabledByDefault="true"
                          level="WEAK WARNING" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.codestyle.LatexEquationReferenceInspection"
-                         groupPath="LaTeX" groupName="Style issues" displayName="Use \eqref{...} instead of (\ref{...})"
+                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.style.issues" displayName="%inspection.display.use.eqref.instead.of.ref"
                          enabledByDefault="true"
                          level="WEAK WARNING" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.codestyle.LatexDocumentclassNotInRootInspection"
-                         groupPath="LaTeX" groupName="Style issues" displayName="File that contains a document environment should contain a \documentclass command"
+                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.style.issues" displayName="%inspection.display.file.that.contains.a.document.environment.should.contain.a.documentclass.command"
                          enabledByDefault="true"
                          level="WARNING"/>
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.codestyle.LatexMightBreakTexifyInspection"
-                         groupPath="LaTeX" groupName="Style issues" displayName="Might break TeXiFy functionality"
+                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.style.issues" displayName="%inspection.display.might.break.texify.functionality"
                          enabledByDefault="true"
                          level="ERROR" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.codestyle.LatexTooLargeSectionInspection"
-                         groupPath="LaTeX" groupName="Style issues" displayName="Too large sections"
+                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.style.issues" displayName="%inspection.display.too.large.sections"
                          enabledByDefault="true"
                          level="WEAK WARNING" />
         <localInspection language="Latex" implementationClass="nl.hannahsten.texifyidea.inspections.latex.codestyle.LatexUsePackageInPackageInspection"
-                         groupPath="LaTeX" groupName="Style issues" displayName="Use \RequirePackage{...} instead of \usepackage{...} inside class- and sty-files"
+                         groupPath="%inspection.grouppath.latex" groupName="%inspection.group.style.issues" displayName="%inspection.display.use.requirepackage.instead.of.usepackage.inside.class.and.sty.files"
                          enabledByDefault="true"
                          level="WEAK WARNING"/>
     </extensions>

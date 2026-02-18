@@ -28,7 +28,7 @@ class LatexMathFunctionTextInspection : AbstractTexifyCommandBasedInspection(
 
     private val affectedCommands = CommandMagic.mathOperators.map { it.name }.toSet()
 
-    override fun getDisplayName() = "Use math function instead of \\text"
+    override fun getDisplayName(): String = "Use math function instead of \\text"
 
     override fun inspectCommand(
         command: LatexCommands,

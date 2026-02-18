@@ -1,10 +1,10 @@
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
-        <internalFileTemplate name="LaTeX Source"/>
-        <internalFileTemplate name="LaTeX Package"/>
-        <internalFileTemplate name="LaTeX Document class"/>
-        <internalFileTemplate name="BibTeX Bibliography"/>
-        <internalFileTemplate name="TikZ Picture"/>
+        <internalFileTemplate name="%template.internal.latex.source"/>
+        <internalFileTemplate name="%template.internal.latex.package"/>
+        <internalFileTemplate name="%template.internal.latex.document.class"/>
+        <internalFileTemplate name="%template.internal.bibtex.bibliography"/>
+        <internalFileTemplate name="%template.internal.tikz.picture"/>
 
         <fileTemplateGroup implementation="nl.hannahsten.texifyidea.templates.LatexTemplatesFactory"/>
     </extensions>

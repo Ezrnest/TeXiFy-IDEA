@@ -35,7 +35,7 @@ open class LatexDuplicateLabelInspection : TexifyInspectionBase() {
 
     override val outerSuppressionScopes = EnumSet.of(MagicCommentScope.GROUP)!!
 
-    override fun getDisplayName() = "Duplicate labels"
+    override fun getDisplayName(): String = "Duplicate labels"
 
     /**
      * checks if any label is used more than once

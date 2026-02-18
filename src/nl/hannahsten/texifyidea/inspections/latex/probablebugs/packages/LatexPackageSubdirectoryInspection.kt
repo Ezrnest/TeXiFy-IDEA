@@ -23,8 +23,7 @@ class LatexPackageSubdirectoryInspection : TexifyInspectionBase() {
 
     override fun getShortName(): String = "LatexPackageSubdirectory"
 
-    override fun getDisplayName(): String =
-        "Package name does not have the correct directory"
+    override fun getDisplayName(): String = "Package name does not have the correct directory"
 
     override fun inspectFile(file: PsiFile, manager: InspectionManager, isOntheFly: Boolean): List<ProblemDescriptor> {
         val dir = file.containingDirectory ?: return emptyList()

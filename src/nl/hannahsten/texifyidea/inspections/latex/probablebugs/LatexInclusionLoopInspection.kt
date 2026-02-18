@@ -21,7 +21,7 @@ open class LatexInclusionLoopInspection : TexifyInspectionBase() {
 
     override val inspectionId = "InclusionLoop"
 
-    override fun getDisplayName() = "Inclusion loops"
+    override fun getDisplayName(): String = "Inclusion loops"
 
     override fun inspectFile(file: PsiFile, manager: InspectionManager, isOntheFly: Boolean): MutableList<ProblemDescriptor> {
         val descriptors = descriptorList()

@@ -83,7 +83,12 @@ abstract class ExternalReformatAction(val isValidFile: (file: PsiFile) -> Boolea
             null
         }
         if (process.exitValue() != 0) {
-            Notification("LaTeX", "${command.first()} failed", output ?: "Exit value ${process.exitValue()}", NotificationType.ERROR).notify(project)
+            Notification(
+                "LaTeX",
+                "${command.first()} failed",
+                output ?: "Exit value ${process.exitValue()}",
+                NotificationType.ERROR
+            ).notify(project)
         }
         else if (output?.isNotBlank() == true) {
             processOutput(output, file, project)

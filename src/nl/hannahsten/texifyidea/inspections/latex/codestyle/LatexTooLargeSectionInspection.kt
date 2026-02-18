@@ -91,7 +91,7 @@ open class LatexTooLargeSectionInspection : TexifyInspectionBase() {
 
     override val ignoredSuppressionScopes: Set<MagicCommentScope> = EnumSet.of(MagicCommentScope.GROUP)
 
-    override fun getDisplayName() = "Too large sections"
+    override fun getDisplayName(): String = "Too large sections"
 
     override fun inspectFile(file: PsiFile, manager: InspectionManager, isOntheFly: Boolean): List<ProblemDescriptor> {
         val descriptors = descriptorList()

@@ -22,7 +22,7 @@ import nl.hannahsten.texifyidea.util.toTextRange
 class LatexMissingGlossaryReferenceInspection : TexifyInspectionBase() {
     override val inspectionGroup = InsightGroup.LATEX
     override val inspectionId = "MissingGlossaryReference"
-    override fun getDisplayName() = "Missing glossary or acronym reference"
+    override fun getDisplayName(): String = "Missing glossary or acronym reference"
 
     private val nameLetterRegex = "[^a-zA-Z]+".toRegex()
 

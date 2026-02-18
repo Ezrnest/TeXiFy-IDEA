@@ -27,7 +27,7 @@ open class LatexNonMatchingEnvironmentInspection : TexifyInspectionBase() {
 
     override val outerSuppressionScopes = EnumSet.of(MagicCommentScope.GROUP)!!
 
-    override fun getDisplayName() = "Non matching environment commands"
+    override fun getDisplayName(): String = "Non matching environment commands"
 
     override fun inspectFile(file: PsiFile, manager: InspectionManager, isOntheFly: Boolean): List<ProblemDescriptor> {
         val descriptors = descriptorList()

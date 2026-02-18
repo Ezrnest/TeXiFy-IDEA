@@ -43,7 +43,7 @@ open class LatexRedundantEscapeInspection : TexifyInspectionBase() {
 
     override val outerSuppressionScopes = EnumSet.of(MagicCommentScope.COMMAND)!!
 
-    override fun getDisplayName() = "Redundant escape when Unicode is enabled"
+    override fun getDisplayName(): String = "Redundant escape when Unicode is enabled"
 
     override fun inspectFile(file: PsiFile, manager: InspectionManager, isOntheFly: Boolean): MutableList<ProblemDescriptor> {
         val descriptors = descriptorList()

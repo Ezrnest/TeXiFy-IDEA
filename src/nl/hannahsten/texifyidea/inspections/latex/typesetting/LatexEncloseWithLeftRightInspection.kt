@@ -43,7 +43,7 @@ open class LatexEncloseWithLeftRightInspection : TexifyLineOptionsInspection("Cu
 
     override val outerSuppressionScopes = EnumSet.of(MagicCommentScope.COMMAND)!!
 
-    override fun getDisplayName() = "Enclose high lines with \\leftX..\\rightX"
+    override fun getDisplayName(): String = "Enclose high lines with \\leftX..\\rightX"
 
     override fun inspectFile(file: PsiFile, manager: InspectionManager, isOntheFly: Boolean): List<ProblemDescriptor> {
         val descriptors = descriptorList()

@@ -40,7 +40,7 @@ class LatexPackageUpdateInspection : TexifyInspectionBase() {
 
     override val inspectionId = "PackageUpdate"
 
-    override fun getDisplayName() = "Package has an update available"
+    override fun getDisplayName(): String = "Package has an update available"
 
     override fun inspectFile(file: PsiFile, manager: InspectionManager, isOntheFly: Boolean): List<ProblemDescriptor> {
         if (!LatexSdkUtil.isTlmgrAvailable(file.project) || !TexliveSdk.Cache.isAvailable) return emptyList()

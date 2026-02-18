@@ -34,7 +34,7 @@ open class LatexMissingDocumentEnvironmentInspection : TexifyInspectionBase() {
         MagicCommentScope.GROUP
     )!!
 
-    override fun getDisplayName() = "Missing document environment"
+    override fun getDisplayName(): String = "Missing document environment"
 
     override fun inspectFile(file: PsiFile, manager: InspectionManager, isOntheFly: Boolean): List<ProblemDescriptor> {
         val descriptors = descriptorList()

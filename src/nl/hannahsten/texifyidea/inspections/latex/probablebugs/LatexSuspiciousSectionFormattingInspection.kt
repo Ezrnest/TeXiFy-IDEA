@@ -25,7 +25,7 @@ open class LatexSuspiciousSectionFormattingInspection : TexifyInspectionBase() {
 
     val formatting = setOf("~", "\\\\")
 
-    override fun getDisplayName() = "Suspicious formatting in the required argument of a sectioning command"
+    override fun getDisplayName(): String = "Suspicious formatting in the required argument of a sectioning command"
 
     override val inspectionId = "SuspiciousSectionFormatting"
 

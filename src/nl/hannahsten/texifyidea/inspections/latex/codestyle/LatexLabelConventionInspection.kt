@@ -135,7 +135,7 @@ class LatexLabelConventionInspection : TexifyInspectionBase() {
 
     override val ignoredSuppressionScopes = EnumSet.of(MagicCommentScope.COMMAND, MagicCommentScope.GROUP)!!
 
-    override fun getDisplayName() = "Label conventions"
+    override fun getDisplayName(): String = "Label conventions"
 
     override fun inspectFile(file: PsiFile, manager: InspectionManager, isOntheFly: Boolean): List<ProblemDescriptor> {
         val descriptors = mutableListOf<ProblemDescriptor>()

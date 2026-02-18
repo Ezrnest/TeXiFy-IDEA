@@ -30,7 +30,7 @@ open class LatexNestedIncludesInspection : TexifyInspectionBase() {
 
     override val outerSuppressionScopes = EnumSet.of(MagicCommentScope.GROUP)!!
 
-    override fun getDisplayName() = "Nested includes"
+    override fun getDisplayName(): String = "Nested includes"
 
     override fun inspectFile(file: PsiFile, manager: InspectionManager, isOntheFly: Boolean): List<ProblemDescriptor> {
         val root = file.findRootFile()

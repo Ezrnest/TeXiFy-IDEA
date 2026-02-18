@@ -25,7 +25,7 @@ open class LatexSpaceAfterAbbreviationInspection : TexifyInspectionBase() {
 
     override val inspectionGroup = InsightGroup.LATEX
 
-    override fun getDisplayName() = "Normal space after abbreviation"
+    override fun getDisplayName(): String = "Normal space after abbreviation"
 
     override val inspectionId = "SpaceAfterAbbreviation"
 

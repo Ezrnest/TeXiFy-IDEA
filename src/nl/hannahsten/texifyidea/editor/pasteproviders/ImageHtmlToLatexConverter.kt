@@ -42,7 +42,12 @@ open class ImageHtmlToLatexConverter : HtmlToLatexConverter {
     override fun convertHtmlToLatex(htmlIn: Element, file: LatexFile): String {
         val url = URI(htmlIn.attr("src")).toURL()
         fun sendNotification(e: Exception) {
-            Notification("LaTeX", "Could not download image from $url", e.message ?: "", NotificationType.ERROR).notify(file.project)
+            Notification(
+                "LaTeX",
+                "Could not download image from $url",
+                e.message ?: "",
+                NotificationType.ERROR
+            ).notify(file.project)
         }
 
         val image = try {

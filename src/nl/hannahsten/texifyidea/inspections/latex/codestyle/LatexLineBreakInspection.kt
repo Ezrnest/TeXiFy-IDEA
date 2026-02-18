@@ -29,7 +29,7 @@ open class LatexLineBreakInspection : TexifyInspectionBase() {
 
     override val inspectionGroup = InsightGroup.LATEX
 
-    override fun getDisplayName() = "Start sentences on a new line"
+    override fun getDisplayName(): String = "Start sentences on a new line"
 
     override val inspectionId = "LineBreak"
 

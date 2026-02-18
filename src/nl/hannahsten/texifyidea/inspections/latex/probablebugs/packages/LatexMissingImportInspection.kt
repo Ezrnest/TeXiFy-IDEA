@@ -26,7 +26,7 @@ class LatexMissingImportInspection : LatexMissingImportInspectionBase("MissingIm
 
     override val ignoredSuppressionScopes = EnumSet.of(MagicCommentScope.GROUP)!!
 
-    override fun getDisplayName() = "Missing imports"
+    override fun getDisplayName(): String = "Missing imports"
 
     override fun reportCommandMissingImport(
         command: LatexCommands, candidates: List<LSemanticEntity>,

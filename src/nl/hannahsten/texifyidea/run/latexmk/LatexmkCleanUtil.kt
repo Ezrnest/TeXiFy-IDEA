@@ -59,7 +59,12 @@ object LatexmkCleanUtil {
                     Notification("LaTeX", "Latexmk clean failed", "latexmk exited with code $exitCode.", NotificationType.ERROR).notify(project)
                 }
             }.onFailure {
-                Notification("LaTeX", "Latexmk clean failed", it.message ?: "Unknown error.", NotificationType.ERROR).notify(project)
+                Notification(
+                    "LaTeX",
+                    "Latexmk clean failed",
+                    it.message ?: "Unknown error.",
+                    NotificationType.ERROR
+                ).notify(project)
             }
         }
     }

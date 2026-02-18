@@ -20,6 +20,7 @@ import com.intellij.util.ui.AbstractTableCellEditor
 import com.intellij.util.ui.JBDimension
 import com.intellij.util.ui.ListTableModel
 import com.intellij.util.ui.table.TableModelEditor
+import nl.hannahsten.texifyidea.TexifyBundle
 import nl.hannahsten.texifyidea.TexifyIcons
 import java.awt.BorderLayout
 import java.awt.Component
@@ -351,7 +352,7 @@ class TexifyConventionsConfigurable(project: Project) : SearchableConfigurable, 
         settingsManager.saveSettings(unsavedSettings)
     }
 
-    override fun getDisplayName() = "Conventions"
+    override fun getDisplayName() = TexifyBundle.message("settings.conventions.displayName")
 
     override fun getId() = "TexifyConventionsConfigurable"
 

@@ -29,7 +29,7 @@ open class BibtexMissingBibliographystyleInspection : TexifyInspectionBase() {
 
     override val inspectionId = "MissingBibliographystyle"
 
-    override fun getDisplayName() = "Missing bibliography style"
+    override fun getDisplayName(): String = "Missing bibliography style"
 
     override fun inspectFile(file: PsiFile, manager: InspectionManager, isOntheFly: Boolean): MutableList<ProblemDescriptor> {
         val descriptors = descriptorList()

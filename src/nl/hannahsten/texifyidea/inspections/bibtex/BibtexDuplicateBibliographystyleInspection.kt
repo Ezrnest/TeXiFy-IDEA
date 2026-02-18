@@ -28,7 +28,7 @@ open class BibtexDuplicateBibliographystyleInspection : TexifyInspectionBase() {
 
     override val inspectionId = "DuplicateBibliographystyle"
 
-    override fun getDisplayName() = "Duplicate bibliography style commands"
+    override fun getDisplayName(): String = "Duplicate bibliography style commands"
 
     override fun inspectFile(file: PsiFile, manager: InspectionManager, isOntheFly: Boolean): MutableList<ProblemDescriptor> {
         // Chapterbib allows multiple bibliographies

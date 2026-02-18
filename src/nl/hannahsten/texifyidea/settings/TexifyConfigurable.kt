@@ -11,6 +11,7 @@ import com.intellij.ui.RawCommandLineEditor
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.fields.IntegerField
+import nl.hannahsten.texifyidea.TexifyBundle
 import nl.hannahsten.texifyidea.run.pdfviewer.SumatraViewer
 import java.awt.Dimension
 import java.awt.FlowLayout
@@ -98,7 +99,7 @@ class TexifyConfigurable : SearchableConfigurable {
 
     override fun getId() = "TexifyConfigurable"
 
-    override fun getDisplayName() = "TeXiFy"
+    override fun getDisplayName() = TexifyBundle.message("settings.texify.displayName")
 
     override fun createComponent(): JComponent = JPanel(FlowLayout(FlowLayout.LEFT)).apply {
         add(

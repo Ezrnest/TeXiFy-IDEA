@@ -88,7 +88,12 @@ class LatexOutputPath(private val variant: String, var mainFile: VirtualFile?, p
                 createOutputPath(pathString)?.let { return it }
             }
             // Path is invalid (perhaps the user provided an invalid path)
-            Notification("LaTeX", "Invalid output path", "Output path $pathString of the run configuration could not be created, trying default path ${contentRoot?.path + "/" + variant}", NotificationType.WARNING).notify(project)
+            Notification(
+                "LaTeX",
+                "Invalid output path",
+                "Output path $pathString of the run configuration could not be created, trying default path ${contentRoot?.path + "/" + variant}",
+                NotificationType.WARNING
+            ).notify(project)
 
             // Create and return default path
             if (contentRoot != null) {

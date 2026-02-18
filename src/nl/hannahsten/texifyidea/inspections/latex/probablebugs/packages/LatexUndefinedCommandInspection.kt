@@ -19,7 +19,7 @@ import nl.hannahsten.texifyidea.psi.LatexEnvironment
  */
 class LatexUndefinedCommandInspection : LatexMissingImportInspectionBase(inspectionId = "UndefinedCommand") {
 
-    override fun getDisplayName() = "Command is not defined"
+    override fun getDisplayName(): String = "Command is not defined"
 
     override fun reportUnknownCommand(
         command: LatexCommands, descriptors: MutableList<ProblemDescriptor>, manager: InspectionManager, isOntheFly: Boolean

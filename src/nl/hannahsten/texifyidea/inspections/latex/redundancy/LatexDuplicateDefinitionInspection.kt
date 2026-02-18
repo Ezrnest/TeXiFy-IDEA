@@ -25,7 +25,7 @@ open class LatexDuplicateDefinitionInspection : TexifyInspectionBase() {
 
     override val inspectionId = "DuplicateDefinition"
 
-    override fun getDisplayName() = "Duplicate command definitions"
+    override fun getDisplayName(): String = "Duplicate command definitions"
 
     override fun inspectFile(file: PsiFile, manager: InspectionManager, isOntheFly: Boolean): MutableList<ProblemDescriptor> {
         val descriptors = descriptorList()

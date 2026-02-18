@@ -30,7 +30,7 @@ open class LatexMissingDocumentclassInspection : TexifyInspectionBase() {
         MagicCommentScope.GROUP
     )!!
 
-    override fun getDisplayName() = "Missing documentclass"
+    override fun getDisplayName(): String = "Missing documentclass"
 
     override fun inspectFile(file: PsiFile, manager: InspectionManager, isOntheFly: Boolean): List<ProblemDescriptor> {
         val descriptors = descriptorList()

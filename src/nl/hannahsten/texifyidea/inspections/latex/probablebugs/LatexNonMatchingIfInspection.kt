@@ -28,7 +28,7 @@ open class LatexNonMatchingIfInspection : TexifyInspectionBase() {
 
     override val inspectionGroup = InsightGroup.LATEX
 
-    override fun getDisplayName() = "Open if-then-else control sequence"
+    override fun getDisplayName(): String = "Open if-then-else control sequence"
 
     override val inspectionId = "NonMatchingIf"
 

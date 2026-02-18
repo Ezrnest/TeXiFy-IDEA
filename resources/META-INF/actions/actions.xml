@@ -7,42 +7,42 @@
 
         <!-- LaTeX Code menu -->
         <!--suppress PluginXmlCapitalization -->
-        <action id="texify.ReformatLatexindent" class="nl.hannahsten.texifyidea.action.reformat.ReformatWithLatexindent" text="Reformat with latexindent" description="Reformat File with latexindent.pl" >
+        <action id="texify.ReformatLatexindent" class="nl.hannahsten.texifyidea.action.reformat.ReformatWithLatexindent" text="%action.texify.ReformatLatexindent.text" description="%action.texify.ReformatLatexindent.description" >
             <add-to-group group-id="CodeFormatGroup" anchor="after" relative-to-action="ShowReformatFileDialog" />
         </action>
         <!--suppress PluginXmlCapitalization -->
-        <action id="texify.ReformatBibtexTidy" class="nl.hannahsten.texifyidea.action.reformat.ReformatWithBibtexTidy" text="Reformat with bibtex-tidy" description="Reformat File with bibtex-tidy" >
+        <action id="texify.ReformatBibtexTidy" class="nl.hannahsten.texifyidea.action.reformat.ReformatWithBibtexTidy" text="%action.texify.ReformatBibtexTidy.text" description="%action.texify.ReformatBibtexTidy.description" >
             <add-to-group group-id="CodeFormatGroup" anchor="after" relative-to-action="ShowReformatFileDialog" />
         </action>
 
         <!-- LaTeX Analyze menu -->
         <action class="nl.hannahsten.texifyidea.action.analysis.WordCountAction" id="texify.analysis.WordCount"
-                text="_Word Count" description="Estimate the word count of the currently active .tex file and inclusions." icon="nl.hannahsten.texifyidea.TexifyIcons.WORD_COUNT">
+                text="%action.texify.analysis.WordCount.text" description="%action.texify.analysis.WordCount.description" icon="nl.hannahsten.texifyidea.TexifyIcons.WORD_COUNT">
             <keyboard-shortcut first-keystroke="alt W" keymap="$default"/>
-            <override-text place="GoToAction" text="LaTeX _Word Count"/>
+            <override-text place="GoToAction" text="%action.texify.analysis.WordCount.GoToAction.text"/>
             <!-- Prior to idea 213, the Code menu was called Analyze (but only in IntelliJ) -->
             <add-to-group group-id="CodeMenu" anchor="last"/>
         </action>
 
         <!-- Generate Latex -->
-        <group id="texify.LatexGenerate" text="_LaTeX" description="Latex generation actions" popup="true">
+        <group id="texify.LatexGenerate" text="%group.texify.LatexGenerate.text" description="%group.texify.LatexGenerate.description" popup="true">
             <add-to-group group-id="GenerateGroup" anchor="last"/>
-            <override-text place="GoToAction" text="Generate _LaTeX"/>
+            <override-text place="GoToAction" text="%group.texify.LatexGenerate.GoToAction.text"/>
 
             <!-- Table wizard -->
             <action class="nl.hannahsten.texifyidea.action.wizard.table.LatexTableWizardAction" id="texify.TableWizardPopup"
-                    text="_Table..."
-                    description="Shows a wizard to insert a table."/>
+                    text="%action.texify.TableWizardPopup.text"
+                    description="%action.texify.TableWizardPopup.description"/>
 
             <!-- Figure/graphic wizard -->
             <action class="nl.hannahsten.texifyidea.action.wizard.graphic.InsertGraphicWizardAction" id="texify.GraphicsWizardPopup"
-                    text="_Graphic..."
-                    description="Shows a wizard to insert a graphic."/>
+                    text="%action.texify.GraphicsWizardPopup.text"
+                    description="%action.texify.GraphicsWizardPopup.description"/>
 
             <!-- Dummy text -->
             <action class="nl.hannahsten.texifyidea.action.wizard.ipsum.InsertDummyTextAction" id="texify.DummyTextWizardPopup"
-                    text="_Dummy Text..."
-                    description="Shows a popup to insert dummy text."/>
+                    text="%action.texify.DummyTextWizardPopup.text"
+                    description="%action.texify.DummyTextWizardPopup.description"/>
         </group>
     </actions>
 

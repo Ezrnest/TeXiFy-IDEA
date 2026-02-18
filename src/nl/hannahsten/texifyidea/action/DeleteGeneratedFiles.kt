@@ -38,7 +38,12 @@ class DeleteGeneratedFiles : AnAction() {
             deleteFiles(event)
         }
         catch (e: PrivilegedActionException) {
-            Notification("LaTeX", "Could not delete some files", e.message ?: "", NotificationType.ERROR).notify(event.project)
+            Notification(
+                "LaTeX",
+                "Could not delete some files",
+                e.message ?: "",
+                NotificationType.ERROR
+            ).notify(event.project)
         }
     }
 
