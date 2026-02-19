@@ -14,6 +14,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import com.intellij.psi.SmartPointerManager
 import com.intellij.psi.SmartPsiElementPointer
+import nl.hannahsten.texifyidea.TexifyBundle
 import nl.hannahsten.texifyidea.inspections.InsightGroup
 import nl.hannahsten.texifyidea.inspections.TexifyInspectionBase
 import nl.hannahsten.texifyidea.psi.LatexCommands
@@ -107,9 +108,9 @@ class LatexPackageUpdateInspection : TexifyInspectionBase() {
                         val (tlmgrOutput, tlmgrExitCode) = runCommandWithExitCode(tlmgrExecutable, "update", "--self", returnExceptionMessage = true, timeout = 20)
                         if (tlmgrExitCode != 0) {
                             Notification(
-                                "LaTeX",
-                                "Package $packageName not updated",
-                                "Could not update tlmgr: $tlmgrOutput",
+                                TexifyBundle.message("notification.group.latex"),
+                                TexifyBundle.message("notification.inspection.package.not.updated.title", packageName),
+                                TexifyBundle.message("notification.inspection.tlmgr.update.failed.content", tlmgrOutput ?: ""),
                                 NotificationType.ERROR
                             ).notify(project)
                             indicator.cancel()
@@ -121,10 +122,21 @@ class LatexPackageUpdateInspection : TexifyInspectionBase() {
                     }
 
                     if (exitCode != 0) {
+                        val contentKey = if (exitCode == 143) {
+                            "notification.inspection.package.update.failed.timeout.content"
+                        }
+                        else {
+                            "notification.inspection.package.update.failed.content"
+                        }
                         Notification(
-                            "LaTeX",
-                            if (packageName == "--all") "Could not update packages" else "Package $packageName not updated",
-                            "Could not update $packageName${if (exitCode == 143) " due to a timeout" else ""}: $output",
+                            TexifyBundle.message("notification.group.latex"),
+                            if (packageName == "--all") {
+                                TexifyBundle.message("notification.inspection.packages.update.failed.title")
+                            }
+                            else {
+                                TexifyBundle.message("notification.inspection.package.not.updated.title", packageName)
+                            },
+                            TexifyBundle.message(contentKey, packageName, output ?: ""),
                             NotificationType.ERROR
                         ).notify(project)
                         indicator.cancel()

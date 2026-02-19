@@ -14,6 +14,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import com.intellij.psi.SmartPointerManager
 import com.intellij.psi.SmartPsiElementPointer
+import nl.hannahsten.texifyidea.TexifyBundle
 import nl.hannahsten.texifyidea.index.NewCommandsIndex
 import nl.hannahsten.texifyidea.inspections.InsightGroup
 import nl.hannahsten.texifyidea.inspections.TexifyInspectionBase
@@ -124,9 +125,9 @@ class LatexPackageNotInstalledInspection : TexifyInspectionBase() {
 
                         if (tlname == null) {
                             Notification(
-                                "LaTeX",
-                                "Package $packageName not installed",
-                                "Package $packageName was not installed because tlmgr could not find $packageName.sty anywhere. Try to install the package manually.",
+                                TexifyBundle.message("notification.group.latex"),
+                                TexifyBundle.message("notification.inspection.package.not.installed.title", packageName),
+                                TexifyBundle.message("notification.inspection.package.not.installed.content", packageName),
                                 NotificationType.ERROR
                             ).notify(project)
 

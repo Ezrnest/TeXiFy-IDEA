@@ -18,6 +18,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.ProjectScope
 import com.intellij.serviceContainer.AlreadyDisposedException
 import com.intellij.util.concurrency.annotations.RequiresReadLock
+import nl.hannahsten.texifyidea.TexifyBundle
 import nl.hannahsten.texifyidea.file.LatexFileType
 import nl.hannahsten.texifyidea.index.NewCommandsIndex
 import nl.hannahsten.texifyidea.modules.LatexModuleType
@@ -150,7 +151,12 @@ fun Project.selectedTextEditor(): TextEditor? = FileEditorManager.getInstance(th
 
 fun Project.selectedTextEditorOrWarning(): TextEditor? {
     selectedTextEditor()?.let { return it }
-    Notification(nl.hannahsten.texifyidea.TexifyBundle.message("notification.group.latex"), "Could not find an open editor to insert text", "Put your caret in a LaTeX file first. Please report an issue on GitHub if you believe this is incorrect", NotificationType.ERROR).notify(this)
+    Notification(
+        TexifyBundle.message("notification.group.latex"),
+        TexifyBundle.message("notification.project.open.editor.not.found.title"),
+        TexifyBundle.message("notification.project.open.editor.not.found.content"),
+        NotificationType.ERROR
+    ).notify(this)
     return null
 }
 

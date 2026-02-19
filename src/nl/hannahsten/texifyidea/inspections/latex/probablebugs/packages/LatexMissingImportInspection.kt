@@ -8,6 +8,7 @@ import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
+import nl.hannahsten.texifyidea.TexifyBundle
 import nl.hannahsten.texifyidea.lang.LSemanticEntity
 import nl.hannahsten.texifyidea.lang.LatexLib
 import nl.hannahsten.texifyidea.lang.magic.MagicCommentScope
@@ -84,8 +85,10 @@ class LatexMissingImportInspection : LatexMissingImportInspectionBase("MissingIm
         override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
             if (!PackageUtils.insertUsepackage(descriptor.psiElement.containingFile, LatexLib.Package(packName))) {
                 Notification(
-                    "LaTeX", "Conflicting package detected",
-                    "The package $packName was not inserted because a conflicting package was detected.", NotificationType.INFORMATION
+                    TexifyBundle.message("notification.group.latex"),
+                    TexifyBundle.message("notification.inspection.conflicting.package.title"),
+                    TexifyBundle.message("notification.inspection.conflicting.package.content", packName),
+                    NotificationType.INFORMATION
                 ).notify(project)
             }
         }
