@@ -78,7 +78,7 @@ class LatexPackageNotInstalledInspection : TexifyInspectionBase() {
                     descriptors.add(
                         manager.createProblemDescriptor(
                             command,
-                            nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.package.not.installed.or.providespackage.missing"),
+                            TexifyBundle.message("inspection.description.latex.package.not.installed.or.providespackage.missing"),
                             InstallPackage(
                                 SmartPointerManager.getInstance(file.project).createSmartPsiElementPointer(file),
                                 pack,
@@ -100,7 +100,7 @@ class LatexPackageNotInstalledInspection : TexifyInspectionBase() {
 
     private class InstallPackage(val filePointer: SmartPsiElementPointer<PsiFile>, val packageName: String, val knownNotInstalledPackages: MutableSet<String>) : LocalQuickFix {
 
-        override fun getFamilyName(): String = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.install.package", packageName)
+        override fun getFamilyName(): String = TexifyBundle.message("inspection.quickfix.install.package", packageName)
 
         override fun generatePreview(project: Project, previewDescriptor: ProblemDescriptor): IntentionPreviewInfo {
             // Nothing is modified

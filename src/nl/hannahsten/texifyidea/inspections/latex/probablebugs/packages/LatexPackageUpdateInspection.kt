@@ -66,7 +66,7 @@ class LatexPackageUpdateInspection : TexifyInspectionBase() {
             val packageVersions = Cache.availablePackageUpdates!![packageName] ?: return@mapNotNull null
             manager.createProblemDescriptor(
                 it,
-                nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.package.update.available", packageName),
+                TexifyBundle.message("inspection.description.latex.package.update.available", packageName),
                 arrayOf(
                     UpdatePackage(SmartPointerManager.getInstance(file.project).createSmartPsiElementPointer(file), packageName, packageVersions.first, packageVersions.second),
                     UpdatePackage(SmartPointerManager.getInstance(file.project).createSmartPsiElementPointer(file), "--all", null, null),
@@ -81,13 +81,13 @@ class LatexPackageUpdateInspection : TexifyInspectionBase() {
     private class UpdatePackage(val filePointer: SmartPsiElementPointer<PsiFile>, val packageName: String, val old: String?, val new: String?) : LocalQuickFix {
 
         override fun getFamilyName(): String = if (packageName == "--all") {
-            nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.update.all.packages")
+            TexifyBundle.message("inspection.quickfix.update.all.packages")
         }
         else if (old != null && new != null) {
-            nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.update.package.from.to.revision", packageName, old, new)
+            TexifyBundle.message("inspection.quickfix.update.package.from.to.revision", packageName, old, new)
         }
         else {
-            nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.update.package", packageName)
+            TexifyBundle.message("inspection.quickfix.update.package", packageName)
         }
 
         override fun generatePreview(project: Project, previewDescriptor: ProblemDescriptor): IntentionPreviewInfo {

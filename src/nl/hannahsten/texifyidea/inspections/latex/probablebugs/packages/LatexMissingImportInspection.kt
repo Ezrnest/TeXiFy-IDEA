@@ -41,7 +41,7 @@ class LatexMissingImportInspection : LatexMissingImportInspectionBase("MissingIm
             manager.createProblemDescriptor(
                 command,
                 range,
-                nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.command.requires.any.package", packageNames.joinToString(", ")),
+                TexifyBundle.message("inspection.description.latex.command.requires.any.package", packageNames.joinToString(", ")),
                 ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
                 isOntheFly,
                 *fixes
@@ -61,7 +61,7 @@ class LatexMissingImportInspection : LatexMissingImportInspectionBase("MissingIm
             manager.createProblemDescriptor(
                 environment,
                 range,
-                nl.hannahsten.texifyidea.TexifyBundle.message("inspection.description.latex.environment.requires.any.package", packageNames.joinToString(", ")),
+                TexifyBundle.message("inspection.description.latex.environment.requires.any.package", packageNames.joinToString(", ")),
                 ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
                 isOntheFly,
                 *fixes
@@ -80,7 +80,7 @@ class LatexMissingImportInspection : LatexMissingImportInspectionBase("MissingIm
      */
     private class ImportPackageFix(val packName: String) : LocalQuickFix {
 
-        override fun getFamilyName() = nl.hannahsten.texifyidea.TexifyBundle.message("inspection.quickfix.add.import.for.package.providing.environment", packName)
+        override fun getFamilyName() = TexifyBundle.message("inspection.quickfix.add.import.for.package.providing.environment", packName)
 
         override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
             if (!PackageUtils.insertUsepackage(descriptor.psiElement.containingFile, LatexLib.Package(packName))) {
