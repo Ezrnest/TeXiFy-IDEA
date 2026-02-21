@@ -6,11 +6,11 @@ import com.intellij.execution.process.KillableProcessHandler
 import com.intellij.execution.process.ProcessHandler
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.util.ProgramParametersConfigurator
-import com.intellij.openapi.application.runReadAction
-import com.intellij.openapi.progress.ProgressManager
+import com.intellij.util.execution.ParametersListUtil
+import com.intellij.openapi.application.ReadAction
+import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.vfs.VirtualFile
-import nl.hannahsten.texifyidea.TexifyBundle
 import nl.hannahsten.texifyidea.editor.autocompile.AutoCompileDoneListener
 import nl.hannahsten.texifyidea.index.NewCommandsIndex
 import nl.hannahsten.texifyidea.index.projectstructure.LatexProjectStructure
@@ -38,36 +38,56 @@ import java.io.File
 open class LatexCommandLineState(environment: ExecutionEnvironment, private val runConfig: LatexRunConfiguration) : CommandLineState(environment) {
 
     private val programParamsConfigurator = ProgramParametersConfigurator()
+    private val executionState = runConfig.executionState
 
     @Throws(ExecutionException::class)
     override fun startProcess(): ProcessHandler {
-        val compiler = runConfig.compiler ?: throw ExecutionException(TexifyBundle.message("run.error.no.valid.compiler.specified"))
-        val mainFile = runConfig.mainFile ?: throw ExecutionException(TexifyBundle.message("run.error.main.file.not.specified"))
+        val compiler = runConfig.compiler ?: throw ExecutionException("No valid compiler specified.")
+        val mainFile = runConfig.mainFile ?: throw ExecutionException("Main file is not specified.")
 
-        ProgressManager.getInstance().runProcessWithProgressSynchronously(
-            {
-                if (runConfig.outputPath.virtualFile == null || !runConfig.outputPath.virtualFile!!.exists()) {
-                    runConfig.outputPath.getAndCreatePath()
-                }
-            },
-            TexifyBundle.message("run.progress.creating.output.directories"),
-            false,
-            runConfig.project
-        )
+        return if (compiler == LatexCompiler.LATEXMK) {
+            startLatexmkProcess(mainFile, compiler)
+        }
+        else {
+            startClassicProcess(mainFile, compiler)
+        }
+    }
 
-        if (!runConfig.hasBeenRun) {
-            // Show to the user what we're doing that takes so long (up to 30 seconds for a large project)
-            // Unfortunately, this will block the UI (so you can't cancel it either), and I don't know how to run it in the background (e.g. Backgroundable) while still returning a ProcessHandler at the end of this method. Maybe it should be its own process.
-            ProgressManager.getInstance().runProcessWithProgressSynchronously(
-                { firstRunSetup(compiler) },
-                TexifyBundle.message("run.progress.generating.run.configuration"),
-                false,
-                runConfig.project
-            )
+    private fun startLatexmkProcess(mainFile: VirtualFile, compiler: LatexCompiler): ProcessHandler {
+        LatexPathResolver.resolveOutputDir(runConfig)
+
+        val createdOutputDirectories = if (!runConfig.getLatexDistributionType().isMiktex(runConfig.project)) {
+            LatexPathResolver.updateOutputSubDirs(runConfig)
+        }
+        else {
+            setOf()
+        }
+        runConfig.filesToCleanUpIfEmpty.addAll(createdOutputDirectories)
+
+        val handler = createHandler(mainFile, compiler)
+        executionState.markHasRun()
+
+        if (!isLastCompile(isMakeindexNeeded = false, handler)) return handler
+
+        schedulePdfViewerIfNeeded(handler)
+        if (runConfig.isAutoCompiling) {
+            handler.addProcessListener(AutoCompileDoneListener())
+            runConfig.isAutoCompiling = false
+            // reset this flag, which will be set in each auto-compile
+        }
+
+        return handler
+    }
+
+    private fun startClassicProcess(mainFile: VirtualFile, compiler: LatexCompiler): ProcessHandler {
+        LatexPathResolver.resolveOutputDir(runConfig)
+
+        if (!executionState.hasBeenRun) {
+            firstRunSetup(compiler)
         }
 
         val createdOutputDirectories = if (!runConfig.getLatexDistributionType().isMiktex(runConfig.project)) {
-            runConfig.outputPath.updateOutputSubDirs()
+            LatexPathResolver.updateOutputSubDirs(runConfig)
         }
         else {
             setOf()
@@ -77,7 +97,7 @@ open class LatexCommandLineState(environment: ExecutionEnvironment, private val 
         val handler = createHandler(mainFile, compiler)
         val isMakeindexNeeded = runMakeindexIfNeeded(handler, mainFile, runConfig.filesToCleanUp)
         runExternalToolsIfNeeded(handler)
-        runConfig.hasBeenRun = true
+        executionState.markHasRun()
 
         if (!isLastCompile(isMakeindexNeeded, handler)) return handler
 
@@ -86,17 +106,15 @@ open class LatexCommandLineState(environment: ExecutionEnvironment, private val 
         if (runConfig.isAutoCompiling) {
             handler.addProcessListener(AutoCompileDoneListener())
             runConfig.isAutoCompiling = false
-            // reset this flag, which will be set in each auto-compile
         }
         scheduleFileCleanup(runConfig.filesToCleanUp, runConfig.filesToCleanUpIfEmpty, handler)
-
         return handler
     }
 
     private fun createHandler(mainFile: VirtualFile, compiler: LatexCompiler): KillableProcessHandler {
         // Make sure to create the command after generating the bib run config (which might change the output path)
         val command: List<String> = compiler.getCommand(runConfig, environment.project)
-            ?: throw ExecutionException(TexifyBundle.message("run.error.compile.command.not.created"))
+            ?: throw ExecutionException("Compile command could not be created.")
 
         return createCompilationHandler(
             environment = environment,
@@ -113,18 +131,26 @@ open class LatexCommandLineState(environment: ExecutionEnvironment, private val 
      * Do some long-running checks to generate the correct run configuration.
      */
     private fun firstRunSetup(compiler: LatexCompiler) {
+        if (compiler == LatexCompiler.LATEXMK) {
+            return
+        }
+
+        val usesCsl = ReadAction.compute<Boolean, RuntimeException> {
+            runConfig.mainFile?.psiFile(runConfig.project)?.includedPackagesInFileset()?.contains(LatexLib.CITATION_STYLE_LANGUAGE) == true
+        }
+
         // Only at this moment we know the user really wants to run the run configuration, so only now we do the expensive check of
         // checking for bibliography commands.
         if (runConfig.bibRunConfigs.isEmpty() &&
             !compiler.includesBibtex &&
             // citation-style-language package does not need a bibtex run configuration
-            runConfig.mainFile?.psiFile(runConfig.project)?.includedPackagesInFileset()?.contains(LatexLib.CITATION_STYLE_LANGUAGE)?.not() == true
+            !usesCsl
         ) {
             // Generating a bib run config involves PSI access, which requires a read action.
-            runReadAction {
+            ReadAction.run<RuntimeException> {
                 // If the index is not ready, we cannot check if a bib run config is needed, so skip this and run the main run config anyway
                 if (!DumbService.getInstance(runConfig.project).isDumb) {
-                    Log.debug("Not generating bibtex run config because index is not ready")
+                    Log.debug("Generating bibtex run config during first run setup")
                     runConfig.generateBibRunConfig()
                 }
             }
@@ -143,7 +169,7 @@ open class LatexCommandLineState(environment: ExecutionEnvironment, private val 
     private fun runExternalToolsIfNeeded(
         handler: KillableProcessHandler
     ): Boolean {
-        val isAnyExternalToolNeeded = if (!runConfig.hasBeenRun) {
+        val isAnyExternalToolNeeded = if (!executionState.hasBeenRun) {
             // This is a relatively expensive check
             RunExternalToolListener.getRequiredExternalTools(runConfig.mainFile, runConfig.project).isNotEmpty()
         }
@@ -151,8 +177,8 @@ open class LatexCommandLineState(environment: ExecutionEnvironment, private val 
             false
         }
 
-        if (runConfig.isFirstRunConfig && (runConfig.externalToolRunConfigs.isNotEmpty() || isAnyExternalToolNeeded)) {
-            handler.addProcessListener(RunExternalToolListener(runConfig, environment))
+        if (executionState.isFirstRunConfig && (runConfig.externalToolRunConfigs.isNotEmpty() || isAnyExternalToolNeeded)) {
+            handler.addProcessListener(RunExternalToolListener(runConfig, environment, executionState))
         }
 
         return isAnyExternalToolNeeded
@@ -163,7 +189,7 @@ open class LatexCommandLineState(environment: ExecutionEnvironment, private val 
 
         // To find out whether makeindex is needed is relatively expensive,
         // so we only do this the first time
-        if (!runConfig.hasBeenRun) {
+        if (!executionState.hasBeenRun) {
             val commandsInFileSet = NewCommandsIndex.getAllKeys(LatexProjectStructure.getFilesetScopeFor(mainFile, environment.project))
             // Option 1 in http://mirrors.ctan.org/macros/latex/contrib/glossaries/glossariesbegin.pdf
             val usesTexForGlossaries = "\\makenoidxglossaries" in commandsInFileSet
@@ -173,10 +199,12 @@ open class LatexCommandLineState(environment: ExecutionEnvironment, private val 
             }
 
             // If no index package is used, we assume we won't have to run makeindex
-            val includedPackages = runConfig.mainFile
-                ?.psiFile(runConfig.project)
-                ?.includedPackagesInFileset()
-                ?: setOf()
+            val includedPackages = ReadAction.compute<Set<LatexLib>, RuntimeException> {
+                runConfig.mainFile
+                    ?.psiFile(runConfig.project)
+                    ?.includedPackagesInFileset()
+                    ?: setOf()
+            }
 
             isMakeindexNeeded = includedPackages.intersect(PackageMagic.index + PackageMagic.glossary).isNotEmpty() && runConfig.compiler?.includesMakeindex == false && !usesTexForGlossaries
 
@@ -188,24 +216,25 @@ open class LatexCommandLineState(environment: ExecutionEnvironment, private val 
         }
 
         // Run makeindex when applicable
-        if (runConfig.isFirstRunConfig && (runConfig.makeindexRunConfigs.isNotEmpty() || isMakeindexNeeded)) {
-            handler.addProcessListener(RunMakeindexListener(runConfig, environment, filesToCleanUp))
+        if (executionState.isFirstRunConfig && (runConfig.makeindexRunConfigs.isNotEmpty() || isMakeindexNeeded)) {
+            handler.addProcessListener(RunMakeindexListener(runConfig, environment, filesToCleanUp, executionState))
         }
 
         return isMakeindexNeeded
     }
 
     private fun isLastCompile(isMakeindexNeeded: Boolean, handler: KillableProcessHandler): Boolean {
+        val shouldCompileTwice = runConfig.compiler != LatexCompiler.LATEXMK && runConfig.compileTwice
+
         // If there is no bibtex/makeindex involved and we don't need to compile twice, then this is the last compile
         if (runConfig.bibRunConfigs.isEmpty() && !isMakeindexNeeded && runConfig.externalToolRunConfigs.isEmpty()) {
-            if (!runConfig.compileTwice) {
-                runConfig.isLastRunConfig = true
+            if (!shouldCompileTwice) {
+                executionState.markLastPass()
             }
 
             // Schedule the second compile only if this is the first compile
-            @Suppress("KotlinConstantConditions")
-            if (!runConfig.isLastRunConfig && runConfig.compileTwice) {
-                handler.addProcessListener(RunLatexListener(runConfig, environment))
+            if (!executionState.isLastRunConfig && shouldCompileTwice) {
+                handler.addProcessListener(RunLatexListener(runConfig, environment, executionState))
                 return false
             }
         }
@@ -215,29 +244,29 @@ open class LatexCommandLineState(environment: ExecutionEnvironment, private val 
 
     private fun scheduleBibtexRunIfNeeded(handler: KillableProcessHandler) {
         runConfig.bibRunConfigs.forEachIndexed { index, bibSettings ->
-            if (!runConfig.isFirstRunConfig) {
+            if (!executionState.isFirstRunConfig) {
                 return@forEachIndexed
             }
 
             // Only run latex after the last one
             if (index == runConfig.bibRunConfigs.size - 1) {
-                handler.addProcessListener(RunBibtexListener(bibSettings, runConfig, environment, true))
+                handler.addProcessListener(RunBibtexListener(bibSettings, runConfig, environment, executionState, true))
             }
             else {
-                handler.addProcessListener(RunBibtexListener(bibSettings, runConfig, environment, false))
+                handler.addProcessListener(RunBibtexListener(bibSettings, runConfig, environment, executionState, false))
             }
         }
     }
 
     private fun schedulePdfViewerIfNeeded(handler: KillableProcessHandler) {
         // Do not schedule to open the pdf viewer when this is not the last run config in the chain or it is an auto compile
-        if (runConfig.isLastRunConfig && !runConfig.isAutoCompiling) {
+        if (executionState.isLastRunConfig && !runConfig.isAutoCompiling) {
             addOpenViewerListener(handler, runConfig.requireFocus)
         }
     }
 
     private fun scheduleFileCleanup(filesToCleanUp: MutableList<File>, filesToCleanUpIfEmpty: Set<File>, handler: KillableProcessHandler) {
-        if (runConfig.isLastRunConfig) {
+        if (executionState.isLastRunConfig) {
             handler.addProcessListener(FileCleanupListener(filesToCleanUp, filesToCleanUpIfEmpty))
         }
     }
@@ -254,7 +283,7 @@ open class LatexCommandLineState(environment: ExecutionEnvironment, private val 
             val commandString = runConfig.viewerCommand!!
 
             // Split on spaces
-            val commandList = commandString.split(" ").toMutableList()
+            val commandList = ParametersListUtil.parse(commandString).toMutableList()
 
             val containsPlaceholder = commandList.contains("{pdf}")
 
@@ -296,12 +325,12 @@ open class LatexCommandLineState(environment: ExecutionEnvironment, private val 
         val line = editor?.document?.getLineNumber(editor.caretOffset())?.plus(1) ?: 0
 
         // Get the currently open file to use for forward search.
-        val currentPsiFile = editor?.document?.psiFile(environment.project)
+        val currentFilePath = editor?.document?.let { FileDocumentManager.getInstance().getFile(it)?.path }
             // Get the main file from the run configuration as a fallback.
-            ?: runConfig.mainFile?.psiFile(environment.project)
+            ?: runConfig.mainFile?.path
             ?: return
 
         // Set the OpenViewerListener to execute when the compilation is done.
-        handler.addProcessListener(OpenViewerListener(viewer, runConfig, currentPsiFile.virtualFile.path, line, environment.project, focusAllowed))
+        handler.addProcessListener(OpenViewerListener(viewer, runConfig, currentFilePath, line, environment.project, focusAllowed))
     }
 }

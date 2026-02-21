@@ -7,6 +7,11 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.project.Project
 import com.intellij.util.io.awaitExit
 import nl.hannahsten.texifyidea.TexifyBundle
+import com.intellij.util.execution.ParametersListUtil
+import nl.hannahsten.texifyidea.run.compiler.LatexCompiler
+import nl.hannahsten.texifyidea.run.latex.LatexPathResolver
+import nl.hannahsten.texifyidea.run.latex.LatexRunConfiguration
+import nl.hannahsten.texifyidea.settings.sdk.LatexSdkUtil
 import nl.hannahsten.texifyidea.util.runInBackgroundWithoutProgress
 import java.nio.file.Path
 
@@ -17,8 +22,13 @@ object LatexmkCleanUtil {
         CLEAN_ALL("Clean all generated files"),
     }
 
-    fun run(project: Project, runConfig: LatexmkRunConfiguration, mode: Mode) {
-        val mainFile = runConfig.resolveMainFileIfNeeded()
+    fun run(project: Project, runConfig: LatexRunConfiguration, mode: Mode) {
+        if (runConfig.compiler != LatexCompiler.LATEXMK) {
+            Notification("LaTeX", "Latexmk clean failed", "Selected run configuration is not using latexmk.", NotificationType.ERROR).notify(project)
+            return
+        }
+
+        val mainFile = runConfig.mainFile
         if (mainFile == null) {
             Notification(
                 TexifyBundle.message("notification.group.latex"),
@@ -29,7 +39,7 @@ object LatexmkCleanUtil {
             return
         }
 
-        val command = LatexmkCommandBuilder.buildCleanCommand(runConfig, mode == Mode.CLEAN_ALL)
+        val command = buildCleanCommand(runConfig, mode == Mode.CLEAN_ALL)
         if (command == null) {
             Notification(
                 TexifyBundle.message("notification.group.latex"),
@@ -92,5 +102,34 @@ object LatexmkCleanUtil {
                 ).notify(project)
             }
         }
+    }
+
+    private fun buildCleanCommand(runConfig: LatexRunConfiguration, cleanAll: Boolean): List<String>? {
+        val mainFile = runConfig.mainFile ?: return null
+        val distributionType = runConfig.getLatexDistributionType()
+        val executable = runConfig.compilerPath ?: LatexSdkUtil.getExecutableName(
+            LatexCompiler.LATEXMK.executableName,
+            runConfig.project,
+            runConfig.getLatexSdk(),
+            distributionType,
+        )
+
+        val command = mutableListOf(executable)
+        val compilerArguments = runConfig.buildLatexmkArguments()
+        if (compilerArguments.isNotBlank()) {
+            command += ParametersListUtil.parse(compilerArguments)
+        }
+
+        val outputPath = LatexPathResolver.resolveOutputDir(runConfig)?.path ?: mainFile.parent.path
+        command += "-outdir=$outputPath"
+
+        val auxPath = LatexPathResolver.resolveAuxDir(runConfig)?.path
+        if (auxPath != null && auxPath != outputPath) {
+            command += "-auxdir=$auxPath"
+        }
+
+        command += if (cleanAll) "-C" else "-c"
+        command += if (runConfig.hasDefaultWorkingDirectory()) mainFile.name else mainFile.path
+        return command
     }
 }

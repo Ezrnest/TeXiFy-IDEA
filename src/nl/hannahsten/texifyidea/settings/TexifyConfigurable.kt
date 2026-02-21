@@ -46,7 +46,6 @@ class TexifyConfigurable : SearchableConfigurable {
     private var automaticQuoteReplacement: ComboBox<String>? = null
     private var htmlPasteTranslator: ComboBox<String>? = null
     private var autoCompileOption: ComboBox<String>? = null
-    private var runConfigLatexmkMode: ComboBox<String>? = null
     private var sumatraPath: TextFieldWithBrowseButton? = null
     private var filesetExpirationTimeMs: IntegerField? = null
     private var completionMode: ComboBox<String>? = null
@@ -93,7 +92,6 @@ class TexifyConfigurable : SearchableConfigurable {
             EnumSetting(::automaticQuoteReplacement, state::automaticQuoteReplacement, TexifySettings.QuoteReplacement.entries),
             EnumSetting(::htmlPasteTranslator, state::htmlPasteTranslator, TexifySettings.HtmlPasteTranslator.entries),
             EnumSetting(::autoCompileOption, state::autoCompileOption, TexifySettings.AutoCompile.entries),
-            EnumSetting(::runConfigLatexmkMode, state::runConfigLatexmkMode, TexifySettings.RunConfigLatexmkMode.entries),
         )
     }
 
@@ -145,12 +143,6 @@ class TexifyConfigurable : SearchableConfigurable {
                     TexifyBundle.message("settings.automatic.compilation.always"),
                     TexifyBundle.message("settings.automatic.compilation.after.save"),
                     TexifyBundle.message("settings.automatic.compilation.disable.power.save")
-                )
-                runConfigLatexmkMode = addComboBox(
-                    TexifyBundle.message("settings.run.config.mode"),
-                    TexifyBundle.message("settings.run.config.mode.run.latex.bib.only"),
-                    TexifyBundle.message("settings.run.config.mode.latexmk.only"),
-                    TexifyBundle.message("settings.run.config.mode.both")
                 )
                 addFilesetExpirationTimeMs(this)
             }

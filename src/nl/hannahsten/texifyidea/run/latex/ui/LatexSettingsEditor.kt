@@ -20,16 +20,19 @@ import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.components.fields.ExtendableTextComponent
 import com.intellij.ui.components.fields.ExtendableTextField
-import nl.hannahsten.texifyidea.TexifyBundle
+import nl.hannahsten.texifyidea.index.projectstructure.pathOrNull
 import nl.hannahsten.texifyidea.run.bibtex.BibtexRunConfigurationType
 import nl.hannahsten.texifyidea.run.compiler.LatexCompiler
 import nl.hannahsten.texifyidea.run.compiler.LatexCompiler.Format
 import nl.hannahsten.texifyidea.run.compiler.LatexCompiler.PDFLATEX
 import nl.hannahsten.texifyidea.run.latex.LatexCommandLineOptionsCache
 import nl.hannahsten.texifyidea.run.latex.LatexDistributionType
-import nl.hannahsten.texifyidea.run.latex.LatexOutputPath
+import nl.hannahsten.texifyidea.run.latex.LatexPathResolver
 import nl.hannahsten.texifyidea.run.latex.LatexRunConfiguration
+import nl.hannahsten.texifyidea.run.latex.isInvalidJetBrainsBinPath
 import nl.hannahsten.texifyidea.run.latex.externaltool.ExternalToolRunConfigurationType
+import nl.hannahsten.texifyidea.run.latexmk.LatexmkCitationTool
+import nl.hannahsten.texifyidea.run.latexmk.LatexmkCompileMode
 import nl.hannahsten.texifyidea.run.makeindex.MakeindexRunConfigurationType
 import nl.hannahsten.texifyidea.run.pdfviewer.PdfViewer
 import nl.hannahsten.texifyidea.run.pdfviewer.SumatraViewer
@@ -48,27 +51,35 @@ import javax.swing.JPanel
 class LatexSettingsEditor(private var project: Project) : SettingsEditor<LatexRunConfiguration>() {
 
     private lateinit var panel: JPanel
-    private lateinit var compiler: LabeledComponent<ComboBox<LatexCompiler>>
+    private lateinit var compiler: ComboBox<LatexCompiler>
     private lateinit var enableCompilerPath: JBCheckBox
     private lateinit var compilerPath: TextFieldWithBrowseButton
-    private lateinit var compilerArguments: LabeledComponent<EditorTextField>
+    private lateinit var compilerArguments: EditorTextField
     private lateinit var environmentVariables: EnvironmentVariablesComponent
-    private lateinit var beforeRunCommand: LabeledComponent<RawCommandLineEditor>
-    private lateinit var mainFile: LabeledComponent<ComponentWithBrowseButton<*>>
-    private lateinit var outputPath: LabeledComponent<ComponentWithBrowseButton<*>>
+    private lateinit var beforeRunCommand: RawCommandLineEditor
+    private lateinit var mainFile: TextFieldWithBrowseButton
+    private lateinit var outputPath: TextFieldWithBrowseButton
+    private lateinit var outputPathRow: JComponent
 
     // Not shown on non-MiKTeX systems
-    private var auxilPath: LabeledComponent<ComponentWithBrowseButton<*>>? = null
+    private var auxilPath: TextFieldWithBrowseButton? = null
+    private var auxilPathRow: JComponent? = null
 
-    private lateinit var workingDirectory: LabeledComponent<ComponentWithBrowseButton<*>>
-    private var expandMacrosEnvVariables: JBCheckBox? = null
-    private var compileTwice: JBCheckBox? = null
-    private lateinit var outputFormat: LabeledComponent<ComboBox<Format>>
-    private lateinit var latexDistribution: LabeledComponent<ComboBox<LatexDistributionSelection>>
-    private val extensionSeparator = TitledSeparator(TexifyBundle.message("run.latex.settings.extensions"))
+    private lateinit var workingDirectory: TextFieldWithBrowseButton
+    private lateinit var expandMacrosEnvVariables: JBCheckBox
+    private lateinit var compileTwice: JBCheckBox
+    private lateinit var outputFormat: ComboBox<Format>
+    private lateinit var outputFormatRow: JComponent
+    private lateinit var latexmkCompileMode: ComboBox<LatexmkCompileMode>
+    private lateinit var latexmkCustomEngineCommand: JBTextField
+    private lateinit var latexmkCitationTool: ComboBox<LatexmkCitationTool>
+    private lateinit var latexmkExtraArguments: RawCommandLineEditor
+    private lateinit var latexDistribution: ComboBox<LatexDistributionSelection>
     private lateinit var externalToolsPanel: RunConfigurationPanel
+    private val classicCompilerComponents = mutableListOf<JComponent>()
+    private val latexmkComponents = mutableListOf<JComponent>()
 
-    private lateinit var pdfViewer: LabeledComponent<ComboBox<PdfViewer?>>
+    private lateinit var pdfViewer: ComboBox<PdfViewer?>
 
     /** Whether to require focus after compilation. */
     private lateinit var requireFocus: JBCheckBox
@@ -82,13 +93,13 @@ class LatexSettingsEditor(private var project: Project) : SettingsEditor<LatexRu
     // Discard all non-confirmed user changes made via the UI
     override fun resetEditorFrom(runConfiguration: LatexRunConfiguration) {
         // Reset the selected compiler.
-        compiler.component.selectedItem = runConfiguration.compiler
+        compiler.selectedItem = runConfiguration.compiler
 
         // Reset the custom compiler path
         compilerPath.text = runConfiguration.compilerPath ?: ""
         enableCompilerPath.isSelected = runConfiguration.compilerPath != null
 
-        pdfViewer.component.selectedItem = runConfiguration.pdfViewer
+        pdfViewer.selectedItem = runConfiguration.pdfViewer
         requireFocus.isSelected = runConfiguration.requireFocus
         requireFocus.isVisible = runConfiguration.pdfViewer?.let {
             it.isForwardSearchSupported && it.isFocusSupported
@@ -100,66 +111,60 @@ class LatexSettingsEditor(private var project: Project) : SettingsEditor<LatexRu
 
         // Reset compiler arguments
         val args = runConfiguration.compilerArguments
-        compilerArguments.component.text = args ?: ""
+        compilerArguments.text = args ?: ""
+        latexmkCompileMode.selectedItem = runConfiguration.latexmkCompileMode
+        latexmkCustomEngineCommand.text = runConfiguration.latexmkCustomEngineCommand ?: ""
+        latexmkCustomEngineCommand.isEnabled = runConfiguration.latexmkCompileMode == LatexmkCompileMode.CUSTOM
+        latexmkCitationTool.selectedItem = runConfiguration.latexmkCitationTool
+        latexmkExtraArguments.text = runConfiguration.latexmkExtraArguments ?: ""
 
         // Reset environment variables
         environmentVariables.envData = runConfiguration.environmentVariables
-        if (expandMacrosEnvVariables != null) {
-            expandMacrosEnvVariables!!.isSelected = runConfiguration.expandMacrosEnvVariables
-        }
+        expandMacrosEnvVariables.isSelected = runConfiguration.expandMacrosEnvVariables
 
-        beforeRunCommand.component.text = runConfiguration.beforeRunCommand
+        beforeRunCommand.text = runConfiguration.beforeRunCommand
 
         // Reset the main file to compile.
-        val txtFile = mainFile.component as TextFieldWithBrowseButton
-        txtFile.text = runConfiguration.mainFile?.path ?: ""
+        mainFile.text = runConfiguration.mainFile?.path ?: ""
 
-        if (auxilPath != null) {
-            val auxilPathTextField = auxilPath!!.component as TextFieldWithBrowseButton
-            auxilPathTextField.text = runConfiguration.auxilPath.virtualFile?.path ?: runConfiguration.auxilPath.pathString
-        }
+        auxilPath?.text = runConfiguration.auxilPath?.toString()
+            ?: LatexPathResolver.MAIN_FILE_PARENT_PLACEHOLDER
 
-        val outputPathTextField = outputPath.component as TextFieldWithBrowseButton
         // We may be editing a run configuration template, don't resolve any path
-        outputPathTextField.text = runConfiguration.outputPath.virtualFile?.path ?: runConfiguration.outputPath.pathString
+        outputPath.text = runConfiguration.outputPath?.toString()
+            ?: LatexPathResolver.MAIN_FILE_PARENT_PLACEHOLDER
 
-        (workingDirectory.component as TextFieldWithBrowseButton).text = runConfiguration.workingDirectory ?: LatexOutputPath.MAIN_FILE_STRING
+        workingDirectory.text = runConfiguration.workingDirectory?.toString() ?: LatexPathResolver.MAIN_FILE_PARENT_PLACEHOLDER
 
         // Reset whether to compile twice
-        if (compileTwice != null) {
-            if (runConfiguration.compiler?.handlesNumberOfCompiles == true) {
-                compileTwice!!.isVisible = false
-                runConfiguration.compileTwice = false
-            }
-            else {
-                compileTwice!!.isVisible = true
-            }
-            compileTwice!!.isSelected = runConfiguration.compileTwice
-
-            // If we need to compile twice, make sure the LatexCommandLineState knows
-            if (runConfiguration.compileTwice) {
-                runConfiguration.isLastRunConfig = false
-            }
+        if (runConfiguration.compiler?.handlesNumberOfCompiles == true) {
+            compileTwice.isVisible = false
         }
+        else {
+            compileTwice.isVisible = true
+        }
+        compileTwice.isSelected = runConfiguration.compiler?.handlesNumberOfCompiles != true && runConfiguration.compileTwice
 
         // Reset output format.
         // Make sure to use the output formats relevant for the chosen compiler
-        if (runConfiguration.compiler != null) {
-            outputFormat.component.removeAllItems()
-            for (item in runConfiguration.compiler!!.outputFormats) {
-                outputFormat.component.addItem(item)
+        val configuredCompiler = runConfiguration.compiler
+        if (configuredCompiler != null && configuredCompiler != LatexCompiler.LATEXMK) {
+            outputFormat.removeAllItems()
+            for (item in configuredCompiler.outputFormats) {
+                outputFormat.addItem(item)
             }
-            if (runConfiguration.compiler!!.outputFormats.contains(runConfiguration.outputFormat)) {
-                outputFormat.component.selectedItem = runConfiguration.outputFormat
+            if (configuredCompiler.outputFormats.contains(runConfiguration.outputFormat)) {
+                outputFormat.selectedItem = runConfiguration.outputFormat
             }
             else {
-                outputFormat.component.selectedItem = Format.PDF
+                outputFormat.selectedItem = Format.PDF
             }
         }
+        updateCompilerSpecificVisibility(runConfiguration.compiler ?: PDFLATEX)
 
         // Reset LaTeX distribution selection
         val selection = LatexDistributionSelection.fromDistributionType(runConfiguration.latexDistribution)
-        latexDistribution.component.selectedItem = selection
+        latexDistribution.selectedItem = selection
 
         // Reset project.
         project = runConfiguration.project
@@ -172,7 +177,7 @@ class LatexSettingsEditor(private var project: Project) : SettingsEditor<LatexRu
     @Throws(ConfigurationException::class)
     override fun applyEditorTo(runConfiguration: LatexRunConfiguration) {
         // Apply chosen compiler.
-        val chosenCompiler = compiler.component.selectedItem as? LatexCompiler ?: PDFLATEX
+        val chosenCompiler = compiler.selectedItem as? LatexCompiler ?: PDFLATEX
         runConfiguration.compiler = chosenCompiler
 
         // Remove bibtex run config when switching to a compiler which includes running bibtex
@@ -185,7 +190,9 @@ class LatexSettingsEditor(private var project: Project) : SettingsEditor<LatexRu
             if (includesMakeindex) {
                 runConfiguration.makeindexRunConfigs = setOf()
             }
-            // Panel remains visible, to allow adding ExternalToolRunConfiguration
+            if (chosenCompiler == LatexCompiler.LATEXMK) {
+                runConfiguration.externalToolRunConfigs = setOf()
+            }
         }
         else {
             // Update run config based on UI
@@ -197,76 +204,78 @@ class LatexSettingsEditor(private var project: Project) : SettingsEditor<LatexRu
         // Apply custom compiler path if applicable
         runConfiguration.compilerPath = if (enableCompilerPath.isSelected) compilerPath.text else null
 
-        runConfiguration.pdfViewer = pdfViewer.component.selectedItem as? PdfViewer ?: PdfViewer.firstAvailableViewer
+        runConfiguration.pdfViewer = pdfViewer.selectedItem as? PdfViewer ?: PdfViewer.firstAvailableViewer
         runConfiguration.requireFocus = requireFocus.isSelected
 
         // Apply custom pdf viewer command
         runConfiguration.viewerCommand = if (enableViewerCommand.isSelected) viewerCommand.text else null
 
         // Apply custom compiler arguments
-        runConfiguration.compilerArguments = compilerArguments.component.text
+        runConfiguration.compilerArguments = compilerArguments.text
+        runConfiguration.latexmkCompileMode = latexmkCompileMode.selectedItem as? LatexmkCompileMode ?: LatexmkCompileMode.AUTO
+        runConfiguration.latexmkCustomEngineCommand = latexmkCustomEngineCommand.text
+        runConfiguration.latexmkCitationTool = latexmkCitationTool.selectedItem as? LatexmkCitationTool ?: LatexmkCitationTool.AUTO
+        runConfiguration.latexmkExtraArguments = latexmkExtraArguments.text
+        if (chosenCompiler == LatexCompiler.LATEXMK) {
+            runConfiguration.compilerArguments = runConfiguration.buildLatexmkArguments()
+        }
 
         // Apply environment variables
         runConfiguration.environmentVariables = environmentVariables.envData
 
         // Apply parse macros in environment variables
-        runConfiguration.expandMacrosEnvVariables = expandMacrosEnvVariables?.isSelected ?: false
+        runConfiguration.expandMacrosEnvVariables = expandMacrosEnvVariables.isSelected
 
-        runConfiguration.beforeRunCommand = beforeRunCommand.component.text
+        runConfiguration.beforeRunCommand = beforeRunCommand.text
 
         // Apply main file.
-        val txtFile = mainFile.component as TextFieldWithBrowseButton
-        val filePath = txtFile.text
+        runConfiguration.setMainFile(mainFile.text)
 
-        runConfiguration.setMainFile(filePath)
-
-        val outputPathTextField = outputPath.component as TextFieldWithBrowseButton
-        if (!outputPathTextField.text.endsWith("/bin")) {
-            runConfiguration.setFileOutputPath(outputPathTextField.text)
+        if (!isInvalidJetBrainsBinPath(outputPath.text)) {
+            runConfiguration.setFileOutputPath(outputPath.text)
         }
 
-        if (auxilPath != null) {
-            val auxilPathTextField = auxilPath!!.component as TextFieldWithBrowseButton
-            runConfiguration.setFileAuxilPath(auxilPathTextField.text)
+        auxilPath?.let { runConfiguration.setFileAuxilPath(it.text) }
+
+        runConfiguration.workingDirectory = workingDirectory.text
+            .takeUnless { it.isBlank() || it == LatexPathResolver.MAIN_FILE_PARENT_PLACEHOLDER }
+            ?.let { pathOrNull(it) }
+
+        // Only show option to configure number of compiles when applicable
+        if (runConfiguration.compiler?.handlesNumberOfCompiles == true) {
+            compileTwice.isVisible = false
+            runConfiguration.compileTwice = false
+        }
+        else {
+            compileTwice.isVisible = true
+            runConfiguration.compileTwice = compileTwice.isSelected
         }
 
-        runConfiguration.workingDirectory = (workingDirectory.component as TextFieldWithBrowseButton).text
-
-        if (compileTwice != null) {
-            // Only show option to configure number of compiles when applicable
-            if (runConfiguration.compiler?.handlesNumberOfCompiles == true) {
-                compileTwice!!.isVisible = false
-                runConfiguration.compileTwice = false
-            }
-            else {
-                compileTwice!!.isVisible = true
-                runConfiguration.compileTwice = compileTwice!!.isSelected
-            }
-
-            // If we need to compile twice, make sure the LatexCommandLineState knows
-            if (runConfiguration.compileTwice) {
-                runConfiguration.isLastRunConfig = false
-            }
+        // If we need to compile twice, make sure the LatexCommandLineState knows
+        if (runConfiguration.compileTwice) {
+            runConfiguration.isLastRunConfig = false
         }
 
         // Apply output format.
-        val format = outputFormat.component.selectedItem as Format?
-        runConfiguration.outputFormat = format ?: Format.PDF
+        if (chosenCompiler != LatexCompiler.LATEXMK) {
+            val format = outputFormat.selectedItem as Format?
+            runConfiguration.outputFormat = format ?: Format.PDF
+        }
 
         // Apply LaTeX distribution selection
-        val selectedDistribution = latexDistribution.component.selectedItem as? LatexDistributionSelection
+        val selectedDistribution = latexDistribution.selectedItem as? LatexDistributionSelection
         runConfiguration.latexDistribution = selectedDistribution?.distributionType
             ?: LatexDistributionType.MODULE_SDK
 
         if (chosenCompiler == LatexCompiler.ARARA) {
-            outputPath.isVisible = false
-            auxilPath?.isVisible = false
-            outputFormat.isVisible = false
+            outputPathRow.isVisible = false
+            auxilPathRow?.isVisible = false
+            outputFormatRow.isVisible = false
         }
         else {
-            outputPath.isVisible = true
-            auxilPath?.isVisible = true
-            outputFormat.isVisible = true
+            outputPathRow.isVisible = true
+            auxilPathRow?.isVisible = true
+            outputFormatRow.isVisible = chosenCompiler != LatexCompiler.LATEXMK
         }
     }
 
@@ -280,38 +289,41 @@ class LatexSettingsEditor(private var project: Project) : SettingsEditor<LatexRu
         panel = JPanel()
         panel.layout = VerticalFlowLayout(VerticalFlowLayout.TOP)
 
-        addCompilerPathField(panel)
+        buildCompilerSection(panel)
 
-        addPdfViewerCommandField(panel)
+        buildPdfViewerSection(panel)
 
         // Optional custom compiler arguments
-        val argumentsLabel = JLabel(TexifyBundle.message("run.latex.settings.custom.compiler.arguments"))
+        val argumentsLabel = JLabel("Custom compiler arguments")
         val argumentsEditor = EditorTextField("", project, PlainTextFileType.INSTANCE)
         argumentsLabel.labelFor = argumentsEditor
-        val selectedCompiler = compiler.component.selectedItem as LatexCompiler
+        val selectedCompiler = compiler.selectedItem as LatexCompiler
         project.let { project ->
             val options = LatexCommandLineOptionsCache.getOptionsOrFillCache(selectedCompiler.executableName, project)
             LatexArgumentsCompletionProvider(options).apply(argumentsEditor)
         }
 
-        compilerArguments = LabeledComponent.create(argumentsEditor, TexifyBundle.message("run.latex.settings.custom.compiler.arguments"))
-        panel.add(compilerArguments)
+        compilerArguments = argumentsEditor
+        val compilerArgumentsRow = LabeledComponent.create(compilerArguments, "Custom compiler arguments")
+        panel.add(compilerArgumentsRow)
+        classicCompilerComponents += compilerArgumentsRow
+
+        buildLatexmkSection(panel)
 
         environmentVariables = EnvironmentVariablesComponent()
         panel.add(environmentVariables)
 
-        expandMacrosEnvVariables = JBCheckBox(TexifyBundle.message("run.latex.settings.expand.macros.in.env"))
-        expandMacrosEnvVariables!!.isSelected = false
+        expandMacrosEnvVariables = JBCheckBox("Expand macros in environment variables")
+        expandMacrosEnvVariables.isSelected = false
 
         val environmentVariableTextField = environmentVariables.component.textField as ExtendableTextField
         var envVariableTextFieldMacroSupportExtension: ExtendableTextComponent.Extension? = null
 
-        expandMacrosEnvVariables!!.addItemListener {
+        expandMacrosEnvVariables.addItemListener {
             if (it.stateChange == 1) { // checkbox checked
-                if (envVariableTextFieldMacroSupportExtension != null) {
-                    environmentVariableTextField.addExtension(envVariableTextFieldMacroSupportExtension!!)
-                }
-                else {
+                envVariableTextFieldMacroSupportExtension?.let { it ->
+                    environmentVariableTextField.addExtension(it)
+                } ?: run {
                     MacrosDialog.addTextFieldExtension(environmentVariableTextField)
                     envVariableTextFieldMacroSupportExtension = environmentVariableTextField.extensions.last()
                 }
@@ -324,8 +336,8 @@ class LatexSettingsEditor(private var project: Project) : SettingsEditor<LatexRu
         }
         panel.add(expandMacrosEnvVariables)
 
-        beforeRunCommand = LabeledComponent.create(RawCommandLineEditor(), TexifyBundle.message("run.latex.settings.before.run.command"))
-        panel.add(beforeRunCommand)
+        beforeRunCommand = RawCommandLineEditor()
+        panel.add(LabeledComponent.create(beforeRunCommand, "LaTeX code to run before compiling the main file"))
 
         panel.add(SeparatorComponent())
 
@@ -334,47 +346,49 @@ class LatexSettingsEditor(private var project: Project) : SettingsEditor<LatexRu
         mainFileField.addBrowseFolderListener(
             TextBrowseFolderListener(
                 FileChooserDescriptorFactory.createSingleFileDescriptor()
-                    .withTitle(TexifyBundle.message("run.latex.settings.choose.file.to.compile"))
+                    .withTitle("Choose a File to Compile")
                     .withExtensionFilter("tex")
                     .withRoots(*ProjectRootManager.getInstance(project).contentRootsFromAllModules.toSet().toTypedArray())
             )
         )
-        mainFile = LabeledComponent.create(mainFileField, TexifyBundle.message("run.latex.settings.main.file.to.compile"))
-        panel.add(mainFile)
+        mainFile = mainFileField
+        panel.add(LabeledComponent.create(mainFile, "Main file to compile"))
 
-        addOutputPathField(panel)
+        buildPathsSection(panel)
 
         val workingDirectoryField = TextFieldWithBrowseButton()
         workingDirectoryField.addBrowseFolderListener(
             TextBrowseFolderListener(
                 FileChooserDescriptor(false, true, false, false, false, false)
-                    .withTitle(TexifyBundle.message("run.latex.settings.working.directory.title"))
+                    .withTitle("Working Directory")
                     .withRoots(
                         *ProjectRootManager.getInstance(project)
                             .contentRootsFromAllModules
                     )
             )
         )
-        workingDirectory = LabeledComponent.create(workingDirectoryField, TexifyBundle.message("run.latex.settings.working.directory"))
-        panel.add(workingDirectory)
+        workingDirectory = workingDirectoryField
+        panel.add(LabeledComponent.create(workingDirectory, "Working directory"))
 
-        compileTwice = JBCheckBox(TexifyBundle.message("run.latex.settings.compile.twice"))
-        compileTwice!!.isSelected = false
+        compileTwice = JBCheckBox("Always compile at least twice")
+        compileTwice.isSelected = false
         panel.add(compileTwice)
+        classicCompilerComponents += compileTwice
 
         // Output format.
         val cboxFormat = ComboBox(selectedCompiler.outputFormats)
-        outputFormat = LabeledComponent.create(cboxFormat, TexifyBundle.message("run.latex.settings.output.format"))
-        outputFormat.setSize(128, outputFormat.height)
-        panel.add(outputFormat)
+        outputFormat = cboxFormat
+        outputFormatRow = LabeledComponent.create(outputFormat, "Output format")
+        outputFormatRow.setSize(128, outputFormatRow.height)
+        panel.add(outputFormatRow)
+        classicCompilerComponents += outputFormatRow
 
         // LaTeX distribution selection
         val distributionSelections = LatexDistributionSelection.getAvailableSelections(project).toTypedArray()
         val distributionComboBox = ComboBox(distributionSelections)
         distributionComboBox.renderer = LatexDistributionComboBoxRenderer(project) {
             // Get the main file from the mainFile text field
-            val txtFile = mainFile.component as TextFieldWithBrowseButton
-            val path = txtFile.text
+            val path = mainFile.text
             if (path.isNotBlank()) {
                 com.intellij.openapi.vfs.LocalFileSystem.getInstance().findFileByPath(path)
             }
@@ -383,66 +397,115 @@ class LatexSettingsEditor(private var project: Project) : SettingsEditor<LatexRu
             }
         }
         @Suppress("DialogTitleCapitalization") // "LaTeX Distribution" is correctly capitalized (LaTeX is a proper noun)
-        latexDistribution = LabeledComponent.create(distributionComboBox, TexifyBundle.message("run.latex.settings.latex.distribution"))
-        panel.add(latexDistribution)
+        latexDistribution = distributionComboBox
+        panel.add(LabeledComponent.create(latexDistribution, "LaTeX Distribution"))
 
+        val extensionSeparator = TitledSeparator("Extensions")
         panel.add(extensionSeparator)
+        classicCompilerComponents += extensionSeparator
 
         // Extension panel
-        externalToolsPanel = RunConfigurationPanel(project, TexifyBundle.message("run.latex.settings.external.programs"))
+        externalToolsPanel = RunConfigurationPanel(project, "External LaTeX programs: ")
         panel.add(externalToolsPanel)
+        classicCompilerComponents += externalToolsPanel
+
+        bindUiEvents()
+        updateCompilerSpecificVisibility(compiler.selectedItem as? LatexCompiler ?: PDFLATEX)
     }
 
-    private fun addOutputPathField(panel: JPanel) {
+    private fun bindUiEvents() {
+        compiler.addItemListener {
+            if (it.stateChange != ItemEvent.SELECTED) {
+                return@addItemListener
+            }
+            val selectedCompiler = it.item as? LatexCompiler ?: PDFLATEX
+            outputFormat.removeAllItems()
+            selectedCompiler.outputFormats.forEach { format -> outputFormat.addItem(format) }
+            outputFormat.selectedItem = selectedCompiler.outputFormats.firstOrNull() ?: Format.PDF
+            updateCompilerSpecificVisibility(selectedCompiler)
+        }
+    }
+
+    private fun buildLatexmkSection(panel: JPanel) {
+        val latexmkCompileModeCombo = ComboBox(LatexmkCompileMode.entries.toTypedArray())
+        latexmkCompileMode = latexmkCompileModeCombo
+        val latexmkCompileModeRow = LabeledComponent.create(latexmkCompileMode, "Compile mode")
+        panel.add(latexmkCompileModeRow)
+        latexmkComponents += latexmkCompileModeRow
+
+        val latexmkCustomEngineField = JBTextField().apply { isEnabled = false }
+        latexmkCustomEngineCommand = latexmkCustomEngineField
+        val latexmkCustomEngineRow = LabeledComponent.create(latexmkCustomEngineCommand, "Custom engine command")
+        panel.add(latexmkCustomEngineRow)
+        latexmkComponents += latexmkCustomEngineRow
+
+        latexmkCompileModeCombo.addItemListener {
+            latexmkCustomEngineField.isEnabled =
+                it.stateChange == ItemEvent.SELECTED &&
+                latexmkCompileModeCombo.selectedItem == LatexmkCompileMode.CUSTOM
+            if (!latexmkCustomEngineField.isEnabled) {
+                latexmkCustomEngineField.text = ""
+            }
+        }
+
+        val latexmkCitationToolCombo = ComboBox(LatexmkCitationTool.entries.toTypedArray())
+        latexmkCitationTool = latexmkCitationToolCombo
+        val latexmkCitationToolRow = LabeledComponent.create(latexmkCitationTool, "Citation tool")
+        panel.add(latexmkCitationToolRow)
+        latexmkComponents += latexmkCitationToolRow
+
+        val latexmkExtraArgumentsField = RawCommandLineEditor()
+        latexmkExtraArguments = latexmkExtraArgumentsField
+        val latexmkExtraArgumentsRow = LabeledComponent.create(latexmkExtraArguments, "Additional latexmk arguments")
+        panel.add(latexmkExtraArgumentsRow)
+        latexmkComponents += latexmkExtraArgumentsRow
+    }
+
+    private fun buildPathsSection(panel: JPanel) {
         // The aux directory is only available on MiKTeX, so only allow disabling on MiKTeX
         if (LatexSdkUtil.isMiktexAvailable) {
             val auxilPathField = TextFieldWithBrowseButton()
             auxilPathField.addBrowseFolderListener(
                 TextBrowseFolderListener(
                     FileChooserDescriptor(false, true, false, false, false, false)
-                        .withTitle(TexifyBundle.message("run.latex.settings.aux.files.directory.title"))
+                        .withTitle("Auxiliary Files Directory")
                         .withRoots(
                             *ProjectRootManager.getInstance(project)
                                 .contentRootsFromAllModules
                         )
                 )
             )
-            auxilPath = LabeledComponent.create(auxilPathField, TexifyBundle.message("run.latex.settings.aux.files.directory"))
-            panel.add(auxilPath)
+            auxilPath = auxilPathField
+            auxilPathRow = LabeledComponent.create(auxilPathField, "Directory for auxiliary files")
+            panel.add(auxilPathRow)
         }
 
         val outputPathField = TextFieldWithBrowseButton()
         outputPathField.addBrowseFolderListener(
             TextBrowseFolderListener(
                 FileChooserDescriptor(false, true, false, false, false, false)
-                    .withTitle(TexifyBundle.message("run.latex.settings.output.files.directory.title"))
+                    .withTitle("Output Files Directory")
                     .withRoots(
                         *ProjectRootManager.getInstance(project)
                             .contentRootsFromAllModules
                     )
             )
         )
-        outputPath = LabeledComponent.create(
-            outputPathField,
-            TexifyBundle.message(
-                "run.latex.settings.output.files.directory",
-                LatexOutputPath.MAIN_FILE_STRING,
-                LatexOutputPath.PROJECT_DIR_STRING
-            )
-        )
-        panel.add(outputPath)
+        outputPath = outputPathField
+        outputPathRow = LabeledComponent.create(outputPath, "Directory for output files, you can use ${LatexPathResolver.MAIN_FILE_PARENT_PLACEHOLDER} or ${LatexPathResolver.PROJECT_DIR_PLACEHOLDER} as placeholders:")
+        panel.add(outputPathRow)
     }
 
     /**
      * Compiler with optional custom path for compiler executable.
      */
-    private fun addCompilerPathField(panel: JPanel) {
+    private fun buildCompilerSection(panel: JPanel) {
         // Compiler
         val compilerField = ComboBox(LatexCompiler.entries.toTypedArray())
-        compiler = LabeledComponent.create(compilerField, TexifyBundle.message("run.latex.settings.compiler"))
-        panel.add(compiler)
+        compiler = compilerField
+        panel.add(LabeledComponent.create(compiler, "Compiler"))
 
-        enableCompilerPath = JBCheckBox(TexifyBundle.message("run.latex.settings.custom.compiler.path"))
+        enableCompilerPath = JBCheckBox("Select custom compiler executable path (required on Mac OS X)")
         panel.add(enableCompilerPath)
 
         compilerPath = TextFieldWithBrowseButton()
@@ -450,7 +513,7 @@ class LatexSettingsEditor(private var project: Project) : SettingsEditor<LatexRu
             TextBrowseFolderListener(
                 FileChooserDescriptor(true, false, false, false, false, false)
                     .withFileFilter { virtualFile -> virtualFile.nameWithoutExtension == (compilerField.selectedItem as LatexCompiler).executableName }
-                    .withTitle(TexifyBundle.message("run.latex.settings.choose.executable", compilerField.selectedItem.toString()))
+                    .withTitle("Choose " + compilerField.selectedItem + " executable")
             )
         )
         compilerPath.isEnabled = false
@@ -467,23 +530,24 @@ class LatexSettingsEditor(private var project: Project) : SettingsEditor<LatexRu
     /**
      * Optional custom pdf viewer command text field.
      */
-    private fun addPdfViewerCommandField(panel: JPanel) {
+    private fun buildPdfViewerSection(panel: JPanel) {
         val viewerField = ComboBox(PdfViewer.availableViewers.toTypedArray())
-        pdfViewer = LabeledComponent.create(viewerField, TexifyBundle.message("run.latex.settings.pdf.viewer"))
-        pdfViewer.component.addActionListener {
-            requireFocus.isVisible = (pdfViewer.component.selectedItem as? PdfViewer)?.let {
+        pdfViewer = viewerField
+        pdfViewer.addActionListener {
+            requireFocus.isVisible = (pdfViewer.selectedItem as? PdfViewer)?.let {
                 it.isForwardSearchSupported && it.isFocusSupported
             } ?: false
         }
-        panel.add(pdfViewer)
+        panel.add(LabeledComponent.create(pdfViewer, "PDF viewer"))
 
-        requireFocus = JBCheckBox(TexifyBundle.message("run.latex.settings.allow.viewer.focus"))
+        requireFocus = JBCheckBox("Allow PDF viewer to focus after compilation")
         requireFocus.isSelected = true
         panel.add(requireFocus)
 
         if (SystemInfo.isWindows && !SumatraViewer.isAvailable()) {
             val label = JLabel(
-                TexifyBundle.message("run.settings.sumatra.not.detected.html")
+                "<html>Failed to detect SumatraPDF. If you have SumatraPDF installed, you can add it manually in " +
+                    "<a href=''>TeXiFy Settings</a>.</html>"
             ).apply {
                 cursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)
             }
@@ -495,7 +559,7 @@ class LatexSettingsEditor(private var project: Project) : SettingsEditor<LatexRu
             panel.add(label)
         }
 
-        enableViewerCommand = JBCheckBox(TexifyBundle.message("run.latex.settings.custom.pdf.viewer.command"))
+        enableViewerCommand = JBCheckBox("Select custom PDF viewer command, using {pdf} for the pdf file if not the last argument")
         panel.add(enableViewerCommand)
 
         viewerCommand = JBTextField().apply {
@@ -510,5 +574,11 @@ class LatexSettingsEditor(private var project: Project) : SettingsEditor<LatexRu
         enableViewerCommand.addItemListener { e -> viewerCommand.isEnabled = e.stateChange == ItemEvent.SELECTED }
 
         panel.add(viewerCommand)
+    }
+
+    private fun updateCompilerSpecificVisibility(selectedCompiler: LatexCompiler) {
+        val isLatexmk = selectedCompiler == LatexCompiler.LATEXMK
+        classicCompilerComponents.forEach { it.isVisible = !isLatexmk }
+        latexmkComponents.forEach { it.isVisible = isLatexmk }
     }
 }

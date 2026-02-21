@@ -3,11 +3,17 @@ package nl.hannahsten.texifyidea.run
 import com.intellij.psi.createSmartPointer
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import kotlinx.coroutines.runBlocking
+import nl.hannahsten.texifyidea.run.latex.LatexConfigurationFactory
 import nl.hannahsten.texifyidea.run.bibtex.BibtexRunConfiguration
+import nl.hannahsten.texifyidea.run.bibtex.BibtexRunConfigurationType
 import nl.hannahsten.texifyidea.run.compiler.LatexCompiler
-import nl.hannahsten.texifyidea.run.latex.LatexOutputPath
+import nl.hannahsten.texifyidea.run.latex.LatexPathResolver
 import nl.hannahsten.texifyidea.run.latex.LatexRunConfiguration
 import nl.hannahsten.texifyidea.run.latex.LatexRunConfigurationProducer
+import nl.hannahsten.texifyidea.run.latex.externaltool.ExternalToolRunConfigurationType
+import nl.hannahsten.texifyidea.run.latex.ui.LatexSettingsEditor
+import nl.hannahsten.texifyidea.run.latexmk.LatexmkCompileMode
+import nl.hannahsten.texifyidea.run.makeindex.MakeindexRunConfigurationType
 import org.jdom.Element
 import org.jdom.Namespace
 
@@ -17,12 +23,12 @@ class LatexRunConfigurationTest : BasePlatformTestCase() {
         val runConfig = LatexRunConfiguration(myFixture.project, LatexRunConfigurationProducer().configurationFactory, "Test run config")
         val element = Element("configuration", Namespace.getNamespace("", ""))
         runConfig.compiler = LatexCompiler.LATEXMK
-        runConfig.outputPath.pathString = LatexOutputPath.PROJECT_DIR_STRING + "otherout"
+        runConfig.outputPath = java.nio.file.Path.of("${LatexPathResolver.PROJECT_DIR_PLACEHOLDER}/otherout")
         runConfig.writeExternal(element)
         runConfig.readExternal(element)
         // Not sure if this actually tests anything
         assertEquals(runConfig.compiler, LatexCompiler.LATEXMK)
-        assertEquals(runConfig.outputPath.pathString, LatexOutputPath.PROJECT_DIR_STRING + "otherout")
+        assertEquals(runConfig.outputPath.toString(), "${LatexPathResolver.PROJECT_DIR_PLACEHOLDER}/otherout")
     }
 
     fun testBibRunConfig() {
@@ -45,5 +51,161 @@ class LatexRunConfigurationTest : BasePlatformTestCase() {
         runConfig.generateBibRunConfig()
         assertTrue(runConfig.bibRunConfigs.isNotEmpty())
         assertEquals(mainFile.virtualFile, (runConfig.bibRunConfigs.first().configuration as BibtexRunConfiguration).mainFile)
+    }
+
+    fun testLatexmkCompilerClearsAuxiliaryRunConfigsInEditorApply() {
+        val runConfig = LatexRunConfiguration(myFixture.project, LatexRunConfigurationProducer().configurationFactory, "Test run config")
+        val runManager = com.intellij.execution.impl.RunManagerImpl.getInstanceImpl(project)
+
+        val bib = runManager.createConfiguration("bib", LatexConfigurationFactory(BibtexRunConfigurationType()))
+        val makeindex = runManager.createConfiguration("makeindex", LatexConfigurationFactory(MakeindexRunConfigurationType()))
+        val external = runManager.createConfiguration("external", LatexConfigurationFactory(ExternalToolRunConfigurationType()))
+        runManager.addConfiguration(bib)
+        runManager.addConfiguration(makeindex)
+        runManager.addConfiguration(external)
+
+        runConfig.bibRunConfigs = setOf(bib)
+        runConfig.makeindexRunConfigs = setOf(makeindex)
+        runConfig.externalToolRunConfigs = setOf(external)
+
+        val editor = LatexSettingsEditor(project)
+        editor.resetFrom(runConfig)
+
+        val compilerField = LatexSettingsEditor::class.java.getDeclaredField("compiler")
+        compilerField.isAccessible = true
+        @Suppress("UNCHECKED_CAST")
+        val compiler = compilerField.get(editor) as com.intellij.openapi.ui.ComboBox<LatexCompiler>
+        compiler.selectedItem = LatexCompiler.LATEXMK
+
+        editor.applyTo(runConfig)
+
+        assertTrue(runConfig.bibRunConfigs.isEmpty())
+        assertTrue(runConfig.makeindexRunConfigs.isEmpty())
+        assertTrue(runConfig.externalToolRunConfigs.isEmpty())
+    }
+
+    fun testLatexmkCompilerClearsCompileTwiceInEditorApply() {
+        val runConfig = LatexRunConfiguration(myFixture.project, LatexRunConfigurationProducer().configurationFactory, "Test run config")
+        runConfig.compiler = LatexCompiler.PDFLATEX
+        runConfig.compileTwice = true
+
+        val editor = LatexSettingsEditor(project)
+        editor.resetFrom(runConfig)
+
+        val compilerField = LatexSettingsEditor::class.java.getDeclaredField("compiler")
+        compilerField.isAccessible = true
+        @Suppress("UNCHECKED_CAST")
+        val compiler = compilerField.get(editor) as com.intellij.openapi.ui.ComboBox<LatexCompiler>
+        compiler.selectedItem = LatexCompiler.LATEXMK
+
+        editor.applyTo(runConfig)
+
+        assertFalse(runConfig.compileTwice)
+    }
+
+    fun testReadExternalIgnoresCompileTwiceForLatexmk() {
+        val runConfig = LatexRunConfiguration(myFixture.project, LatexRunConfigurationProducer().configurationFactory, "Test run config")
+        val element = Element("configuration", Namespace.getNamespace("", ""))
+        runConfig.compiler = LatexCompiler.LATEXMK
+        runConfig.compileTwice = true
+        runConfig.writeExternal(element)
+
+        val restored = LatexRunConfiguration(myFixture.project, LatexRunConfigurationProducer().configurationFactory, "Restored")
+        restored.readExternal(element)
+
+        assertEquals(LatexCompiler.LATEXMK, restored.compiler)
+        assertFalse(restored.compileTwice)
+    }
+
+    fun testLatexmkCompilerHidesOutputFormatInEditor() {
+        val runConfig = LatexRunConfiguration(myFixture.project, LatexRunConfigurationProducer().configurationFactory, "Test run config")
+        runConfig.compiler = LatexCompiler.LATEXMK
+
+        val editor = LatexSettingsEditor(project)
+        editor.resetFrom(runConfig)
+
+        val outputFormatField = LatexSettingsEditor::class.java.getDeclaredField("outputFormatRow")
+        outputFormatField.isAccessible = true
+        val outputFormat = outputFormatField.get(editor) as javax.swing.JComponent
+        assertFalse(outputFormat.isVisible)
+    }
+
+    fun testLatexmkCompileModeEditorContainsAuto() {
+        val runConfig = LatexRunConfiguration(myFixture.project, LatexRunConfigurationProducer().configurationFactory, "Test run config")
+        runConfig.compiler = LatexCompiler.LATEXMK
+
+        val editor = LatexSettingsEditor(project)
+        editor.resetFrom(runConfig)
+
+        val compileModeField = LatexSettingsEditor::class.java.getDeclaredField("latexmkCompileMode")
+        compileModeField.isAccessible = true
+        @Suppress("UNCHECKED_CAST")
+        val compileMode = compileModeField.get(editor) as com.intellij.openapi.ui.ComboBox<LatexmkCompileMode>
+        val items = (0 until compileMode.itemCount).map { compileMode.getItemAt(it) }
+        assertTrue(items.contains(LatexmkCompileMode.AUTO))
+    }
+
+    fun testLatexmkCompileModeEditorApplyFallsBackToAuto() {
+        val runConfig = LatexRunConfiguration(myFixture.project, LatexRunConfigurationProducer().configurationFactory, "Test run config")
+        runConfig.compiler = LatexCompiler.LATEXMK
+        runConfig.latexmkCompileMode = LatexmkCompileMode.PDFLATEX_PDF
+
+        val editor = LatexSettingsEditor(project)
+        editor.resetFrom(runConfig)
+
+        val compileModeField = LatexSettingsEditor::class.java.getDeclaredField("latexmkCompileMode")
+        compileModeField.isAccessible = true
+        @Suppress("UNCHECKED_CAST")
+        val compileMode = compileModeField.get(editor) as com.intellij.openapi.ui.ComboBox<LatexmkCompileMode>
+        compileMode.selectedItem = null
+
+        editor.applyTo(runConfig)
+
+        assertEquals(LatexmkCompileMode.AUTO, runConfig.latexmkCompileMode)
+    }
+
+    fun testResetEditorFromDoesNotMutateCompileTwiceOrLastRunFlag() {
+        val runConfig = LatexRunConfiguration(myFixture.project, LatexRunConfigurationProducer().configurationFactory, "Test run config")
+        runConfig.compiler = LatexCompiler.LATEXMK
+        runConfig.compileTwice = true
+        runConfig.isLastRunConfig = true
+
+        val editor = LatexSettingsEditor(project)
+        editor.resetFrom(runConfig)
+
+        assertTrue(runConfig.compileTwice)
+        assertTrue(runConfig.isLastRunConfig)
+    }
+
+    fun testWriteExternalStoresAuxConfigIdsInStructuredFormat() {
+        val runConfig = LatexRunConfiguration(myFixture.project, LatexRunConfigurationProducer().configurationFactory, "Test run config")
+        val runManager = com.intellij.execution.impl.RunManagerImpl.getInstanceImpl(project)
+        val bib = runManager.createConfiguration("bib", LatexConfigurationFactory(BibtexRunConfigurationType()))
+        runManager.addConfiguration(bib)
+        runConfig.bibRunConfigs = setOf(bib)
+
+        val element = Element("configuration", Namespace.getNamespace("", ""))
+        runConfig.writeExternal(element)
+        val parent = element.getChild("texify") ?: error("Missing texify node")
+        val structured = parent.getChild("bib-run-configs") ?: error("Missing structured ids node")
+        assertTrue(structured.getChildren("id").isNotEmpty())
+    }
+
+    fun testReadExternalSupportsLegacyAuxConfigSetFormat() {
+        val runManager = com.intellij.execution.impl.RunManagerImpl.getInstanceImpl(project)
+        val bib = runManager.createConfiguration("bib", LatexConfigurationFactory(BibtexRunConfigurationType()))
+        runManager.addConfiguration(bib)
+
+        val root = Element("configuration", Namespace.getNamespace("", ""))
+        val parent = Element("texify")
+        parent.addContent(Element("compiler").setText(LatexCompiler.PDFLATEX.name))
+        parent.addContent(Element("main-file").setText(""))
+        parent.addContent(Element("bib-run-config").setText("[${bib.uniqueID}]"))
+        root.addContent(parent)
+
+        val restored = LatexRunConfiguration(myFixture.project, LatexRunConfigurationProducer().configurationFactory, "Restored")
+        restored.readExternal(root)
+
+        assertTrue(restored.bibRunConfigs.any { it.uniqueID == bib.uniqueID })
     }
 }

@@ -3,6 +3,7 @@ package nl.hannahsten.texifyidea.run.latexmk
 import nl.hannahsten.texifyidea.TexifyBundle
 
 enum class LatexmkCompileMode(private val messageKey: String, val extension: String) {
+    AUTO("run.latexmk.compile.mode.auto", "pdf"),
     PDFLATEX_PDF("run.latexmk.compile.mode.pdflatex.pdf", "pdf"),
     LUALATEX_PDF("run.latexmk.compile.mode.lualatex.pdf", "pdf"),
     XELATEX_PDF("run.latexmk.compile.mode.xelatex.pdf", "pdf"),

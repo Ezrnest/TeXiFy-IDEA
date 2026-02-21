@@ -6,13 +6,15 @@ import com.intellij.execution.impl.RunManagerImpl
 import com.intellij.execution.process.ProcessEvent
 import com.intellij.execution.process.ProcessListener
 import com.intellij.execution.runners.ExecutionEnvironment
-import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.vfs.VirtualFile
 import nl.hannahsten.texifyidea.lang.LatexLib
 import nl.hannahsten.texifyidea.run.compiler.ExternalTool
 import nl.hannahsten.texifyidea.run.latex.LatexConfigurationFactory
+import nl.hannahsten.texifyidea.run.latex.LatexRerunScheduler
+import nl.hannahsten.texifyidea.run.latex.LatexRunExecutionState
 import nl.hannahsten.texifyidea.run.latex.LatexRunConfiguration
 import nl.hannahsten.texifyidea.util.files.psiFile
 import nl.hannahsten.texifyidea.util.includedPackagesInFileset
@@ -23,6 +25,7 @@ import nl.hannahsten.texifyidea.util.includedPackagesInFileset
 class RunExternalToolListener(
     private val latexRunConfig: LatexRunConfiguration,
     private val environment: ExecutionEnvironment,
+    private val executionState: LatexRunExecutionState,
 ) : ProcessListener {
 
     companion object {
@@ -31,7 +34,7 @@ class RunExternalToolListener(
          * Check the contents of the LaTeX fileset to find out if any external tools are needed.
          */
         fun getRequiredExternalTools(mainFile: VirtualFile?, project: Project): Set<ExternalTool> {
-            val usedPackages = runReadAction {
+            val usedPackages = ReadAction.compute<Set<LatexLib>, RuntimeException> {
                 mainFile?.psiFile(project)?.includedPackagesInFileset() ?: emptySet()
             }
 
@@ -61,30 +64,14 @@ class RunExternalToolListener(
             scheduleLatexRuns()
         }
         finally {
-            latexRunConfig.isLastRunConfig = false
-            latexRunConfig.isFirstRunConfig = true
+            executionState.resetAfterAuxChain()
         }
     }
 
     private fun scheduleLatexRuns() {
         // Don't schedule more latex runs if bibtex is used, because that will already schedule the extra runs
         if (latexRunConfig.bibRunConfigs.isEmpty() && latexRunConfig.makeindexRunConfigs.isEmpty()) {
-            // LaTeX twice
-            latexRunConfig.isFirstRunConfig = false
-            val latexSettings = RunManagerImpl.getInstanceImpl(environment.project).getSettings(latexRunConfig)
-                ?: return
-
-            // Terrible hack to avoid running the before run tasks repeatedly
-            // At least I think this is the intended behaviour, but not sure so first testing it here
-            val beforeRunTasks = latexSettings.configuration.beforeRunTasks
-            latexSettings.configuration.beforeRunTasks = mutableListOf()
-
-            latexRunConfig.isLastRunConfig = false
-            RunConfigurationBeforeRunProvider.doExecuteTask(environment, latexSettings, null)
-            latexRunConfig.isLastRunConfig = true
-            RunConfigurationBeforeRunProvider.doExecuteTask(environment, latexSettings, null)
-
-            latexSettings.configuration.beforeRunTasks = beforeRunTasks
+            LatexRerunScheduler.runLatexTwice(environment, latexRunConfig, executionState, suppressBeforeRunTasks = true)
         }
     }
 

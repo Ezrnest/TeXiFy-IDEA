@@ -7,11 +7,11 @@ import com.intellij.openapi.project.rootManager
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.execution.ParametersListUtil
 import nl.hannahsten.texifyidea.run.latex.LatexDistributionType
+import nl.hannahsten.texifyidea.run.latex.LatexPathResolver
 import nl.hannahsten.texifyidea.run.latex.LatexRunConfiguration
 import nl.hannahsten.texifyidea.settings.sdk.DockerSdk
 import nl.hannahsten.texifyidea.settings.sdk.DockerSdkAdditionalData
 import nl.hannahsten.texifyidea.settings.sdk.LatexSdkUtil
-import nl.hannahsten.texifyidea.util.LatexmkRcFileFinder
 import nl.hannahsten.texifyidea.util.SystemEnvironment
 import nl.hannahsten.texifyidea.util.files.hasTectonicTomlFile
 import nl.hannahsten.texifyidea.util.runCommand
@@ -99,7 +99,7 @@ enum class LatexCompiler(private val displayName: String, val executableName: St
 
         override val handlesNumberOfCompiles = true
 
-        override val outputFormats = arrayOf(Format.DEFAULT, Format.PDF, Format.DVI)
+        override val outputFormats = arrayOf(Format.PDF)
 
         override fun createCommand(
             runConfig: LatexRunConfiguration,
@@ -117,25 +117,14 @@ enum class LatexCompiler(private val displayName: String, val executableName: St
                 )
             )
 
-            val isLatexmkRcFilePresent = LatexmkRcFileFinder.hasLatexmkRc(runConfig.compilerArguments, runConfig.getResolvedWorkingDirectory())
+            // Keep diagnostic behavior consistent, even when latexmkrc is present.
+            command.add("-file-line-error")
+            command.add("-interaction=nonstopmode")
 
-            // If it is present, assume that it will handle everything (command line options would overwrite latexmkrc options)
-            if (!isLatexmkRcFilePresent) {
-                // Adding the -pdf flag makes latexmk run with pdflatex, which is definitely preferred over running with just latex
-                command.add("-pdf")
-                command.add("-file-line-error")
-                command.add("-interaction=nonstopmode")
-                command.add("-synctex=1")
-            }
+            command.add("-outdir=$outputPath")
 
-            if (runConfig.outputFormat != Format.DEFAULT) {
-                command.add("-output-format=${runConfig.outputFormat.name.lowercase(Locale.getDefault())}")
-            }
-
-            command.add("-output-directory=$outputPath")
-
-            if (auxilPath != null && runConfig.getLatexDistributionType().isMiktex(runConfig.project)) {
-                command.add("-aux-directory=$auxilPath")
+            if (auxilPath != null && auxilPath != outputPath) {
+                command.add("-auxdir=$auxilPath")
             }
 
             // -include-directory does not work with latexmk
@@ -288,7 +277,7 @@ enum class LatexCompiler(private val displayName: String, val executableName: St
     fun getCommand(runConfig: LatexRunConfiguration, project: Project): List<String>? {
         val mainFile = runConfig.mainFile ?: return null
         // Getting the content root is an expensive operation (See WorkspaceFileIndexDataImpl#ensureIsUpToDate), and since it probably won't change often we reuse a cached value
-        val moduleRoot = runConfig.outputPath.getMainFileContentRoot(runConfig.mainFile)
+        val moduleRoot = LatexPathResolver.getMainFileContentRoot(mainFile, project)
         // For now we disable module roots with Docker
         // Could be improved by mounting them to the right directory
         val moduleRoots = if (runConfig.getLatexDistributionType().isDocker()) {
@@ -317,7 +306,7 @@ enum class LatexCompiler(private val displayName: String, val executableName: St
             "/out"
         }
         else {
-            (runConfig.outputPath.getAndCreatePath() ?: mainFile.parent).path.toWslPathIfNeeded(runConfig.getLatexDistributionType())
+            (LatexPathResolver.resolveOutputDir(runConfig) ?: mainFile.parent).path.toWslPathIfNeeded(runConfig.getLatexDistributionType())
         }
 
         val auxilPath = if (runConfig.getLatexDistributionType() == LatexDistributionType.DOCKER_MIKTEX) {
@@ -327,7 +316,7 @@ enum class LatexCompiler(private val displayName: String, val executableName: St
             null
         }
         else {
-            runConfig.auxilPath.getAndCreatePath()?.path?.toWslPathIfNeeded(runConfig.getLatexDistributionType())
+            LatexPathResolver.resolveAuxDir(runConfig)?.path?.toWslPathIfNeeded(runConfig.getLatexDistributionType())
         }
 
         val command = createCommand(
@@ -422,14 +411,14 @@ enum class LatexCompiler(private val displayName: String, val executableName: St
         if (dockerOutputDir != null) {
             // Avoid mounting the mainfile parent also to /miktex/work/out,
             // because there may be a good reason to make the output directory the same as the source directory
-            val outPath = runConfig.outputPath.getAndCreatePath()
+            val outPath = LatexPathResolver.resolveOutputDir(runConfig)
             if (outPath?.path != null && outPath != mainFile.parent) {
                 parameterList.addAll(listOf("-v", "${outPath.path}:$dockerOutputDir"))
             }
         }
 
         if (dockerAuxilDir != null) {
-            val auxilPath = runConfig.auxilPath.getAndCreatePath()
+            val auxilPath = LatexPathResolver.resolveAuxDir(runConfig)
             if (auxilPath?.path != null && auxilPath != mainFile.parent) {
                 parameterList.addAll(listOf("-v", "${auxilPath.path}:$dockerAuxilDir"))
             }
@@ -451,13 +440,13 @@ enum class LatexCompiler(private val displayName: String, val executableName: St
      *
      * @return The command to be executed.
      */
-    protected open fun createCommand(
+    abstract fun createCommand(
         runConfig: LatexRunConfiguration,
         auxilPath: String?,
         outputPath: String,
         moduleRoot: VirtualFile?,
         moduleRoots: Array<VirtualFile>
-    ): MutableList<String> = error("Not implemented for $this")
+    ): MutableList<String>
 
     /**
      * Whether the compiler includes running bibtex/biber.
