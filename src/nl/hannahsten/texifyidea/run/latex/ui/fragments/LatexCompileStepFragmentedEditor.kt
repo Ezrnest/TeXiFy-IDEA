@@ -11,6 +11,7 @@ import com.intellij.openapi.ui.TextBrowseFolderListener
 import com.intellij.openapi.ui.TextFieldWithBrowseButton
 import com.intellij.openapi.fileTypes.PlainTextFileType
 import com.intellij.ui.EditorTextField
+import nl.hannahsten.texifyidea.TexifyBundle
 import nl.hannahsten.texifyidea.run.compiler.LatexCompiler
 import nl.hannahsten.texifyidea.run.compiler.LatexCompiler.Format
 import nl.hannahsten.texifyidea.run.latex.LatexCommandLineOptionsCache
@@ -25,29 +26,29 @@ internal class LatexCompileStepFragmentedEditor(
 ) : AbstractStepFragmentedEditor<LatexCompileStepOptions>(initialStep) {
 
     private val compiler = ComboBox(LatexCompiler.entries.toTypedArray())
-    private val compilerRow = LabeledComponent.create(compiler, "Compiler")
+    private val compilerRow = LabeledComponent.create(compiler, TexifyBundle.message("run.step.ui.field.compiler"))
 
     private val compilerPath = TextFieldWithBrowseButton().apply {
         addBrowseFolderListener(
             TextBrowseFolderListener(
                 FileChooserDescriptor(true, false, false, false, false, false)
-                    .withTitle("Choose Compiler Executable")
+                    .withTitle(TexifyBundle.message("run.step.ui.dialog.choose.compiler.executable"))
                     .withRoots(*ProjectRootManager.getInstance(project).contentRootsFromAllModules.toSet().toTypedArray())
             )
         )
     }
-    private val compilerPathRow = LabeledComponent.create(compilerPath, "Compiler path")
+    private val compilerPathRow = LabeledComponent.create(compilerPath, TexifyBundle.message("run.step.ui.field.compiler.path"))
 
     private val compilerArguments = EditorTextField("", project, PlainTextFileType.INSTANCE).apply {
-        setPlaceholder("Custom compiler arguments")
+        setPlaceholder(TexifyBundle.message("run.latex.settings.custom.compiler.arguments"))
         @Suppress("UsePropertyAccessSyntax")
         setOneLineMode(true)
     }
-    private val compilerArgumentsRow = LabeledComponent.create(compilerArguments, "Compiler arguments")
+    private val compilerArgumentsRow = LabeledComponent.create(compilerArguments, TexifyBundle.message("run.step.ui.field.compiler.arguments"))
     private var completionCompilerExecutable: String? = null
 
     private val outputFormat = ComboBox(Format.entries.toTypedArray())
-    private val outputFormatRow = LabeledComponent.create(outputFormat, "Output format")
+    private val outputFormatRow = LabeledComponent.create(outputFormat, TexifyBundle.message("run.step.ui.field.output.format"))
 
     init {
         compiler.addItemListener {
@@ -62,11 +63,11 @@ internal class LatexCompileStepFragmentedEditor(
     }
 
     override fun createFragments(): Collection<SettingsEditorFragment<LatexCompileStepOptions, *>> {
-        val headerFragment = CommonParameterFragments.createHeader<LatexCompileStepOptions>("LaTeX Compile Step")
+        val headerFragment = CommonParameterFragments.createHeader<LatexCompileStepOptions>(TexifyBundle.message("run.step.ui.header.latex.compile"))
 
         val compilerFragment = stepFragment(
             id = "step.compile.compiler",
-            name = "Compiler",
+            name = TexifyBundle.message("run.step.ui.field.compiler"),
             component = compilerRow,
             reset = { step, component ->
                 component.component.selectedItem = step.compiler
@@ -78,36 +79,36 @@ internal class LatexCompileStepFragmentedEditor(
             },
             initiallyVisible = { true },
             removable = false,
-            hint = "Compiler used by latex-compile step type.",
+            hint = TexifyBundle.message("run.step.ui.hint.compile.compiler"),
         )
 
         val pathFragment = stepFragment(
             id = StepUiOptionIds.COMPILE_PATH,
-            name = "Compiler path",
+            name = TexifyBundle.message("run.step.ui.field.compiler.path"),
             component = compilerPathRow,
             reset = { step, component -> component.component.text = step.compilerPath.orEmpty() },
             apply = { step, component -> step.compilerPath = component.component.text.ifBlank { null } },
             initiallyVisible = { step -> !step.compilerPath.isNullOrBlank() },
             removable = true,
-            hint = "Compiler executable used by latex-compile steps.",
-            actionHint = "Set custom compiler path",
+            hint = TexifyBundle.message("run.step.ui.hint.compile.compiler.path"),
+            actionHint = TexifyBundle.message("run.step.ui.action.set.custom.compiler.path"),
         )
 
         val argsFragment = stepFragment(
             id = StepUiOptionIds.COMPILE_ARGS,
-            name = "Compiler arguments",
+            name = TexifyBundle.message("run.step.ui.field.compiler.arguments"),
             component = compilerArgumentsRow,
             reset = { step, component -> component.component.text = step.compilerArguments.orEmpty() },
             apply = { step, component -> step.compilerArguments = component.component.text },
             initiallyVisible = { step -> !step.compilerArguments.isNullOrBlank() },
             removable = true,
-            hint = "Arguments passed to the selected compiler.",
-            actionHint = "Set custom compiler arguments",
+            hint = TexifyBundle.message("run.step.ui.hint.compile.compiler.arguments"),
+            actionHint = TexifyBundle.message("run.step.ui.action.set.custom.compiler.arguments"),
         )
 
         val formatFragment = stepFragment(
             id = StepUiOptionIds.COMPILE_OUTPUT_FORMAT,
-            name = "Output format",
+            name = TexifyBundle.message("run.step.ui.field.output.format"),
             component = outputFormatRow,
             reset = { step, component ->
                 val selectedCompiler = compiler.selectedItem as? LatexCompiler ?: LatexCompiler.PDFLATEX
@@ -119,8 +120,8 @@ internal class LatexCompileStepFragmentedEditor(
             },
             initiallyVisible = { step -> step.outputFormat != Format.PDF },
             removable = true,
-            hint = "Output format used by latex-compile steps.",
-            actionHint = "Set output format",
+            hint = TexifyBundle.message("run.step.ui.hint.compile.output.format"),
+            actionHint = TexifyBundle.message("run.step.ui.action.set.output.format"),
         )
 
         return listOf(

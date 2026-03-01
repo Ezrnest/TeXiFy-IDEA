@@ -4,6 +4,7 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
+import nl.hannahsten.texifyidea.TexifyBundle
 import nl.hannahsten.texifyidea.run.latex.*
 import nl.hannahsten.texifyidea.run.latex.step.LatexRunStepProviders
 import java.awt.BorderLayout
@@ -150,8 +151,8 @@ internal class LatexStepSettingsComponent(
             LatexStepType.FILE_CLEANUP -> showCard(CARD_FILE_CLEANUP)
             else -> {
                 val message = when {
-                    type.isNullOrBlank() -> "Select a step in Compile sequence to configure it."
-                    else -> "${LatexStepUiSupport.description(type)} settings are not available yet."
+                    type.isNullOrBlank() -> TexifyBundle.message("run.step.ui.step.settings.select.step")
+                    else -> TexifyBundle.message("run.step.ui.step.settings.unsupported", LatexStepUiSupport.description(type))
                 }
                 unsupportedSettings.setMessage(message)
                 showCard(CARD_UNSUPPORTED)

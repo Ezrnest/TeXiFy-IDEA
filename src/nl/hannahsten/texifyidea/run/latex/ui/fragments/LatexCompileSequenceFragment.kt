@@ -3,6 +3,7 @@ package nl.hannahsten.texifyidea.run.latex.ui.fragments
 import com.intellij.execution.impl.RunnerAndConfigurationSettingsImpl
 import com.intellij.execution.ui.RunConfigurationEditorFragment
 import com.intellij.util.ui.JBUI
+import nl.hannahsten.texifyidea.TexifyBundle
 import nl.hannahsten.texifyidea.run.latex.LatexRunConfiguration
 import java.awt.BorderLayout
 import java.awt.Font
@@ -14,7 +15,7 @@ internal class LatexCompileSequenceFragment(
     private val component: LatexCompileSequenceComponent,
 ) : RunConfigurationEditorFragment<LatexRunConfiguration, JComponent>(
     "compileSequence",
-    "Compile sequence",
+    TexifyBundle.message("run.step.ui.compile.sequence.title"),
     null,
     wrap(component),
     0,
@@ -24,7 +25,7 @@ internal class LatexCompileSequenceFragment(
     init {
         component.changeListener = { fireEditorStateChanged() }
         isRemovable = false
-        actionHint = "Add, remove, or reorder compile steps"
+        actionHint = TexifyBundle.message("run.step.ui.compile.sequence.action.hint")
     }
 
     override fun doReset(s: RunnerAndConfigurationSettingsImpl) {
@@ -38,11 +39,11 @@ internal class LatexCompileSequenceFragment(
     companion object {
 
         private fun wrap(component: LatexCompileSequenceComponent): JComponent {
-            val tooltip = "Drag to reorder. Double-click a step to change its type."
+            val tooltip = TexifyBundle.message("run.step.ui.compile.sequence.tooltip")
             val panel = JPanel(BorderLayout())
             panel.toolTipText = tooltip
 
-            val label = JLabel("Compile sequence").apply {
+            val label = JLabel(TexifyBundle.message("run.step.ui.compile.sequence.title")).apply {
                 font = JBUI.Fonts.label().deriveFont(Font.BOLD)
                 toolTipText = tooltip
             }

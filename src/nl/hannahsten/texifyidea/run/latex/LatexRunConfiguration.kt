@@ -150,7 +150,7 @@ class LatexRunConfiguration(
             throw RuntimeConfigurationError(TexifyBundle.message("run.error.run.config.invalid.no.main.latex.file"))
         }
         if (steps.isEmpty()) {
-            throw RuntimeConfigurationError("Run configuration is invalid: no compile steps")
+            throw RuntimeConfigurationError(TexifyBundle.message("run.error.run.config.invalid.no.compile.steps"))
         }
     }
 
@@ -163,14 +163,14 @@ class LatexRunConfiguration(
 
         val configuredSteps = steps
         if (configuredSteps.isEmpty()) {
-            throw ExecutionException("No executable compile steps were configured.")
+            throw ExecutionException(TexifyBundle.message("run.error.no.executable.compile.steps.configured"))
         }
 
         val hasExecutableStep = configuredSteps.any { step ->
             LatexRunStepProviders.find(step.type) != null
         }
         if (!hasExecutableStep) {
-            throw ExecutionException("No executable compile steps were configured.")
+            throw ExecutionException(TexifyBundle.message("run.error.no.executable.compile.steps.configured"))
         }
 
         return LatexStepRunState(this, environment, configuredSteps)

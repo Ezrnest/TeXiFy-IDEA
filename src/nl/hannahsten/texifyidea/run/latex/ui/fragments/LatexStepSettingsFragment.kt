@@ -2,6 +2,7 @@ package nl.hannahsten.texifyidea.run.latex.ui.fragments
 
 import com.intellij.execution.impl.RunnerAndConfigurationSettingsImpl
 import com.intellij.execution.ui.RunConfigurationEditorFragment
+import nl.hannahsten.texifyidea.TexifyBundle
 import nl.hannahsten.texifyidea.run.latex.LatexRunConfiguration
 import javax.swing.JComponent
 
@@ -9,7 +10,7 @@ internal class LatexStepSettingsFragment(
     private val component: LatexStepSettingsComponent,
 ) : RunConfigurationEditorFragment<LatexRunConfiguration, JComponent>(
     "stepSettings",
-    "Step settings",
+    TexifyBundle.message("run.step.ui.step.settings.title"),
     null,
     wrap(component),
     0,

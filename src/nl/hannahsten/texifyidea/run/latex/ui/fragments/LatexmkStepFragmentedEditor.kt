@@ -13,6 +13,7 @@ import com.intellij.openapi.fileTypes.PlainTextFileType
 import com.intellij.ui.EditorTextField
 import com.intellij.ui.RawCommandLineEditor
 import com.intellij.ui.components.JBTextField
+import nl.hannahsten.texifyidea.TexifyBundle
 import nl.hannahsten.texifyidea.run.compiler.LatexCompilePrograms
 import nl.hannahsten.texifyidea.run.latex.LatexCommandLineOptionsCache
 import nl.hannahsten.texifyidea.run.latex.LatexmkCompileStepOptions
@@ -32,34 +33,34 @@ internal class LatexmkStepFragmentedEditor(
         addBrowseFolderListener(
             TextBrowseFolderListener(
                 FileChooserDescriptor(true, false, false, false, false, false)
-                    .withTitle("Choose Compiler Executable")
+                    .withTitle(TexifyBundle.message("run.step.ui.dialog.choose.compiler.executable"))
                     .withRoots(*ProjectRootManager.getInstance(project).contentRootsFromAllModules.toSet().toTypedArray())
             )
         )
     }
-    private val compilerPathRow = LabeledComponent.create(compilerPath, "Compiler path")
+    private val compilerPathRow = LabeledComponent.create(compilerPath, TexifyBundle.message("run.step.ui.field.compiler.path"))
 
     private val compilerArguments = EditorTextField("", project, PlainTextFileType.INSTANCE).apply {
-        setPlaceholder("Custom compiler arguments")
+        setPlaceholder(TexifyBundle.message("run.latex.settings.custom.compiler.arguments"))
         @Suppress("UsePropertyAccessSyntax")
         setOneLineMode(true)
     }
-    private val compilerArgumentsRow = LabeledComponent.create(compilerArguments, "Compiler arguments")
+    private val compilerArgumentsRow = LabeledComponent.create(compilerArguments, TexifyBundle.message("run.step.ui.field.compiler.arguments"))
     private var completionInstalled = false
 
     private val latexmkCompileMode = ComboBox(LatexmkCompileMode.entries.toTypedArray())
-    private val latexmkCompileModeRow = LabeledComponent.create(latexmkCompileMode, "Latexmk compile mode")
+    private val latexmkCompileModeRow = LabeledComponent.create(latexmkCompileMode, TexifyBundle.message("run.step.ui.field.latexmk.compile.mode"))
 
     private val latexmkCustomEngineCommand = JBTextField()
-    private val latexmkCustomEngineRow = LabeledComponent.create(latexmkCustomEngineCommand, "Latexmk custom engine command")
+    private val latexmkCustomEngineRow = LabeledComponent.create(latexmkCustomEngineCommand, TexifyBundle.message("run.step.ui.field.latexmk.custom.engine.command"))
 
     private val latexmkCitationTool = ComboBox(LatexmkCitationTool.entries.toTypedArray())
-    private val latexmkCitationToolRow = LabeledComponent.create(latexmkCitationTool, "Latexmk citation tool")
+    private val latexmkCitationToolRow = LabeledComponent.create(latexmkCitationTool, TexifyBundle.message("run.step.ui.field.latexmk.citation.tool"))
 
     private val latexmkExtraArguments = RawCommandLineEditor().apply {
-        editorField.emptyText.text = "Additional latexmk arguments"
+        editorField.emptyText.text = TexifyBundle.message("run.latexmk.settings.additional.arguments")
     }
-    private val latexmkExtraArgumentsRow = LabeledComponent.create(latexmkExtraArguments, "Latexmk extra arguments")
+    private val latexmkExtraArgumentsRow = LabeledComponent.create(latexmkExtraArguments, TexifyBundle.message("run.step.ui.field.latexmk.extra.arguments"))
 
     init {
         latexmkCompileMode.addItemListener {
@@ -76,35 +77,35 @@ internal class LatexmkStepFragmentedEditor(
     }
 
     override fun createFragments(): Collection<SettingsEditorFragment<LatexmkCompileStepOptions, *>> {
-        val headerFragment = CommonParameterFragments.createHeader<LatexmkCompileStepOptions>("Latexmk Step")
+        val headerFragment = CommonParameterFragments.createHeader<LatexmkCompileStepOptions>(TexifyBundle.message("run.step.ui.header.latexmk"))
 
         val pathFragment = stepFragment(
             id = StepUiOptionIds.COMPILE_PATH,
-            name = "Compiler path",
+            name = TexifyBundle.message("run.step.ui.field.compiler.path"),
             component = compilerPathRow,
             reset = { step, component -> component.component.text = step.compilerPath.orEmpty() },
             apply = { step, component -> step.compilerPath = component.component.text.ifBlank { null } },
             initiallyVisible = { step -> !step.compilerPath.isNullOrBlank() },
             removable = true,
-            hint = "Compiler executable used by latexmk-compile steps.",
-            actionHint = "Set custom compiler path",
+            hint = TexifyBundle.message("run.step.ui.hint.latexmk.compiler.path"),
+            actionHint = TexifyBundle.message("run.step.ui.action.set.custom.compiler.path"),
         )
 
         val argsFragment = stepFragment(
             id = StepUiOptionIds.COMPILE_ARGS,
-            name = "Compiler arguments",
+            name = TexifyBundle.message("run.step.ui.field.compiler.arguments"),
             component = compilerArgumentsRow,
             reset = { step, component -> component.component.text = step.compilerArguments.orEmpty() },
             apply = { step, component -> step.compilerArguments = component.component.text },
             initiallyVisible = { step -> !step.compilerArguments.isNullOrBlank() },
             removable = true,
-            hint = "Arguments passed to latexmk.",
-            actionHint = "Set custom compiler arguments",
+            hint = TexifyBundle.message("run.step.ui.hint.latexmk.compiler.arguments"),
+            actionHint = TexifyBundle.message("run.step.ui.action.set.custom.compiler.arguments"),
         )
 
         val modeFragment = stepFragment(
             id = StepUiOptionIds.LATEXMK_MODE,
-            name = "Latexmk compile mode",
+            name = TexifyBundle.message("run.step.ui.field.latexmk.compile.mode"),
             component = latexmkCompileModeRow,
             reset = { step, component -> component.component.selectedItem = step.latexmkCompileMode },
             apply = { step, component ->
@@ -112,12 +113,12 @@ internal class LatexmkStepFragmentedEditor(
             },
             initiallyVisible = { true },
             removable = false,
-            hint = "Latexmk compile mode used by latexmk-compile steps.",
+            hint = TexifyBundle.message("run.step.ui.hint.latexmk.compile.mode"),
         )
 
         val customEngineFragment = stepFragment(
             id = StepUiOptionIds.LATEXMK_CUSTOM_ENGINE,
-            name = "Latexmk custom engine command",
+            name = TexifyBundle.message("run.step.ui.field.latexmk.custom.engine.command"),
             component = latexmkCustomEngineRow,
             reset = { step, component ->
                 component.component.text = step.latexmkCustomEngineCommand.orEmpty()
@@ -130,13 +131,13 @@ internal class LatexmkStepFragmentedEditor(
                 step.latexmkCompileMode == LatexmkCompileMode.CUSTOM || !step.latexmkCustomEngineCommand.isNullOrBlank()
             },
             removable = true,
-            hint = "Custom engine command used when latexmk mode is CUSTOM.",
-            actionHint = "Set latexmk custom engine command",
+            hint = TexifyBundle.message("run.step.ui.hint.latexmk.custom.engine.command"),
+            actionHint = TexifyBundle.message("run.step.ui.action.set.latexmk.custom.engine.command"),
         )
 
         val citationFragment = stepFragment(
             id = StepUiOptionIds.LATEXMK_CITATION,
-            name = "Latexmk citation tool",
+            name = TexifyBundle.message("run.step.ui.field.latexmk.citation.tool"),
             component = latexmkCitationToolRow,
             reset = { step, component -> component.component.selectedItem = step.latexmkCitationTool },
             apply = { step, component ->
@@ -144,13 +145,13 @@ internal class LatexmkStepFragmentedEditor(
             },
             initiallyVisible = { step -> step.latexmkCitationTool != LatexmkCitationTool.AUTO },
             removable = true,
-            hint = "Citation tool used by latexmk.",
-            actionHint = "Set latexmk citation tool",
+            hint = TexifyBundle.message("run.step.ui.hint.latexmk.citation.tool"),
+            actionHint = TexifyBundle.message("run.step.ui.action.set.latexmk.citation.tool"),
         )
 
         val extraArgsFragment = stepFragment(
             id = StepUiOptionIds.LATEXMK_EXTRA_ARGS,
-            name = "Latexmk extra arguments",
+            name = TexifyBundle.message("run.step.ui.field.latexmk.extra.arguments"),
             component = latexmkExtraArgumentsRow,
             reset = { step, component -> component.component.text = step.latexmkExtraArguments.orEmpty() },
             apply = { step, component -> step.latexmkExtraArguments = component.component.text },
@@ -159,8 +160,8 @@ internal class LatexmkStepFragmentedEditor(
                     step.latexmkExtraArguments != LatexRunConfiguration.DEFAULT_LATEXMK_EXTRA_ARGUMENTS
             },
             removable = true,
-            hint = "Additional arguments appended to latexmk invocation.",
-            actionHint = "Set latexmk extra arguments",
+            hint = TexifyBundle.message("run.step.ui.hint.latexmk.extra.arguments"),
+            actionHint = TexifyBundle.message("run.step.ui.action.set.latexmk.extra.arguments"),
         )
 
         return listOf(

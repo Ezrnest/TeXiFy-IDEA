@@ -6,6 +6,7 @@ import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.LabeledComponent
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBTextField
+import nl.hannahsten.texifyidea.TexifyBundle
 import nl.hannahsten.texifyidea.run.latex.PdfViewerStepOptions
 import nl.hannahsten.texifyidea.run.latex.StepUiOptionIds
 import nl.hannahsten.texifyidea.run.pdfviewer.PdfViewer
@@ -16,11 +17,11 @@ internal class LatexViewerStepFragmentedEditor(
 ) : AbstractStepFragmentedEditor<PdfViewerStepOptions>(initialStep) {
 
     private val pdfViewer = ComboBox(PdfViewer.availableViewers.toTypedArray())
-    private val pdfViewerRow = LabeledComponent.create(pdfViewer, "PDF viewer")
+    private val pdfViewerRow = LabeledComponent.create(pdfViewer, TexifyBundle.message("run.step.ui.field.pdf.viewer"))
 
-    private val requireFocus = JBCheckBox("Allow PDF viewer to focus after compilation")
+    private val requireFocus = JBCheckBox(TexifyBundle.message("run.latex.settings.allow.viewer.focus"))
     private val viewerCommand = JBTextField()
-    private val viewerCommandRow = LabeledComponent.create(viewerCommand, "Custom viewer command")
+    private val viewerCommandRow = LabeledComponent.create(viewerCommand, TexifyBundle.message("run.step.ui.field.custom.viewer.command"))
 
     init {
         pdfViewer.addItemListener {
@@ -32,11 +33,11 @@ internal class LatexViewerStepFragmentedEditor(
     }
 
     override fun createFragments(): Collection<SettingsEditorFragment<PdfViewerStepOptions, *>> {
-        val headerFragment = CommonParameterFragments.createHeader<PdfViewerStepOptions>("PDF Viewer Step")
+        val headerFragment = CommonParameterFragments.createHeader<PdfViewerStepOptions>(TexifyBundle.message("run.step.ui.header.pdf.viewer"))
 
         val viewerFragment = stepFragment(
             id = "step.viewer.type",
-            name = "PDF viewer",
+            name = TexifyBundle.message("run.step.ui.field.pdf.viewer"),
             component = pdfViewerRow,
             reset = { step, component ->
                 component.component.selectedItem = PdfViewer.availableViewers.firstOrNull { it.name == step.pdfViewerName }
@@ -48,12 +49,12 @@ internal class LatexViewerStepFragmentedEditor(
             },
             initiallyVisible = { true },
             removable = false,
-            hint = "PDF viewer used by pdf-viewer steps.",
+            hint = TexifyBundle.message("run.step.ui.hint.pdf.viewer"),
         )
 
         val focusFragment = stepFragment(
             id = StepUiOptionIds.VIEWER_REQUIRE_FOCUS,
-            name = "Require focus",
+            name = TexifyBundle.message("run.step.ui.field.require.focus"),
             component = requireFocus,
             reset = { step, component ->
                 component.isSelected = step.requireFocus
@@ -64,20 +65,20 @@ internal class LatexViewerStepFragmentedEditor(
             },
             initiallyVisible = { step -> !step.requireFocus },
             removable = true,
-            hint = "Allow the viewer window to gain focus after compilation.",
-            actionHint = "Set require focus",
+            hint = TexifyBundle.message("run.step.ui.hint.require.focus"),
+            actionHint = TexifyBundle.message("run.step.ui.action.set.require.focus"),
         )
 
         val commandFragment = stepFragment(
             id = StepUiOptionIds.VIEWER_COMMAND,
-            name = "Custom viewer command",
+            name = TexifyBundle.message("run.step.ui.field.custom.viewer.command"),
             component = viewerCommandRow,
             reset = { step, component -> component.component.text = step.customViewerCommand.orEmpty() },
             apply = { step, component -> step.customViewerCommand = component.component.text.ifBlank { null } },
             initiallyVisible = { step -> !step.customViewerCommand.isNullOrBlank() },
             removable = true,
-            hint = "Command template used when PDF viewer is set to CUSTOM.",
-            actionHint = "Set custom viewer command",
+            hint = TexifyBundle.message("run.step.ui.hint.custom.viewer.command"),
+            actionHint = TexifyBundle.message("run.step.ui.action.set.custom.viewer.command"),
         )
 
         return listOf(

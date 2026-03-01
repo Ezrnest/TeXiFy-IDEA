@@ -5,6 +5,7 @@ import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.openapi.application.ReadAction
 import com.intellij.psi.PsiManager
 import com.intellij.psi.SmartPointerManager
+import nl.hannahsten.texifyidea.TexifyBundle
 import nl.hannahsten.texifyidea.run.compiler.LatexCompiler
 import java.nio.file.Path
 import java.util.Locale
@@ -44,10 +45,10 @@ internal object LatexSessionInitializer {
         workingDirectoryProject: com.intellij.openapi.project.Project,
         createOutputSubDirs: Boolean,
     ): LatexRunSessionState {
-        val resolvedMainFile = mainFile ?: throw ExecutionException("Main file cannot be resolved")
+        val resolvedMainFile = mainFile ?: throw ExecutionException(TexifyBundle.message("run.error.main.file.not.resolved"))
 
         val outputDir = LatexPathResolver.resolveOutputDir(runConfig, resolvedMainFile)
-            ?: throw ExecutionException("Output directory cannot be resolved")
+            ?: throw ExecutionException(TexifyBundle.message("run.error.output.directory.not.resolved"))
         val auxDir = LatexPathResolver.resolveAuxDir(runConfig, resolvedMainFile)
         val workingDirectory = LatexPathResolver.resolve(runConfig.workingDirectory, resolvedMainFile, workingDirectoryProject)
             ?: Path.of(resolvedMainFile.parent.path)

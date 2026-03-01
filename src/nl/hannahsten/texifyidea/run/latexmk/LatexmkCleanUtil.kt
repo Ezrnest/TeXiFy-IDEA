@@ -32,7 +32,12 @@ object LatexmkCleanUtil {
 
     fun run(project: Project, runConfig: LatexRunConfiguration, mode: Mode) {
         if (!runConfig.hasEnabledLatexmkStep()) {
-            Notification("LaTeX", "Latexmk clean failed", "Selected run configuration is not using latexmk.", NotificationType.ERROR).notify(project)
+            Notification(
+                TexifyBundle.message("notification.group.latex"),
+                TexifyBundle.message("run.latexmk.clean.failed.title"),
+                TexifyBundle.message("run.latexmk.clean.failed.not.latexmk"),
+                NotificationType.ERROR
+            ).notify(project)
             return
         }
 

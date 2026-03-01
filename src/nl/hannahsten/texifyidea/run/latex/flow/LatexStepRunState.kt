@@ -8,6 +8,7 @@ import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.runners.ProgramRunner
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import nl.hannahsten.texifyidea.editor.autocompile.AutoCompileDoneListener
+import nl.hannahsten.texifyidea.TexifyBundle
 import nl.hannahsten.texifyidea.run.latex.LatexSessionInitializer
 import nl.hannahsten.texifyidea.run.latex.LatexRunConfiguration
 import nl.hannahsten.texifyidea.run.latex.LatexStepRunConfigurationOptions
@@ -37,7 +38,7 @@ internal class LatexStepRunState(
         }
 
         if (configuredPlan.steps.isEmpty()) {
-            throw ExecutionException("No executable steps found in compile-step schema.")
+            throw ExecutionException(TexifyBundle.message("run.error.no.executable.steps.in.schema"))
         }
 
         val context = LatexRunStepContext(runConfig, environment, session)
