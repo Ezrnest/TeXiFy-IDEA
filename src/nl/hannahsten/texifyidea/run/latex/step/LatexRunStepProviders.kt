@@ -1,5 +1,9 @@
 package nl.hannahsten.texifyidea.run.latex.step
 
+/**
+ * Registry of available step providers keyed by canonical type aliases.
+ * It is queried by execution planning to translate stored step ids into runtime factories.
+ */
 internal object LatexRunStepProviders {
 
     val all: List<LatexRunStepProvider> = listOf(

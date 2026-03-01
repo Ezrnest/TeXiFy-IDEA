@@ -13,6 +13,10 @@ import org.jdom.Element
 import java.nio.file.Path
 import java.util.Locale
 
+/**
+ * Migrates legacy LaTeX run-configuration XML into the current step-based schema.
+ * It only runs during deserialization when new-format step options are not explicitly present.
+ */
 internal object LegacyLatexRunConfigMigration {
 
     private const val LEGACY_PARENT = "texify"
@@ -334,10 +338,16 @@ internal object LegacyLatexRunConfigMigration {
         else -> null
     }
 
+    /**
+     * Temporary holder for base steps assembled from legacy fields before auto-completion.
+     */
     private data class StepBundle(
         val baseSteps: List<LatexStepRunConfigurationOptions>,
     )
 
+    /**
+     * Represents converted auxiliary steps and whether legacy references could not be resolved.
+     */
     private data class ResolvedAuxSteps<T : LatexStepRunConfigurationOptions>(
         val steps: List<T>,
         val hasDangling: Boolean,

@@ -10,7 +10,8 @@ import nl.hannahsten.texifyidea.file.LatexFileType
 import nl.hannahsten.texifyidea.run.latex.step.LatexStepAutoConfigurator
 
 /**
- * @author Hannah Schellekens
+ * Builds LaTeX run configurations from editor context.
+ * It maps the selected `.tex` file to run configuration fields and initializes the step sequence.
  */
 class LatexRunConfigurationProducer : LazyRunConfigurationProducer<LatexRunConfiguration>() {
 

@@ -21,6 +21,26 @@ import nl.hannahsten.texifyidea.settings.sdk.LatexSdkUtil
 import org.jdom.Element
 import java.nio.file.Path
 
+/**
+ * Represents TeXiFy's step-based LaTeX run configuration persisted by IntelliJ.
+ * It owns user-editable settings (main file, paths, distribution, environment, and ordered step options) and serves as
+ * the bridge between UI configuration and runtime execution.
+ *
+ * Run configuration flow:
+ * 1. Creation: [LatexRunConfigurationProducer] selects a `.tex` file and initializes step options.
+ * 2. Persistence: options are serialized by IntelliJ; [readExternal] applies [LegacyLatexRunConfigMigration] when needed.
+ * 3. Validation: [checkConfiguration] verifies main-file path presence/resolution and non-empty step list.
+ * 4. State building: [getState] ensures default steps, checks executable providers, then creates [LatexStepRunState].
+ * 5. Step abstraction: [nl.hannahsten.texifyidea.run.latex.step.LatexRunStepPlanBuilder] maps persisted step options
+ *    to executable [nl.hannahsten.texifyidea.run.latex.step.LatexRunStep] instances.
+ * 6. Runtime execution: [LatexStepRunState] initializes a [LatexRunSessionState], builds a step plan, and runs it
+ *    through [nl.hannahsten.texifyidea.run.latex.flow.StepAwareSequentialProcessHandler].
+ * 7. Step Log integration: during the same run, [nl.hannahsten.texifyidea.run.latex.steplog.LatexStepLogTabComponent]
+ *    subscribes to handler events and renders per-step output/status in the Run tool window.
+ *    The handler returned to IntelliJ is shared, so Step Log and raw process output remain synchronized.
+ *
+ * This class coordinates configuration semantics but does not execute commands directly.
+ */
 class LatexRunConfiguration(
     project: Project,
     factory: ConfigurationFactory,

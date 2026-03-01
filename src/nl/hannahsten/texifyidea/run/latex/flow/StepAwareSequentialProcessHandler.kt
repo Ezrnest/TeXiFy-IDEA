@@ -17,6 +17,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 
 /**
  * Executes compile steps sequentially and forwards per-step lifecycle/output events.
+ * It is used by [LatexStepRunState] as the single process handler exposed to the run tool window.
  */
 internal class StepAwareSequentialProcessHandler(
     val steps: List<LatexRunStep>,

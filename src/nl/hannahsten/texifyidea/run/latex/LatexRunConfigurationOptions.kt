@@ -15,6 +15,10 @@ import nl.hannahsten.texifyidea.run.latexmk.LatexmkCompileMode
 import nl.hannahsten.texifyidea.run.pdfviewer.PdfViewer
 import java.util.UUID
 
+/**
+ * Canonical identifiers for supported LaTeX step kinds in run configuration storage.
+ * These ids are shared across persistence, UI selection, and runtime step-provider lookup.
+ */
 internal object LatexStepType {
 
     const val LATEX_COMPILE = "latex-compile"
@@ -29,6 +33,10 @@ internal object LatexStepType {
     const val FILE_CLEANUP = "file-cleanup"
 }
 
+/**
+ * Serializable options container for [LatexRunConfiguration].
+ * It stores common run settings and the ordered step schema consumed by execution planning.
+ */
 class LatexRunConfigurationOptions : LocatableRunConfigurationOptions() {
 
     var mainFilePath by string(null)
@@ -40,6 +48,10 @@ class LatexRunConfigurationOptions : LocatableRunConfigurationOptions() {
     var expandMacrosEnvVariables by property(false)
     var passParentEnvironmentVariables by property(true)
 
+    /**
+     * Serializable key/value pair for a single environment variable.
+     * Entries are used to build [com.intellij.execution.configuration.EnvironmentVariablesData] at runtime.
+     */
     @Tag("entry")
     class EnvironmentVariableEntry : BaseState() {
 
@@ -80,6 +92,10 @@ class LatexRunConfigurationOptions : LocatableRunConfigurationOptions() {
     }
 }
 
+/**
+ * Base persisted model for one compile-sequence step entry.
+ * Subclasses define step-specific fields, while this type provides shared identity and deep-copy behavior.
+ */
 abstract class LatexStepRunConfigurationOptions : RunConfigurationOptions() {
 
     @get:Attribute("id")
@@ -118,6 +134,10 @@ abstract class LatexStepRunConfigurationOptions : RunConfigurationOptions() {
     protected abstract fun newInstance(): LatexStepRunConfigurationOptions
 }
 
+/**
+ * Persisted options for a classic LaTeX compiler invocation step.
+ * The runtime maps this model to a process step using compiler, arguments, and output format fields.
+ */
 @Tag("latexCompile")
 class LatexCompileStepOptions : LatexStepRunConfigurationOptions() {
 
@@ -132,6 +152,10 @@ class LatexCompileStepOptions : LatexStepRunConfigurationOptions() {
     override fun newInstance(): LatexStepRunConfigurationOptions = LatexCompileStepOptions()
 }
 
+/**
+ * Persisted options for a `latexmk`-based compile step.
+ * Execution uses this model to resolve effective latexmk mode, citation tool, and extra arguments.
+ */
 @Tag("latexmkCompile")
 class LatexmkCompileStepOptions : LatexStepRunConfigurationOptions() {
 
@@ -148,6 +172,10 @@ class LatexmkCompileStepOptions : LatexStepRunConfigurationOptions() {
     override fun newInstance(): LatexStepRunConfigurationOptions = LatexmkCompileStepOptions()
 }
 
+/**
+ * Persisted options for opening the generated PDF after compilation.
+ * This step configures viewer command and focus behavior but does not compile sources.
+ */
 @Tag("pdfViewer")
 class PdfViewerStepOptions : LatexStepRunConfigurationOptions() {
 
@@ -160,6 +188,10 @@ class PdfViewerStepOptions : LatexStepRunConfigurationOptions() {
     override fun newInstance(): LatexStepRunConfigurationOptions = PdfViewerStepOptions()
 }
 
+/**
+ * Persisted options for bibliography tool execution.
+ * The run pipeline consumes this model as an auxiliary step between compile steps when needed.
+ */
 @Tag("bibtex")
 class BibtexStepOptions : LatexStepRunConfigurationOptions() {
 
@@ -174,6 +206,10 @@ class BibtexStepOptions : LatexStepRunConfigurationOptions() {
     override fun newInstance(): LatexStepRunConfigurationOptions = BibtexStepOptions()
 }
 
+/**
+ * Persisted options for index generation steps.
+ * It carries selected makeindex-like program settings used by the corresponding runtime step.
+ */
 @Tag("makeindex")
 class MakeindexStepOptions : LatexStepRunConfigurationOptions() {
 
@@ -188,6 +224,10 @@ class MakeindexStepOptions : LatexStepRunConfigurationOptions() {
     override fun newInstance(): LatexStepRunConfigurationOptions = MakeindexStepOptions()
 }
 
+/**
+ * Persisted options for running an arbitrary external command in the sequence.
+ * This model defines executable, arguments, and working directory for the command step.
+ */
 @Tag("externalTool")
 class ExternalToolStepOptions : LatexStepRunConfigurationOptions() {
 
@@ -201,6 +241,10 @@ class ExternalToolStepOptions : LatexStepRunConfigurationOptions() {
     override fun newInstance(): LatexStepRunConfigurationOptions = ExternalToolStepOptions()
 }
 
+/**
+ * Persisted options for invoking PythonTeX commands.
+ * The command is executed as a generic command-line follow-up step in the sequence.
+ */
 @Tag("pythontex")
 class PythontexStepOptions : LatexStepRunConfigurationOptions() {
 
@@ -214,6 +258,10 @@ class PythontexStepOptions : LatexStepRunConfigurationOptions() {
     override fun newInstance(): LatexStepRunConfigurationOptions = PythontexStepOptions()
 }
 
+/**
+ * Persisted options for running makeglossaries-style commands.
+ * It represents glossary generation as a reusable command step in the run pipeline.
+ */
 @Tag("makeglossaries")
 class MakeglossariesStepOptions : LatexStepRunConfigurationOptions() {
 
@@ -227,6 +275,10 @@ class MakeglossariesStepOptions : LatexStepRunConfigurationOptions() {
     override fun newInstance(): LatexStepRunConfigurationOptions = MakeglossariesStepOptions()
 }
 
+/**
+ * Persisted options for running xindy-style indexing commands.
+ * This step model is consumed by the generic command execution layer.
+ */
 @Tag("xindy")
 class XindyStepOptions : LatexStepRunConfigurationOptions() {
 
@@ -240,6 +292,10 @@ class XindyStepOptions : LatexStepRunConfigurationOptions() {
     override fun newInstance(): LatexStepRunConfigurationOptions = XindyStepOptions()
 }
 
+/**
+ * Marker options for post-run generated-file cleanup.
+ * The runtime cleanup step uses this type presence as configuration and has no extra fields.
+ */
 @Tag("fileCleanup")
 class FileCleanupStepOptions : LatexStepRunConfigurationOptions() {
 

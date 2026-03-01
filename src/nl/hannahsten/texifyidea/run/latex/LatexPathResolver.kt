@@ -14,6 +14,10 @@ import nl.hannahsten.texifyidea.util.files.allChildDirectories
 import nl.hannahsten.texifyidea.util.files.createExcludedDir
 import java.nio.file.Path
 
+/**
+ * Resolves output, auxiliary, and working-directory paths for LaTeX runs.
+ * It expands placeholders, validates directories, and creates missing output paths when possible.
+ */
 internal object LatexPathResolver {
 
     const val PROJECT_DIR_PLACEHOLDER = "{projectDir}"

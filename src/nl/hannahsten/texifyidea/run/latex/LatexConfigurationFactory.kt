@@ -13,7 +13,8 @@ import nl.hannahsten.texifyidea.run.makeindex.MakeindexRunConfiguration
 import nl.hannahsten.texifyidea.run.makeindex.MakeindexRunConfigurationType
 
 /**
- * @author Sten Wessel
+ * Creates TeXiFy run configuration instances and their default option containers.
+ * It is used by IntelliJ run configuration infrastructure as the entry point for template creation.
  */
 class LatexConfigurationFactory(type: ConfigurationType) : ConfigurationFactory(type) {
 

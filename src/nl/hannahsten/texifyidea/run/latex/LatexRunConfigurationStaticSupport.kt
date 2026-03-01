@@ -4,6 +4,10 @@ import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 
+/**
+ * Provides stateless helpers for resolving files and names used by LaTeX run configurations.
+ * These functions bridge persisted path strings and project file-system lookups.
+ */
 internal object LatexRunConfigurationStaticSupport {
 
     fun resolveMainFile(runConfig: LatexRunConfiguration, path: String? = runConfig.mainFilePath): VirtualFile? {

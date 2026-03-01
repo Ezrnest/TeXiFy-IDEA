@@ -9,6 +9,10 @@ import nl.hannahsten.texifyidea.run.compiler.LatexCompiler
 import java.nio.file.Path
 import java.util.Locale
 
+/**
+ * Builds an immutable runtime session from persisted run-configuration settings.
+ * It resolves main/output/aux paths and derives runtime metadata used by step execution.
+ */
 internal object LatexSessionInitializer {
 
     @Throws(ExecutionException::class)

@@ -16,6 +16,10 @@ import nl.hannahsten.texifyidea.run.latex.step.LatexRunStepContext
 import nl.hannahsten.texifyidea.run.latex.steplog.LatexStepLogTabComponent
 import nl.hannahsten.texifyidea.util.Log
 
+/**
+ * Run-profile state that executes the step-based LaTeX pipeline.
+ * It converts configured step options into a runtime plan and returns the process handler/console pair.
+ */
 internal class LatexStepRunState(
     private val runConfig: LatexRunConfiguration,
     private val environment: ExecutionEnvironment,

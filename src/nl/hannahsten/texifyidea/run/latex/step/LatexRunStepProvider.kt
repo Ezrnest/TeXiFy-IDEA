@@ -2,6 +2,10 @@ package nl.hannahsten.texifyidea.run.latex.step
 
 import nl.hannahsten.texifyidea.run.latex.LatexStepRunConfigurationOptions
 
+/**
+ * Factory contract that maps one step-option type id to a runtime [LatexRunStep].
+ * Providers are discovered through [LatexRunStepProviders] during plan building.
+ */
 internal interface LatexRunStepProvider {
 
     /**
