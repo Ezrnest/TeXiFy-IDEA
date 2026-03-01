@@ -5,7 +5,10 @@ import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.util.SystemInfo
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
-import nl.hannahsten.texifyidea.run.latex.LatexCompilationRunConfiguration
+import nl.hannahsten.texifyidea.run.latex.LatexPathResolver
+import nl.hannahsten.texifyidea.run.latex.LatexmkCompileStepOptions
+import nl.hannahsten.texifyidea.run.latex.LatexRunConfiguration
+import nl.hannahsten.texifyidea.run.latex.LatexRunConfigurationStaticSupport
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
@@ -83,7 +86,7 @@ object LatexmkRcFileFinder {
 
         // 4
         if (compilerArguments != null) {
-            val arguments = compilerArguments.splitWhitespace().dropWhile { it.isBlank() }
+            val arguments = compilerArguments.split(Regex("\\s+")).filter { it.isNotBlank() }
             if (arguments.contains("-r") && arguments.last() != "-r") {
                 val path = runCatching { Path.of(arguments[arguments.indexOf("-r") + 1]) }.getOrNull() ?: return null
                 if (Files.exists(path)) return path
@@ -95,16 +98,16 @@ object LatexmkRcFileFinder {
 
     private fun isLocalLatexmkRcFilePresent(compilerArguments: String?, workingDir: Path?) = getLocalLatexmkRcPath(compilerArguments, workingDir) != null
 
-    /**
-     * Get the first latexmkrc file we can find locally (in the project).
-     */
-    private fun getLocalLatexmkRcFile(compilerArguments: String?, workingDir: Path?): VirtualFile? {
-        val path = getLocalLatexmkRcPath(compilerArguments, workingDir) ?: return null
-        return LocalFileSystem.getInstance().findFileByPath(path.toString())
-    }
-
     fun hasLatexmkRc(compilerArguments: String?, workingDirectory: Path?): Boolean =
         isSystemLatexmkRcFilePresent || isLocalLatexmkRcFilePresent(compilerArguments, workingDirectory)
+
+    internal fun localLatexmkRcPathForRunConfig(runConfig: LatexRunConfiguration): Path? {
+        val mainFile = LatexRunConfigurationStaticSupport.resolveMainFile(runConfig)
+        val latexmkStep = runConfig.primaryCompileStep() as? LatexmkCompileStepOptions
+        val workingDirectory = LatexPathResolver.resolve(runConfig.workingDirectory, mainFile, runConfig.project)
+            ?: mainFile?.parent?.path?.let { Path.of(it) }
+        return getLocalLatexmkRcPath(latexmkStep?.compilerArguments, workingDirectory)
+    }
 
     /**
      * Get TEXINPUTS from latexmkrc.
@@ -115,7 +118,7 @@ object LatexmkRcFileFinder {
      * Get the first TEXINPUTS we can find in latexmkrc files.
      * Cached because searching involves quite some system calls, and it's a rarely used feature.
      */
-    fun getTexinputsVariable(directory: VirtualFile, runConfig: LatexCompilationRunConfiguration?, project: Project): String? = if (usesLatexmkrc == false) {
+    fun getTexinputsVariable(directory: VirtualFile, runConfig: LatexRunConfiguration?, project: Project): String? = if (usesLatexmkrc == false) {
         null
     }
     else {
@@ -131,14 +134,16 @@ object LatexmkRcFileFinder {
      *
      * @param runConfig Run configuration to check for working directory and arguments.
      */
-    private fun getTexinputsVariableNoCache(directory: VirtualFile, runConfig: LatexCompilationRunConfiguration?, project: Project): String? {
+    private fun getTexinputsVariableNoCache(directory: VirtualFile, runConfig: LatexRunConfiguration?, project: Project): String? {
         // Cache system file
         (systemLatexmkRcFile ?: getSystemLatexmkRcFile().also { systemLatexmkRcFile = it })?.let {
             return getTexinputs(it)
         }
 
         if (runConfig != null) {
-            getLocalLatexmkRcFile(runConfig.compilerArguments, runConfig.mainFile?.parent?.path?.let { Path.of(it) })?.let { return getTexinputs(it) }
+            localLatexmkRcPathForRunConfig(runConfig)
+                ?.let { LocalFileSystem.getInstance().findFileByPath(it.toString()) }
+                ?.let { return getTexinputs(it) }
         }
         if (!directory.isValid) return null
         // File could be anywhere if run configurations are not used, but searching the whole project could be too expensive

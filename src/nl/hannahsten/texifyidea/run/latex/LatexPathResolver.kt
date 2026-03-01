@@ -12,9 +12,12 @@ import nl.hannahsten.texifyidea.index.projectstructure.pathOrNull
 import nl.hannahsten.texifyidea.util.files.FileUtil
 import nl.hannahsten.texifyidea.util.files.allChildDirectories
 import nl.hannahsten.texifyidea.util.files.createExcludedDir
-import java.io.File
 import java.nio.file.Path
 
+/**
+ * Resolves output, auxiliary, and working-directory paths for LaTeX runs.
+ * It expands placeholders, validates directories, and creates missing output paths when possible.
+ */
 internal object LatexPathResolver {
 
     const val PROJECT_DIR_PLACEHOLDER = "{projectDir}"
@@ -23,21 +26,27 @@ internal object LatexPathResolver {
     val defaultOutputPath: Path = Path.of(MAIN_FILE_PARENT_PLACEHOLDER)
     val defaultAuxilPath: Path = Path.of(MAIN_FILE_PARENT_PLACEHOLDER)
 
-    fun resolveOutputDir(runConfig: LatexRunConfiguration): VirtualFile? = ensureDir(runConfig.outputPath ?: defaultOutputPath, runConfig.mainFile, runConfig.project, "out")
+    fun resolveOutputDir(
+        runConfig: LatexRunConfiguration,
+        mainFile: VirtualFile? = LatexRunConfigurationStaticSupport.resolveMainFile(runConfig),
+    ): VirtualFile? =
+        ensureDir(runConfig.outputPath ?: defaultOutputPath, mainFile, runConfig.project, "out")
 
-    fun resolveAuxDir(runConfig: LatexRunConfiguration): VirtualFile? {
-        if (!runConfig.getLatexDistributionType().isMiktex(runConfig.project, runConfig.mainFile)) {
+    fun resolveAuxDir(
+        runConfig: LatexRunConfiguration,
+        mainFile: VirtualFile? = LatexRunConfigurationStaticSupport.resolveMainFile(runConfig),
+    ): VirtualFile? {
+        val hasLatexmkStep = runConfig.configOptions.steps.any { it.type == LatexStepType.LATEXMK_COMPILE }
+        val supportsAuxDir = runConfig.getLatexDistributionType().isMiktex(runConfig.project, mainFile) ||
+            hasLatexmkStep ||
+            runConfig.hasEnabledLatexmkStep()
+        if (!supportsAuxDir) {
             return null
         }
-        return ensureDir(runConfig.auxilPath ?: defaultAuxilPath, runConfig.mainFile, runConfig.project, "auxil")
+        return ensureDir(runConfig.auxilPath ?: defaultAuxilPath, mainFile, runConfig.project, "auxil")
     }
 
     fun resolve(path: Path?, mainFile: VirtualFile?, project: Project): Path? {
-        val pathString = resolveToString(path, mainFile, project) ?: return null
-        return pathOrNull(pathString)
-    }
-
-    fun resolveToString(path: Path?, mainFile: VirtualFile?, project: Project): String? {
         val raw = path?.toString()?.trim().orEmpty()
         if (raw.isBlank()) return null
 
@@ -45,10 +54,19 @@ internal object LatexPathResolver {
         val projectRootPath = moduleRoot?.path ?: mainFile?.parent?.path
         val mainFileParentPath = mainFile?.parent?.path ?: projectRootPath
 
-        return raw
+        val resolvedRaw = raw
             .replace(PROJECT_DIR_PLACEHOLDER, projectRootPath ?: return null)
             .replace(MAIN_FILE_PARENT_PLACEHOLDER, mainFileParentPath ?: return null)
             .takeIf { it.isNotBlank() }
+            ?: return null
+
+        val resolved = pathOrNull(resolvedRaw)
+
+        if (resolved?.isAbsolute == true) {
+            return resolved
+        }
+
+        return resolveRelativePathAgainstContentRoots(resolvedRaw, moduleRoot, project) ?: resolved
     }
 
     fun getMainFileContentRoot(mainFile: VirtualFile?, project: Project): VirtualFile? {
@@ -58,19 +76,38 @@ internal object LatexPathResolver {
         }
     }
 
+    private fun resolveRelativePathAgainstContentRoots(path: String, moduleRoot: VirtualFile?, project: Project): Path? {
+        if (moduleRoot != null) {
+            moduleRoot.findFileByRelativePath(path)?.let { return Path.of(it.path) }
+            return Path.of(moduleRoot.path).resolve(path).normalize()
+        }
+
+        return runCatching {
+            ReadAction.compute<Path?, RuntimeException> {
+                ProjectRootManager.getInstance(project).contentRoots.firstNotNullOfOrNull { root ->
+                    root.findFileByRelativePath(path)?.let { Path.of(it.path) }
+                }
+            }
+        }.getOrNull()
+    }
+
     @Throws(ExecutionException::class)
-    fun updateOutputSubDirs(runConfig: LatexRunConfiguration): Set<File> {
-        val includeRoot = runConfig.mainFile?.parent ?: return emptySet()
-        val outPath = resolveOutputDir(runConfig)?.path ?: return emptySet()
+    fun updateOutputSubDirs(
+        runConfig: LatexRunConfiguration,
+        mainFile: VirtualFile? = LatexRunConfigurationStaticSupport.resolveMainFile(runConfig),
+        outputDir: VirtualFile? = resolveOutputDir(runConfig, mainFile),
+    ): Set<Path> {
+        val includeRoot = mainFile?.parent ?: return emptySet()
+        val outPath = outputDir?.path ?: return emptySet()
         val files: Set<VirtualFile> = includeRoot.allChildDirectories()
-        val createdDirectories = mutableSetOf<File>()
+        val createdDirectories = mutableSetOf<Path>()
 
         files.asSequence()
             .filter { !it.path.contains(outPath) }
             .mapNotNull { FileUtil.pathRelativeTo(includeRoot.path, it.path) }
             .forEach {
-                val file = File(outPath, it)
-                if (file.mkdirs()) {
+                val file = Path.of(outPath, it)
+                if (file.toFile().mkdirs()) {
                     createdDirectories.add(file)
                 }
             }
@@ -79,7 +116,7 @@ internal object LatexPathResolver {
     }
 
     private fun ensureDir(path: Path, mainFile: VirtualFile?, project: Project, variant: String): VirtualFile? {
-        val resolvedPathString = resolveToString(path, mainFile, project)
+        val resolvedPathString = resolve(path, mainFile, project)?.toString()
         if (resolvedPathString == null || isInvalidJetBrainsBinPath(resolvedPathString)) {
             return mainFile?.parent
         }
@@ -119,7 +156,7 @@ internal object LatexPathResolver {
             ProjectRootManager.getInstance(project).fileIndex.getModuleForFile(file, false)
         }
 
-        if (File(outPath).mkdirs()) {
+        if (Path.of(outPath).toFile().mkdirs()) {
             module?.createExcludedDir(outPath)
             return LocalFileSystem.getInstance().refreshAndFindFileByPath(outPath)
         }
@@ -127,3 +164,5 @@ internal object LatexPathResolver {
         return null
     }
 }
+
+internal fun isInvalidJetBrainsBinPath(path: String?): Boolean = path?.endsWith("/bin") == true

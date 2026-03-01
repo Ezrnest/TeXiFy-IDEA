@@ -10,7 +10,7 @@ import com.intellij.openapi.application.runInEdt
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.delay
 import nl.hannahsten.texifyidea.TexifyBundle
-import nl.hannahsten.texifyidea.run.latex.LatexCompilationRunConfiguration
+import nl.hannahsten.texifyidea.run.latex.LatexRunConfiguration
 import nl.hannahsten.texifyidea.settings.TexifySettings
 import nl.hannahsten.texifyidea.util.runInBackgroundWithoutProgress
 import java.util.concurrent.atomic.AtomicBoolean
@@ -83,7 +83,7 @@ object AutoCompileState {
         val runConfigSettings = RunManager.getInstance(proj).selectedConfiguration
 
         val runConfig = runConfigSettings?.configuration
-        if (runConfig !is LatexCompilationRunConfiguration) {
+        if (runConfig !is LatexRunConfiguration) {
             Notification(
                 TexifyBundle.message("notification.group.latex"),
                 TexifyBundle.message("notification.autocompile.failed.title"),
